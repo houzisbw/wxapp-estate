@@ -1,0 +1,58 @@
+/* pages/login/login.wxss */
+page{
+    height:100%;
+    width:100%;
+    background-color: #ffffff;
+}
+.container{
+    height:100%;
+    width:100%;
+    /*防止margin错位出去，生成bfc*/
+    overflow: hidden;
+}
+.logo{
+    width:200rpx;
+    height:200rpx;
+    margin: 0 auto;
+    margin-top: 10vh;
+    display: block;
+    margin-bottom: 100rpx;
+}
+.input-wrapper{
+    height:90rpx;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-bottom: 1px solid #efefef;
+    border-top: 1px solid #efefef;
+    box-sizing: border-box;
+}
+.border-none{
+    border-top: none;
+}
+.input-icon{
+    height:50rpx;
+    width:50rpx;
+    margin-left: 20rpx;
+}
+.input{
+    flex:1;
+    height:100%;
+    margin-left: 20rpx;
+    font-size: 25rpx;
+}
+.placeholder-class{
+    color: #a8a8a8;
+}
+.login-btn{
+    margin-top: 10vh;
+    width:80%;
+    letter-spacing: 20rpx;
+}
+.reset-input{
+    font-size: 25rpx;
+    text-align: center;
+    margin-top: 30rpx;
+    color: #589ad8;
+}

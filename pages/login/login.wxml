@@ -1,0 +1,33 @@
+<!--登录页面-->
+<view class="container">
+    <!--首页logo-->
+    <image src="./../../assets/images/icon/house.png" class="logo"></image>
+    <form bindsubmit="login" >
+        <!--输入框-->
+        <view class="input-wrapper">
+            <image src="./../../assets/images/icon/login_user.png" class="input-icon"></image>
+            <input type="text"
+                   class="input"
+                   name="username"
+                   placeholder="用户名"
+                   value="{{username}}"
+                   placeholder-class="placeholder-class"
+            />
+        </view>
+        <view class="input-wrapper border-none">
+            <image src="./../../assets/images/icon/login_password.png" class="input-icon "></image>
+            <input type="text"
+                   password="{{true}}"
+                   class="input"
+                   name="password"
+                   placeholder="密码"
+                   value="{{password}}"
+                   placeholder-class="placeholder-class"
+            />
+        </view>
+        <button type="primary" class="login-btn" form-type="submit">登录</button>
+        <view class="reset-input">
+            <text bindtap="clearInput">清空输入</text>
+        </view>
+    </form>
+</view>
