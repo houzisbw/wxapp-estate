@@ -1,0 +1,59 @@
+<!--首页看房列表-->
+<view class="container-wrapper">
+    <!--顶部人员信息-->
+    <view class="staff-info">
+        <!--头像-->
+        <view class="staff-image-wrapper">
+            <image src="/assets/images/icon/avatar.png" mode="aspectFill" class="staff-image"/>
+        </view>
+        <!--个人信息-->
+        <view class="staff-info-wrapper">
+            <view class="staff-realname">孙博伟</view>
+            <view class="staff-text-wrapper">
+                <view class="staff-allocation-time">派单时间: 2018-7-16</view>
+                <view class="staff-detail">
+                    <text class="staff-estate-number no-padding-left delimeter" >总单数10</text>
+                    <text class="staff-estate-number delimeter">已看8</text>
+                    <text class="staff-estate-number no-border-right">未看2</text>
+                </view>
+            </view>
+        </view>
+    </view>
+    <!--选项卡-->
+    <view class="weui-tab tab-margin-top">
+        <view class="weui-navbar pos-static">
+            <block wx:for="{{tabs}}" wx:key="*this">
+                <view id="{{index}}" class="weui-navbar__item {{activeIndex == index ? 'weui-bar__item_on' : ''}}" bindtap="tabClick">
+                    <view class="weui-navbar__title">{{item}}</view>
+                </view>
+            </block>
+            <view class="weui-navbar__slider my-navbar-slider-width" style="left: {{sliderLeft}}px; transform: translateX({{sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px);"></view>
+        </view>
+    </view>
+    <!--tab的内容区域-->
+    <scroll-view style="height:{{scrollViewHeight}}px" scroll-y class="data-scroll-view">
+        <view>sdfdsfdsf</view>
+        <view>sdfdsfdsf</view>
+        <view>sdfdsfdsf</view>
+        <view>sdfdsfdsf</view>
+        <view>sdfdsfdsf</view>
+        <view>sdfdsfdsf</view>
+        <view>sdfdsfdsf</view>
+        <view>sdfdsfdsf</view>
+        <view>sdfdsfdsf</view>
+        <view>sdfdsfdsf</view>
+        <view>sdfdsfdsf</view>
+        <view>sdfdsfdsf</view>
+        <view>sdfdsfdsf</view>
+        <view>sdfdsfdsf</view>
+        <view>sdfdsfdsf</view>
+        <view>sdfdsfdsf</view>
+        <view>sdfdsfdsf</view>
+        <view>sdfdsfdsf</view>
+        <view>sdfdsfdsf</view>
+        <view>sdfdsfdsf</view>
+    </scroll-view>
+
+
+</view>
+

@@ -1,0 +1,94 @@
+/* pages/index/index.wxss */
+page{
+    height:100%;
+}
+.container-wrapper{
+    /*display: flex;*/
+    /*flex-direction: column;*/
+    /*height:100%;*/
+}
+.staff-info{
+    height:200rpx;
+    /*background-color: #1aad19;*/
+    display: flex;
+    flex-direction: row;
+}
+.staff-image-wrapper{
+    height:100%;
+    width:200rpx;
+    /*background-color: red;*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.staff-image{
+    width:80%;
+    height:80%;
+
+}
+/*该view内2行文字位于顶部和底部*/
+.staff-info-wrapper{
+    flex-grow:1;
+    /*自己垂直居中*/
+    align-self: center;
+    height:80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-left:40rpx;
+}
+.staff-realname{
+    font-size: 50rpx;
+    color: #292929;
+    position: relative;
+    top:-10rpx;
+}
+.staff-allocation-time{
+    font-size: 27rpx;
+    color: #6e6e6e;
+    line-height: 1;
+}
+.staff-estate-number{
+    font-size: 27rpx;
+    color: #6e6e6e;
+    padding: 0 30rpx;
+}
+
+.delimeter::after{
+    content:'|';
+    position: relative;
+    left:30rpx;
+    top:-1rpx;
+}
+.staff-text-wrapper{
+
+}
+.no-padding-left{
+    padding-left:0;
+}
+.no-border-right{
+    border-right:0;
+}
+.staff-detail{
+    line-height: 1;
+}
+
+.my-navbar-slider-width{
+    width: 33.333333%!important;
+}
+.tab-margin-top{
+    margin-top: 20rpx;
+    height:100rpx;
+    box-shadow: 0 3px 2px 0 rgba(0,0,0,0.1);
+
+}
+.pos-static{
+    position: static;
+    height:100%;
+}
+.data-scroll-view{
+    /*必须设置border-box否则横向会出现滚动条,因为padding的原因*/
+    box-sizing: border-box;
+    padding:0 20rpx;
+}
+

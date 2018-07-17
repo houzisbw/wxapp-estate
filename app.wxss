@@ -1,4 +1,5 @@
 /**app.wxss**/
+@import 'assets/weui.wxss';
 ::-webkit-scrollbar{
   height: 0;
   width: 0;
