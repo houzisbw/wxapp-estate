@@ -32,26 +32,45 @@
     </view>
     <!--tab的内容区域-->
     <scroll-view style="height:{{scrollViewHeight}}px" scroll-y class="data-scroll-view">
-        <view>sdfdsfdsf</view>
-        <view>sdfdsfdsf</view>
-        <view>sdfdsfdsf</view>
-        <view>sdfdsfdsf</view>
-        <view>sdfdsfdsf</view>
-        <view>sdfdsfdsf</view>
-        <view>sdfdsfdsf</view>
-        <view>sdfdsfdsf</view>
-        <view>sdfdsfdsf</view>
-        <view>sdfdsfdsf</view>
-        <view>sdfdsfdsf</view>
-        <view>sdfdsfdsf</view>
-        <view>sdfdsfdsf</view>
-        <view>sdfdsfdsf</view>
-        <view>sdfdsfdsf</view>
-        <view>sdfdsfdsf</view>
-        <view>sdfdsfdsf</view>
-        <view>sdfdsfdsf</view>
-        <view>sdfdsfdsf</view>
-        <view>sdfdsfdsf</view>
+        <!--是否加载中-->
+        <block wx:if="{{isScrollViewLoading}}">
+            <view class="empty-result">
+                <image src="/assets/images/icon/loading.png" class="loading-img" mode="aspectFill"/>
+            </view>
+        </block>
+        <block wx:else>
+            <!--信息列表-->
+            <block wx:if="{{!isEstateListEmpty}}">
+                <block wx:for="{{estateListData}}" wx:key="*this">
+                    <view class="estate-info-wrapper {{(index===estateListData.length-1)?'no-border-bottom':''}}">
+                        <!--左侧图片-->
+                        <view class="estate-info-map">
+                            <image src="{{item.isVisit?'/assets/images/bg/done.png':'/assets/images/bg/not_done.png'}}" class="estate-info-image" mode="scaleToFill" />
+                        </view>
+                        <!--右侧信息展示区域-->
+                        <view class="estate-info-detail">
+                            <view class="estate-info-line">
+                                <span class="estate-badge {{item.isVisit?'':'unvisit'}}">派单序号</span><span class="estate-index {{item.isVisit?'':'unvisit-color'}}">{{item.estateIndex}}</span>
+                            </view>
+                            <view class="estate-info-line border-bottom">
+                                <span class="estate-badge {{item.isVisit?'':'unvisit'}}">房屋地址</span><span class="estate-index {{item.isVisit?'':'unvisit-color'}}">{{item.estatePosition}}</span>
+                            </view>
+                            <view class="sep-line"></view>
+                            <view class="estate-info-line flex-bottom">
+                                <span class="estate-badge {{item.isVisit?'':'unvisit'}}">是否看房</span><span class="estate-index {{item.isVisit?'':'unvisit-color'}}">{{item.isVisit?'已看':'未看'}}</span>
+                            </view>
+                        </view>
+                    </view>
+                </block>
+            </block>
+            <block wx:else>
+                <!--无结果空白提示-->
+                <view class="empty-result">
+                    <image src="/assets/images/bg/empty.png" class="empty-img" mode="aspectFill"/>
+                </view>
+            </block>
+        </block>
+
     </scroll-view>
 
 

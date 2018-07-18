@@ -74,7 +74,7 @@ Page({
     if(!password||!username){
     	wx.showToast({
 				title:'用户名或密码为空!',
-				icon:'none',
+				image:'/assets/images/icon/toast_warning.png',
 				mask:true
 			});
 			return
@@ -90,20 +90,21 @@ Page({
 			if(res.data.status === -1){
 				wx.showToast({
 					title:'网络错误!',
-					icon:'none',
+					image:'/assets/images/icon/toast_warning.png',
 					mask:true
 				});
 			}else if(res.data.status === 0){
 				wx.showToast({
 					title:'用户名或密码错误!',
-					icon:'none',
+					image:'/assets/images/icon/toast_warning.png',
 					mask:true
 				});
 			}else{
-
 				//保存header中的cookie字段到缓存
 				wx.setStorageSync('user-cookie',res.header['set-cookie']);
-				console.log(res.header['set-cookie'])
+				//保存用户名
+				wx.setStorageSync('username',res.data.username);
+
 				//登录成功,保存sessionid和expires到缓存
 				wx.showToast({
 					title:'登录成功!',
@@ -124,7 +125,7 @@ Page({
 			//登录失败
 			wx.showToast({
 				title:'网络错误!!',
-				icon:'none',
+				image:'/assets/images/icon/toast_warning.png',
 				mask:true
 			});
 		})

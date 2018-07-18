@@ -47,6 +47,8 @@ page{
     font-size: 27rpx;
     color: #6e6e6e;
     line-height: 1;
+    position: relative;
+    top:-5rpx;
 }
 .staff-estate-number{
     font-size: 27rpx;
@@ -89,6 +91,101 @@ page{
 .data-scroll-view{
     /*必须设置border-box否则横向会出现滚动条,因为padding的原因*/
     box-sizing: border-box;
-    padding:0 20rpx;
+    padding:0 40rpx;
+}
+/*看房信息列表*/
+.estate-info-wrapper{
+    border-bottom: 0.5rpx solid #e3e3e3;
+    display: flex;
+    flex-direction: row;
+    padding:40rpx 0;
+    height:130rpx;
+}
+.estate-info-map{
+    width:130rpx;
+    height:100%;
+}
+.estate-info-image{
+    height:100%;
+    width:100%;
+}
+.estate-info-detail{
+    width:0;
+    flex-grow:1;
+    height:100%;
+    padding-left:20rpx;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-sizing: border-box;
+}
+.estate-info-line{
+    /*奇怪为啥是10rpx就能对齐*/
+    margin-bottom: 10rpx;
+    display: flex;
+    flex-direction: row;
+    line-height: 1;
+}
+.estate-badge{
+    font-size: 20rpx;
+    height:30rpx;
+    /*让外层view的宽度等于文字的高度,否则view比文字高度高一些*/
+    /*line-height不写1，否则对不齐*/
+    line-height: 30rpx;
+    text-align: center;
+    background-color: #1aad19;
+    padding:0 5rpx;
+    color:#fff;
+    display: inline-block;
+    border-radius: 4rpx;
+}
+.estate-index{
+    flex:1;
+    line-height: 30rpx;
+    display: inline-block;
+    margin-left: 20rpx;
+    font-size: 23rpx;
+    height:30rpx;
+    color:#999999;
+    padding:0 5rpx;
+    /*省略号*/
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.flex-bottom{
+    position: absolute;
+    bottom:0;
+    left:20rpx;
+    margin-bottom: 0;
+}
+.sep-line{
+    height:0.5rpx;
+    background-color: #f7f7f7;
+    margin-top: 6rpx;
+}
+.unvisit{
+    background-color: #ff9e1e;
+}
+.unvisit-color{
+    color:#ff9e1e;
+}
+.no-border-bottom{
+    border-bottom: none;
+}
+.empty-result{
+    height:100%;
+    width:100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.empty-img{
+    width:372rpx;
+    height:256rpx;
+}
+.loading-img{
+    width:64rpx;
+    height:64rpx;
 }
 

@@ -3,8 +3,6 @@ const login = (username,password,successHandler,failHanlder)=>{
 		//手机端测试改为require('./url').mobileTestLoginUrl
 		var loginUrl = require('./url').loginUrl;
 
-
-
 		var data = {
 			username:username,
 			password:password
@@ -33,6 +31,10 @@ const checkLogin = (successHandler,failHanlder)=>{
 		fail:failHanlder
 	})
 }
+
+
+//通用请求接口，里面设置了cookie
+
 
 
 
