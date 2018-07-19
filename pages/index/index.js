@@ -6,6 +6,8 @@ var checkLogin = require('./../../api/login').checkLogin;
 var getEstateDataList = require('./../../api/index').getEstateDataList;
 //拉去首页其他信息的url
 var getOtherInfo = require('./../../api/index').getOtherInfo;
+//工具函数
+var formatQueryString = require('./../../utils/util').formatQueryString;
 Page({
 
   /**
@@ -24,18 +26,30 @@ Page({
 		//返回的数据房屋数据是否为空
 		isEstateListEmpty:false,
 		//scroll-view内容是否在加载
-		isScrollViewLoading:false
+		isScrollViewLoading:false,
+		//首页个人信息
+		realname:'',
+		latestDate:'',
+		totalNum:0,
+		visitedNum:0,
+		unvisitedNum:0
   },
   //选项卡点击
 	tabClick: function (e) {
+  	//如果正在加载数据时返回，防止出错
+		if(this.data.isScrollViewLoading){
+			return
+		}
   	var id = e.currentTarget.id
 		this.setData({
 			sliderOffset: e.currentTarget.offsetLeft,
-			activeIndex: id
+			activeIndex: parseInt(id,10)
 		});
 		//根据id来加载数据，0是全部，1是已看，2是未看，每次都要从服务器拉数据
 		let username = wx.getStorageSync('username');
 		this.fetchEstateDataList(id,username);
+		//更新数据
+		this.getIndexPageOtherInfo(username);
 
 	},
 	//根据id来加载数据，0是全部，1是已看，2是未看，每次都要从服务器拉数据
@@ -56,12 +70,10 @@ Page({
 					image:'/assets/images/icon/toast_warning.png',
 					duration: 2000
 				})
-				//重新登录逻辑
-
-
-
-
-
+				//重新登录逻辑,跳转到登录页面,redirectTo不保留当前页面,关闭该页面
+				wx.redirectTo({
+					url:'/pages/login/login'
+				})
 			}else if(status === -1){
 				wx.showToast({
 					title: '数据获取失败!',
@@ -100,10 +112,31 @@ Page({
 	},
 	//获取首页其他信息
 	getIndexPageOtherInfo(username){
-		this.getOtherInfo(username,function(res){
-
+		var self = this;
+		getOtherInfo(username,function(res){
+			let status = res.data.status;
+			if(status === 1){
+				var data = res.data;
+				self.setData({
+					realname:data.realname,
+					latestDate:data.latestDate,
+					totalNum:data.staffEstateTotalNum,
+					visitedNum:data.staffEstateVisitedNum,
+					unvisitedNum:data.staffEstateUnvisitedNum
+				})
+			}else if(status===-1){
+				wx.showToast({
+					title: '数据读取错误!',
+					image:'/assets/images/icon/toast_warning.png',
+					duration: 2000
+				})
+			}
 		},function(){
-
+			wx.showToast({
+				title: '数据读取错误!',
+				image:'/assets/images/icon/toast_warning.png',
+				duration: 2000
+			})
 		})
 	},
   //计算页面剩下的高度，用于scroll-view
@@ -120,18 +153,38 @@ Page({
 			}
 		})
 	},
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad: function (options) {
-    //计算页面剩下的高度
-    this.caculateLeftHeightForScrollView();
+	//初始化首页数据
+	initData(){
+		//计算页面剩下的高度
+		this.caculateLeftHeightForScrollView();
 		//获取用户登录名
 		let username = wx.getStorageSync('username');
 		//发送请求获取全部房屋列表数据
 		this.fetchEstateDataList(0,username);
 		//获取首页其他信息
 		this.getIndexPageOtherInfo(username);
+	},
+	//跳转详情页
+	switchToDetailPage(e){
+		//获取详情页id,currentTarget指的是绑定事件的元素而不是触发事件的元素
+		var estateIndex = e.currentTarget.dataset.id;
+		var latestDate = this.data.latestDate;
+		var estatePosition = e.currentTarget.dataset.pos;
+		var queryObj = {
+			estateindex:estateIndex,
+			latestdate:latestDate,
+			estateposition:estatePosition
+		};
+		var queryString = formatQueryString(queryObj);
+		wx.navigateTo({
+			url:'/pages/detail/detail?'+queryString
+		})
+	},
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad: function (options) {
+   	//this.initData();
   },
 
   /**
@@ -145,7 +198,8 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-  
+  	//本页面重新打开是也要初始化数据
+		this.initData();
   },
 
   /**

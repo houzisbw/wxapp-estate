@@ -54,6 +54,7 @@ page{
     font-size: 27rpx;
     color: #6e6e6e;
     padding: 0 30rpx;
+    transition: font-size 0.3s ease;
 }
 
 .delimeter::after{
@@ -61,6 +62,8 @@ page{
     position: relative;
     left:30rpx;
     top:-1rpx;
+    color:#6e6e6e!important;
+    font-size: 27rpx!important;
 }
 .staff-text-wrapper{
 
@@ -187,5 +190,13 @@ page{
 .loading-img{
     width:64rpx;
     height:64rpx;
+}
+.highlight-color{
+    color:#1aad19;
+    font-size: 29rpx;
+}
+/*按下去的样式*/
+.estate-list-hover{
+    background-color: #eeeeee;
 }
 

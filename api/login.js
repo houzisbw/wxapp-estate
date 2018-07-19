@@ -1,5 +1,5 @@
 //用户登录，注意没有使用微信登录，只是和自己的服务器交互，因为只需要特定的人员登录
-const login = (username,password,successHandler,failHanlder)=>{
+const login = (username,password,successHandler,failHanlder,completeHandler)=>{
 		//手机端测试改为require('./url').mobileTestLoginUrl
 		var loginUrl = require('./url').loginUrl;
 
@@ -12,7 +12,8 @@ const login = (username,password,successHandler,failHanlder)=>{
 			data:data,
 			method:'POST',
 			success:successHandler,
-			fail:failHanlder
+			fail:failHanlder,
+			complete:completeHandler
 		})
 };
 

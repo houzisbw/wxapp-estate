@@ -3,7 +3,8 @@
     "pages/login/login",
     "pages/index/index",
     "pages/mine/mine",
-    "pages/map/map"
+    "pages/map/map",
+    "pages/detail/detail"
   ],
   "window": {
     "backgroundTextStyle": "light",

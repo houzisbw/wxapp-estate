@@ -8,13 +8,13 @@
         </view>
         <!--个人信息-->
         <view class="staff-info-wrapper">
-            <view class="staff-realname">孙博伟</view>
+            <view class="staff-realname">{{realname}}</view>
             <view class="staff-text-wrapper">
-                <view class="staff-allocation-time">派单时间: 2018-7-16</view>
+                <view class="staff-allocation-time">派单时间: {{latestDate}}</view>
                 <view class="staff-detail">
-                    <text class="staff-estate-number no-padding-left delimeter" >总单数10</text>
-                    <text class="staff-estate-number delimeter">已看8</text>
-                    <text class="staff-estate-number no-border-right">未看2</text>
+                    <text class="staff-estate-number no-padding-left delimeter {{activeIndex===0?'highlight-color':''}}" >总单数{{totalNum}}</text>
+                    <text class="staff-estate-number delimeter {{activeIndex===1?'highlight-color':''}}">已看{{visitedNum}}</text>
+                    <text class="staff-estate-number no-border-right {{activeIndex===2?'highlight-color':''}}">未看{{unvisitedNum}}</text>
                 </view>
             </view>
         </view>
@@ -41,10 +41,14 @@
         <block wx:else>
             <!--信息列表-->
             <block wx:if="{{!isEstateListEmpty}}">
-                <block wx:for="{{estateListData}}" wx:key="*this">
-                    <view class="estate-info-wrapper {{(index===estateListData.length-1)?'no-border-bottom':''}}">
+                <block wx:for="{{estateListData}}" wx:key="{{index}}">
+                    <view data-id="{{item.estateIndex}}"
+                          data-pos="{{item.estateRoadNumber}}"
+                          class="estate-info-wrapper {{(index===estateListData.length-1)?'no-border-bottom':''}}"
+                          bindtap="switchToDetailPage"
+                    >
                         <!--左侧图片-->
-                        <view class="estate-info-map">
+                        <view class="estate-info-map" >
                             <image src="{{item.isVisit?'/assets/images/bg/done.png':'/assets/images/bg/not_done.png'}}" class="estate-info-image" mode="scaleToFill" />
                         </view>
                         <!--右侧信息展示区域-->

@@ -1,0 +1,21 @@
+<!--详情页-->
+<view class="detail-page-wrapper">
+    <!--地图-->
+    <view class="map-wrapper">
+        <map id="map"
+             longitude="{{longitude}}"
+             latitude="{{latitude}}"
+             scale="16"
+             markers="{{markers}}"
+             class="map"
+        >
+            <cover-view class="reset-position" bindtap="resetPosition">
+                <cover-image class="reset-btn" src="/assets/images/icon/reset-position.png">
+                </cover-image>
+            </cover-view>
+        </map>
+    </view>
+    <!--操作界面-->
+    <view class="info-area">
+    </view>
+</view>

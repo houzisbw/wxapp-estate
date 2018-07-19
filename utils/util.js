@@ -14,6 +14,16 @@ const formatNumber = n => {
   return n[1] ? n : '0' + n
 }
 
+//格式化参数字符串
+const formatQueryString = (obj)=>{
+  var result = [];
+  Object.keys(obj).forEach((item)=>{
+    result.push(item+'='+obj[item])
+  });
+  return result.join('&');
+}
+
 module.exports = {
-  formatTime: formatTime
+  formatTime: formatTime,
+	formatQueryString
 }

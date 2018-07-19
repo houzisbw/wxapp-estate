@@ -10,8 +10,6 @@ var productionHost  = '';
 var mobileTestHost = 'http://192.168.0.102:5000';
 //各种接口的url地址
 var url = {
-	//手机端调试接口
-	mobileTestLoginUrl:mobileTestHost+'/wxApp/wxLogin',
 	//测试服务器接口,生产环境需要修改前半部分，换成https
 	loginUrl:localHost+'/wxApp/wxLogin',
 	//验证是否登录的接口
@@ -22,5 +20,17 @@ var url = {
 	//获取首页其他信息的url
 	otherInfoUrl:localHost+'/wxApp/getOtherInfo'
 
+};
+//移动端测试的url
+var mobileTestUrl = {
+	//测试服务器接口,生产环境需要修改前半部分，换成https
+	loginUrl:mobileTestHost+'/wxApp/wxLogin',
+	//验证是否登录的接口
+	checkLoginUrl:mobileTestHost+'/wxApp/checkLogin',
+	/** 首页 **/
+	//获取首页看房列表
+	getEstateListUrl:mobileTestHost+'/wxApp/getEstateList',
+	//获取首页其他信息的url
+	otherInfoUrl:mobileTestHost+'/wxApp/getOtherInfo'
 };
 module.exports = url;

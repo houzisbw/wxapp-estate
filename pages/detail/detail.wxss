@@ -1,0 +1,40 @@
+/* pages/detail/detail.wxss */
+page{
+    height:100%;
+    width:100%;
+}
+.detail-page-wrapper{
+    height:100%;
+    width:100%;
+    display: flex;
+    flex-direction: column;
+}
+.map-wrapper{
+    height:35%;
+    width:100%;
+    box-shadow: 0 3px 2px 0 rgba(0,0,0,0.1);
+}
+.info-area{
+    flex:1;
+}
+.map{
+    width:100%;
+    height:100%;
+    position: relative;
+}
+.reset-position{
+    position: absolute;
+    bottom:40rpx;
+    right:15rpx;
+    width:60rpx;
+    height:60rpx;
+    background-color: rgba(255,255,255,0.85);
+    border-radius: 15rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.reset-btn{
+    height:70%;
+    width:70%;
+}
