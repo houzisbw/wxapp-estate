@@ -18,7 +18,9 @@ var url = {
 	//获取首页看房列表
 	getEstateListUrl:localHost+'/wxApp/getEstateList',
 	//获取首页其他信息的url
-	otherInfoUrl:localHost+'/wxApp/getOtherInfo'
+	otherInfoUrl:localHost+'/wxApp/getOtherInfo',
+	/** 详情页 **/
+	getDetailInfoOfEstateUrl:localHost+'/wxApp/getDetailInfoOfEstate'
 
 };
 //移动端测试的url
@@ -31,6 +33,8 @@ var mobileTestUrl = {
 	//获取首页看房列表
 	getEstateListUrl:mobileTestHost+'/wxApp/getEstateList',
 	//获取首页其他信息的url
-	otherInfoUrl:mobileTestHost+'/wxApp/getOtherInfo'
+	otherInfoUrl:mobileTestHost+'/wxApp/getOtherInfo',
+	/** 详情页 **/
+	getDetailInfoOfEstateUrl:mobileTestHost+'/wxApp/getDetailInfoOfEstate'
 };
 module.exports = url;

@@ -1,6 +1,7 @@
 // pages/detail/detail.js
 var QQMapWX = require('../../lib/qqmap-wx-jssdk.min.js');
 var qqMapSDK;
+var getDetailInfoOfEstate = require('../../api/detail').getDetailInfoOfEstate;
 Page({
 
   /**
@@ -25,7 +26,11 @@ Page({
 			padding:3,
 			display:'ALWAYS',
       textAling:'center'
-    }
+    },
+		latestDate:'',
+		estateIndex:'',
+		//房屋详细信息
+		estateDetailObj:{}
   },
 
   //初始化地图位置
@@ -34,7 +39,6 @@ Page({
 		qqMapSDK.geocoder({
 			address: '成都市'+pos,
 			success: function(res) {
-				console.log(res)
 			  //调用成功
 				if(res.status===0){
 				  if(res.result.reliability>=7){
@@ -61,7 +65,7 @@ Page({
 						wx.showToast({
 							title: '地址解析精度较低!',
 							image:'/assets/images/icon/toast_warning.png',
-							duration: 2000
+							duration: 1000
 						})
           }
 
@@ -99,6 +103,53 @@ Page({
 			longitude:this.data.originLng
     })
   },
+	//查看详情
+	showAddressInfo(e){
+		wx.showModal({
+			title: '房屋详细地址',
+			confirmColor:'#39ac6a',
+			content: e.currentTarget.dataset.addr,
+			success: function(res) {}
+		})
+	},
+	//根据房屋index获取房屋详细的信息
+	thisGetDetailInfoOfEstate(estateIndex,latestDate){
+		var self = this;
+		//引入的api
+		getDetailInfoOfEstate(estateIndex,latestDate,function(res){
+			var status = res.data.status;
+			if(status === -2){
+				//重新登录逻辑,跳转到登录页面,redirectTo不保留当前页面,关闭该页面
+				wx.redirectTo({
+					url:'/pages/login/login'
+				})
+			}else if(status === -1){
+				wx.showToast({
+					title: '查询错误!',
+					image:'/assets/images/icon/toast_warning.png',
+					duration: 2000
+				})
+			}else if(status === 0){
+				//数据为空,返回上一页
+				wx.navigateBack({
+					delta:1
+				})
+			}else{
+				//查询成功
+				self.setData({
+					estateDetailObj:res.data.estateDetail
+				})
+			}
+
+		},function(err){
+			//错误
+			wx.showToast({
+				title: '查询错误!',
+				image:'/assets/images/icon/toast_warning.png',
+				duration: 2000
+			})
+		})
+	},
   /**
    * 生命周期函数--监听页面加载
    */
@@ -111,11 +162,13 @@ Page({
 		var estateIndex = options.estateindex,
 				latestDate = options.latestdate,
 				position = options.estateposition;
-		//根据上述参数去后台获取该房屋的地址
-		this.initMapPosition(position)
+		//获取房屋在地图上的位置
+		this.initMapPosition(position);
 		this.setData({
       callout:Object.assign(this.data.callout,{content:position})
-    })
+    });
+		//拉去房屋详细数据
+		this.thisGetDetailInfoOfEstate(estateIndex,latestDate)
 	},
 
 
