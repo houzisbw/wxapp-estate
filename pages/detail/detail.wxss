@@ -4,6 +4,7 @@ page{
     width:100%;
     background-color: #f7f7f7;
     position: relative;
+    overflow: hidden!important;
 }
 .detail-page-wrapper{
     height:100%;
@@ -11,6 +12,7 @@ page{
     display: flex;
     flex-direction: column;
     position: relative;
+    overflow: hidden!important;
 }
 .map-wrapper{
     height:50%;
@@ -118,12 +120,12 @@ page{
 }
 .detail-estate-item-title{
     width:130rpx;
-    font-size: 23rpx;
+    font-size: 25rpx;
     color: #989898;
 }
 .detail-estate-item-desc{
     width:490rpx;
-    font-size: 23rpx;
+    font-size: 25rpx;
     color:#000;
     overflow:hidden;
     text-overflow: ellipsis;
@@ -132,7 +134,7 @@ page{
 .check-detail-address{
     position: absolute;
     right:0;
-    font-size: 23rpx;
+    font-size: 25rpx;
     color:#39ac6a;
 }
 .feedback-btn{
@@ -149,4 +151,190 @@ page{
 }
 .no-visit-color{
     background-color: #ff4e3f;
+}
+
+/*自定义遮罩*/
+.modal-overlay{
+    position: fixed;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background-color: #000;
+    opacity: 0.2;
+    overflow: hidden;
+    z-index:1000;
+}
+/*反馈页面wrapper*/
+.feedback-wrapper{
+    width:100%;
+    position: absolute;
+    bottom:-50%;
+    left:0;
+    height:50%;
+    background-color: #fff;
+    /*高于遮罩层*/
+    z-index:2000;
+    overflow: hidden;
+}
+.feedback-topbar{
+    border-bottom: 0.5rpx solid #e3e3e3;
+    height: 70rpx;
+    line-height: 70rpx;
+    width:100%;
+    position: relative;
+}
+.close-btn{
+    width:30rpx;
+    height:30rpx;
+    right: 20rpx;
+    position: absolute;
+    top:50%;
+    transform: translateY(-100%);
+}
+.close-img{
+    width:100%;
+    height:100%;
+}
+.feedback-title{
+   padding-left: 20rpx;
+   display: inline-block;
+   font-size: 28rpx;
+   font-weight: bold;
+   color: #2e2e2e;
+}
+.feedback-btn-wrapper{
+    margin: 30rpx 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.feedback-btn-desc{
+    font-size: 28rpx;
+    margin-right: 30rpx;
+    display: block;
+    height:58rpx;
+    line-height: 58rpx;
+    padding:0 20rpx;
+    background-color: #39ac6a;
+    color:#fff;
+    border-radius: 58rpx;
+}
+.feedback-btn-desc-no-visit{
+    background-color:#ff4e3f!important;
+}
+.feedback-radio-wrapper{
+    background-color: #f8f8f8;
+    height:100%;
+    padding:0 20rpx;
+}
+.feedback-radio-title{
+    font-size: 25rpx;
+    color: #151515;
+    text-align: center;
+    padding: 20rpx 0;
+    font-weight: bold;
+}
+.feedback-radio-inner{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.feedback-radio-btn{
+    width:48%;
+    height:60rpx;
+    font-size: 20rpx;
+    margin-bottom: 24rpx;
+    line-height: 60rpx;
+    color: #515151;
+    background-color: #fff;
+    box-shadow: #cdcdcd 0 0 10rpx;
+    padding-left:20rpx;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    border-radius: 5rpx;
+}
+.active-radio-btn{
+    background-color: #39ac6a;
+    color:#fff;
+}
+.textarea-btn{
+    width:100%;
+    height:60rpx;
+    background-color: #fff;
+    text-align: center;
+    color: #595959;
+    line-height: 60rpx;
+    margin: 5rpx auto 10rpx auto;
+    border-radius: 5rpx;
+    border:1px solid #d8d8d8;
+    font-size: 25rpx;
+    font-weight: bold;
+}
+.feedback-submit{
+    position: absolute;
+    bottom:0;
+    left:0;
+    width:100%;
+    height:80rpx;
+    background-color: #39ac6a;
+    line-height: 80rpx;
+    font-size: 30rpx;
+    color:#fff;
+    text-align: center;
+    font-weight: bold;
+}
+/*输入页面*/
+.feedback-detail-input{
+    width:100%;
+    height:100%;
+}
+.feedback-input-active{
+    display: block;
+}
+.feedback-input-inactive{
+    display: none;
+}
+.feedback-detail-input-title{
+    height:70rpx;
+    width:100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding:0 20rpx;
+    box-sizing: border-box;
+}
+.feedback-other-reason{
+    height:100%;
+    line-height: 70rpx;
+    font-size: 26rpx;
+    font-weight: bold;
+    color: #232323;
+}
+.feedback-input-return{
+    color:#39ac6a;
+    font-size: 23rpx;
+    font-weight: bold;
+}
+.feedback-sep-line{
+    height:30rpx;
+    background-color: #f7f7f7;
+    width:100%;
+}
+.feedback-input{
+    padding:20rpx;
+    box-sizing: border-box;
+    font-size: 20rpx;
+}
+/*输入框样式 */
+.feedback-input-component{
+    width:100%;
+}
+.forbid-selection{
+    background-color: #ececec;
+    color: #c9c9c9;
 }

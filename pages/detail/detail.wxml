@@ -5,7 +5,7 @@
         <map id="map"
              longitude="{{longitude}}"
              latitude="{{latitude}}"
-             scale="16"
+             scale="{{scale}}"
              markers="{{markers}}"
              class="map"
         >
@@ -78,6 +78,12 @@
                 <view class="detail-estate-item-desc">
                     {{estateDetailObj.telephone!==undefined?(estateDetailObj.telephone):'无'}}
                 </view>
+                <view class="check-detail-address"
+                      data-telephone="{{estateDetailObj.telephone}}"
+                      bindtap="dialPhone"
+                >
+                    拨打电话
+                </view>
             </view>
             <view class="detail-estate-item-wrapper">
                 <view class="detail-estate-item-title">
@@ -95,8 +101,65 @@
             </view>
         </view>
     </view>
+    <!--反馈按钮-->
+    <view class="feedback-btn" bindtap="showFeedbackLayer">
+        看房反馈
+    </view>
+    <view class="feedback-wrapper" animation="{{feedbackPanelAnimationData}}">
+        <!--和输入页面对应-->
+        <view class="feedback-none-input {{!isInInputMode?'feedback-input-active':'feedback-input-inactive'}}">
+            <view class="feedback-topbar">
+                <!--标题-->
+                <view class="feedback-title">
+                    看房反馈
+                </view>
+                <!--关闭按钮-->
+                <view class="close-btn" bindtap="closeFeedbackLayer">
+                    <image src="/assets/images/icon/close_feedback.png" mode="scaleToFill" class="close-img"></image>
+                </view>
+            </view>
+            <!--选择界面-->
+            <view class="feedback-btn-wrapper">
+                <span class="feedback-btn-desc {{feedbackSwitch?'':'feedback-btn-desc-no-visit'}}">
+                    {{feedbackSwitch?'已看':'未看'}}
+                </span>
+                <switch checked="{{feedbackSwitch}}" bindchange="switchChange"/>
+            </view>
+            <!--单选框-->
+            <view class="feedback-radio-wrapper">
+                <view class="feedback-radio-title">请选择原因</view>
+                <view class="feedback-radio-inner" bindtap="selectRadioBtn">
+                    <view class="feedback-radio-btn {{feedbackSwitch?'forbid-selection':''}} {{(activeRadioIndex==='1')?'active-radio-btn':''}}" data-index="1" >客户没空约明天看房</view>
+                    <view class="feedback-radio-btn {{feedbackSwitch?'forbid-selection':''}} {{(activeRadioIndex==='2')?'active-radio-btn':''}}" data-index="2">暂时不评估该房屋</view>
+                    <view class="feedback-radio-btn {{feedbackSwitch?'forbid-selection':''}} {{(activeRadioIndex==='3')?'active-radio-btn':''}}" data-index="3">看不到现场</view>
+                    <view class="feedback-radio-btn {{feedbackSwitch?'forbid-selection':''}} {{(activeRadioIndex==='4')?'active-radio-btn':''}}" data-index="4">取消看房</view>
+                </view>
+                <!--输入框页面按钮-->
+                <view class="textarea-btn" bindtap="goToInputPage">
+                    其他原因
+                </view>
+            </view>
+            <!--提交按钮-->
+            <view class="feedback-submit">
+                提交反馈
+            </view>
+        </view>
+        <view class="feedback-detail-input {{isInInputMode?'feedback-input-active':'feedback-input-inactive'}}" >
+            <view class="feedback-detail-input-title">
+                <view class="feedback-other-reason">其他原因</view>
+                <view class="feedback-input-return" bindtap="closeInputPage">完成</view>
+            </view>
+            <view class="feedback-sep-line"></view>
+            <view class="feedback-input">
+                <textarea placeholder="请输入原因，最长30个字符"
+                          maxlength="30"
+                          class="feedback-input-component"
+                />
+            </view>
+        </view>
+    </view>
 </view>
-<!--反馈按钮-->
-<view class="feedback-btn">
-看房反馈
-</view>
+
+
+
+

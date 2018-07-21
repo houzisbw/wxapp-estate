@@ -37,4 +37,4 @@ var mobileTestUrl = {
 	/** 详情页 **/
 	getDetailInfoOfEstateUrl:mobileTestHost+'/wxApp/getDetailInfoOfEstate'
 };
-module.exports = url;
+module.exports = mobileTestUrl;
