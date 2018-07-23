@@ -20,7 +20,8 @@ var url = {
 	//获取首页其他信息的url
 	otherInfoUrl:localHost+'/wxApp/getOtherInfo',
 	/** 详情页 **/
-	getDetailInfoOfEstateUrl:localHost+'/wxApp/getDetailInfoOfEstate'
+	getDetailInfoOfEstateUrl:localHost+'/wxApp/getDetailInfoOfEstate',
+	submitFeedbackUrl:localHost+'/wxApp/submitFeedback'
 
 };
 //移动端测试的url
@@ -35,6 +36,7 @@ var mobileTestUrl = {
 	//获取首页其他信息的url
 	otherInfoUrl:mobileTestHost+'/wxApp/getOtherInfo',
 	/** 详情页 **/
-	getDetailInfoOfEstateUrl:mobileTestHost+'/wxApp/getDetailInfoOfEstate'
+	getDetailInfoOfEstateUrl:mobileTestHost+'/wxApp/getDetailInfoOfEstate',
+	submitFeedbackUrl:mobileTestHost+'/wxApp/submitFeedback'
 };
 module.exports = mobileTestUrl;

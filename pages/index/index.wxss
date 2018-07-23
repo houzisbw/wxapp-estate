@@ -95,14 +95,17 @@ page{
     /*必须设置border-box否则横向会出现滚动条,因为padding的原因*/
     box-sizing: border-box;
     padding:0 40rpx;
+    background-color: #f2f2f2;
 }
 /*看房信息列表*/
 .estate-info-wrapper{
-    border-bottom: 0.5rpx solid #e3e3e3;
     display: flex;
     flex-direction: row;
-    padding:40rpx 0;
-    height:130rpx;
+    padding:20rpx 0 10rpx 0;
+    background-color: #fff;
+    border-radius: 10rpx;
+    margin-top: 20rpx;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
 }
 .estate-info-map{
     width:130rpx;
@@ -113,6 +116,7 @@ page{
     width:100%;
 }
 .estate-info-detail{
+    /*width为0是为了让flex-grow起作用*/
     width:0;
     flex-grow:1;
     height:100%;
@@ -122,6 +126,21 @@ page{
     position: relative;
     box-sizing: border-box;
 }
+.estate-is-visit{
+    position: absolute;
+    right:0;
+    top:-20rpx;
+    font-size: 20rpx;
+    border-radius: 0 10rpx 0 0;
+    padding:10rpx;
+    color:#fff;
+    background-color: #1aad19;
+    line-height: 1;
+}
+.estate-is-unvisit{
+    background-color: #ff9e1e;
+}
+
 .estate-info-line{
     /*奇怪为啥是10rpx就能对齐*/
     margin-bottom: 10rpx;

@@ -1,7 +1,10 @@
 // pages/detail/detail.js
 var QQMapWX = require('../../lib/qqmap-wx-jssdk.min.js');
 var qqMapSDK;
+//util
+var formatTime = require('../../utils/util').formatTime;
 var getDetailInfoOfEstate = require('../../api/detail').getDetailInfoOfEstate;
+var submitFeedbackRequest = require('../../api/detail').submitFeedbackRequest;
 Page({
 
   /**
@@ -49,7 +52,17 @@ Page({
 		//复选框激活选项
 		activeRadioIndex:0,
 		//是否激活输入面板
-		isInInputMode:false
+		isInInputMode:false,
+		//未看房屋的复选框原因
+		reasonForRadioBtn:'',
+		//其他原因(输入框)
+		otherReason:'',
+		//上述2个原因的分隔符
+		delimeter:'*##*',
+		//是否处于提交中
+		isInFeedbacking:false,
+		//textarea默认值
+		defaultTextareaValue:''
   },
 
   //初始化地图位置
@@ -153,6 +166,7 @@ Page({
 		var self = this;
 		//引入的api
 		getDetailInfoOfEstate(estateIndex,latestDate,function(res){
+			wx.hideLoading();
 			var status = res.data.status;
 			if(status === -2){
 				//重新登录逻辑,跳转到登录页面,redirectTo不保留当前页面,关闭该页面
@@ -172,13 +186,18 @@ Page({
 				})
 			}else{
 				//查询成功
+				//获取输入框的值
+				var textareaValue = res.data.estateDetail.feedback;
+				var realValue = textareaValue.split(self.data.delimeter)[1];
 				self.setData({
 					estateDetailObj:res.data.estateDetail,
-					feedbackSwitch:res.data.estateDetail.isVisit
+					feedbackSwitch:res.data.estateDetail.isVisit,
+					defaultTextareaValue:realValue
 				})
 			}
 
 		},function(err){
+			wx.hideLoading();
 			//错误
 			wx.showToast({
 				title: '查询错误!',
@@ -253,7 +272,9 @@ Page({
 			})
 		});
 		this.setData({
-			callout:Object.assign(this.data.callout,{content:position})
+			callout:Object.assign(this.data.callout,{content:position}),
+			estateIndex:estateIndex,
+			latestDate:latestDate
 		});
 		//拉去房屋详细数据
 		this.thisGetDetailInfoOfEstate(estateIndex,latestDate);
@@ -311,7 +332,8 @@ Page({
 		//如果处于已看状态，则禁止选择复选框
 		if(value){
 			this.setData({
-				activeRadioIndex:0
+				activeRadioIndex:0,
+				reasonForRadioBtn:''
 			});
 		}
 	},
@@ -319,7 +341,8 @@ Page({
 	selectRadioBtn(e){
 		if(this.data.feedbackSwitch){
 			this.setData({
-				activeRadioIndex:0
+				activeRadioIndex:0,
+				reasonForRadioBtn:''
 			});
 			return
 		}
@@ -329,11 +352,13 @@ Page({
 			//如果在选中情况下点击了自己,则取消选中该项
 			if(this.data.activeRadioIndex === index){
 				this.setData({
-					activeRadioIndex:0
+					activeRadioIndex:0,
+					reasonForRadioBtn:''
 				})
 			}else{
 				this.setData({
-					activeRadioIndex:index
+					activeRadioIndex:index,
+					reasonForRadioBtn:e.target.dataset.reason
 				})
 			}
 
@@ -350,15 +375,82 @@ Page({
 			isInInputMode:false
 		})
 	},
+	//textarea绑定bindinput获取输入框的值
+	textareaInputChange(e){
+		this.setData({
+			otherReason:e.detail.value
+		})
+	},
+	//提交反馈
+	submitFeedback(){
+		var self = this;
+		if(this.data.isInFeedbacking){
+			return
+		}
+		this.setData({
+			isInFeedbacking:true
+		});
+		//原因中包含了分隔符,网站显示时需要处理
+		var reason = this.data.reasonForRadioBtn.replace(this.data.delimeter,'')
+				+ this.data.delimeter
+				+ this.data.otherReason.replace(this.data.delimeter,'');
+		//发送后台
+		var feedbackTime = formatTime(new Date());
+		submitFeedbackRequest(this.data.feedbackSwitch?'1':'0',reason,feedbackTime,this.data.latestDate,this.data.estateIndex,function(res){
+			//请求成功
+			var status = res.data.status;
+			if(status === 1){
+				wx.showToast({
+					title: '反馈提交成功!',
+					icon:'success',
+					duration: 2000
+				});
+			}else if(status === -2){
+				//重新登录逻辑,跳转到登录页面,redirectTo不保留当前页面,关闭该页面
+				wx.redirectTo({
+					url:'/pages/login/login'
+				})
+			}else {
+				wx.showToast({
+					title: '保存错误!',
+					image:'/assets/images/icon/toast_warning.png',
+					duration: 2000
+				});
+			}
+		},function(err){
+			wx.showToast({
+				title: '网络错误!',
+				image:'/assets/images/icon/toast_warning.png',
+				duration: 2000
+			});
+		},function(){
+			//complete,关闭反馈页面
+			self.setData({
+				isInFeedbacking:false,
+			});
+			self.closeFeedbackLayer();
+			self.thisGetDetailInfoOfEstate(self.data.estateIndex,self.data.latestDate);
+		})
+	},
+
+
+
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+  	//展示加载界面，防止乱点击
+		wx.showLoading({
+			title:'努力加载中',
+			mask:true
+		});
 		//初始化地图sdk
 		qqMapSDK = new QQMapWX({
 			key: '5RQBZ-3YO6I-HAGGQ-5T5BU-5RNHK-NIF3N'
 		});
-		this.pageInit(options)
+		this.pageInit(options);
+
+
 	},
 
   /**

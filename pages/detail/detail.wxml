@@ -129,10 +129,26 @@
             <view class="feedback-radio-wrapper">
                 <view class="feedback-radio-title">请选择原因</view>
                 <view class="feedback-radio-inner" bindtap="selectRadioBtn">
-                    <view class="feedback-radio-btn {{feedbackSwitch?'forbid-selection':''}} {{(activeRadioIndex==='1')?'active-radio-btn':''}}" data-index="1" >客户没空约明天看房</view>
-                    <view class="feedback-radio-btn {{feedbackSwitch?'forbid-selection':''}} {{(activeRadioIndex==='2')?'active-radio-btn':''}}" data-index="2">暂时不评估该房屋</view>
-                    <view class="feedback-radio-btn {{feedbackSwitch?'forbid-selection':''}} {{(activeRadioIndex==='3')?'active-radio-btn':''}}" data-index="3">看不到现场</view>
-                    <view class="feedback-radio-btn {{feedbackSwitch?'forbid-selection':''}} {{(activeRadioIndex==='4')?'active-radio-btn':''}}" data-index="4">取消看房</view>
+                    <view class="feedback-radio-btn {{feedbackSwitch?'forbid-selection':''}} {{(activeRadioIndex==='1')?'active-radio-btn':''}}"
+                          data-reason="客户没空约明天看房"
+                          data-index="1" >
+                        客户没空约明天看房
+                    </view>
+                    <view class="feedback-radio-btn {{feedbackSwitch?'forbid-selection':''}} {{(activeRadioIndex==='2')?'active-radio-btn':''}}"
+                          data-reason="暂时不评估该房屋"
+                          data-index="2">
+                        暂时不评估该房屋
+                    </view>
+                    <view class="feedback-radio-btn {{feedbackSwitch?'forbid-selection':''}} {{(activeRadioIndex==='3')?'active-radio-btn':''}}"
+                          data-reason="看不到现场"
+                          data-index="3">
+                        看不到现场
+                    </view>
+                    <view class="feedback-radio-btn {{feedbackSwitch?'forbid-selection':''}} {{(activeRadioIndex==='4')?'active-radio-btn':''}}"
+                          data-reason="取消看房"
+                          data-index="4">
+                        取消看房
+                    </view>
                 </view>
                 <!--输入框页面按钮-->
                 <view class="textarea-btn" bindtap="goToInputPage">
@@ -140,8 +156,8 @@
                 </view>
             </view>
             <!--提交按钮-->
-            <view class="feedback-submit">
-                提交反馈
+            <view class="feedback-submit" bindtap="submitFeedback">
+                {{isInFeedbacking?'提交中...':'提交反馈'}}
             </view>
         </view>
         <view class="feedback-detail-input {{isInInputMode?'feedback-input-active':'feedback-input-inactive'}}" >
@@ -153,6 +169,8 @@
             <view class="feedback-input">
                 <textarea placeholder="请输入原因，最长30个字符"
                           maxlength="30"
+                          value="{{defaultTextareaValue}}"
+                          bindinput="textareaInputChange"
                           class="feedback-input-component"
                 />
             </view>

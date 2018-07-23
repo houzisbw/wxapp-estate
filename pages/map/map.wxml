@@ -1,2 +1,18 @@
 <!--pages/map/map.wxml-->
-<text>pages/map/map.wxml</text>
+<view class="map-wrapper">
+    <map id="map"
+         longitude="{{longitude}}"
+         latitude="{{latitude}}"
+         scale="{{mapScale}}"
+         class="map">
+        <cover-view class="top-shadow-wrapper">
+            <cover-image class="top-shadow" src="/assets/images/icon/shadow.png">
+            </cover-image>
+        </cover-view>
+        <!--地图底部阴影-->
+        <cover-view class="bottom-shadow-wrapper">
+            <cover-image class="bottom-shadow" src="/assets/images/icon/shadow_bottom.png">
+            </cover-image>
+        </cover-view>
+    </map>
+</view>

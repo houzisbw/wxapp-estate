@@ -12,6 +12,19 @@ const getDetailInfoOfEstate = (estateIndex,latestDate,successHandler,failHandler
 			latestDate:latestDate
 		},getDetailInfoOfEstateUrl,successHandler,failHandler)
 };
+
+//提交反馈
+var submitFeedbackUrl = require('./url').submitFeedbackUrl;
+const submitFeedbackRequest = (submitIsVisit,submitReason,submitTime,latestDate,estateIndex,successHandler,failHandler,completeHandler)=>{
+	baseRequest('POST',{
+		isVisit:submitIsVisit,
+		estateIndex:estateIndex,
+		latestDate:latestDate,
+		submitReason:submitReason,
+		submitTime:submitTime
+	},submitFeedbackUrl,successHandler,failHandler,completeHandler)
+};
 module.exports = {
-	getDetailInfoOfEstate
+	getDetailInfoOfEstate,
+	submitFeedbackRequest
 }
