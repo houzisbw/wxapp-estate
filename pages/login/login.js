@@ -120,7 +120,6 @@ Page({
 				})
 			}
 		},function(err){
-			console.log(err)
 			wx.hideLoading();
 			//登录失败
 			wx.showToast({

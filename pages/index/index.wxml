@@ -47,17 +47,13 @@
                           class="estate-info-wrapper {{(index===estateListData.length-1)?'no-border-bottom':''}}"
                           bindtap="switchToDetailPage"
                     >
-                        <!--左侧图片-->
-                        <!--<view class="estate-info-map" >-->
-                            <!--<image src="{{item.isVisit?'/assets/images/bg/done.png':'/assets/images/bg/not_done.png'}}" class="estate-info-image" mode="scaleToFill" />-->
-                        <!--</view>-->
                         <!--右侧信息展示区域-->
                         <view class="estate-info-detail">
                             <view class="estate-info-line">
-                                <span class="estate-badge {{item.isVisit?'':'unvisit'}}">派单序号</span><span class="estate-index ">{{item.estateIndex}}</span>
+                                <span class="estate-badge {{item.isVisit?'':'unvisit'}}">派单序号</span><span class="estate-index ">{{item.estateIndex}} <span class="urgent {{item.isUrgent?'':'urgent-hide'}}">加急</span></span>
                             </view>
                             <view class="estate-info-line">
-                                <span class="estate-badge {{item.isVisit?'':'unvisit'}}">派单时间</span><span class="estate-index ">{{item.date}}</span>
+                                <span class="estate-badge {{item.isVisit?'':'unvisit'}}">联系电话</span><span class="estate-index ">{{item.estateTelephone}}</span>
                             </view>
                             <view class="estate-info-line border-bottom">
                                 <span class="estate-badge {{item.isVisit?'':'unvisit'}}">房屋地址</span><span class="estate-index ">{{item.estatePosition}}</span>

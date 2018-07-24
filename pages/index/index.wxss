@@ -94,7 +94,7 @@ page{
 .data-scroll-view{
     /*必须设置border-box否则横向会出现滚动条,因为padding的原因*/
     box-sizing: border-box;
-    padding:0 40rpx;
+    padding:10rpx 40rpx;
     background-color: #f2f2f2;
 }
 /*看房信息列表*/
@@ -166,7 +166,7 @@ page{
     line-height: 30rpx;
     display: inline-block;
     margin-left: 20rpx;
-    font-size: 23rpx;
+    font-size: 20rpx;
     height:30rpx;
     color:#999999;
     padding:0 5rpx;
@@ -217,5 +217,21 @@ page{
 /*按下去的样式*/
 .estate-list-hover{
     background-color: #eeeeee;
+}
+.urgent{
+    color: #fff;
+    background-color:#c5301d ;
+    box-sizing: border-box;
+    display: inline-block;
+    font-size: 20rpx;
+    height:30rpx;
+    padding:0 5rpx;
+    /*让外层view的宽度等于文字的高度,否则view比文字高度高一些*/
+    /*line-height不写1，否则对不齐*/
+    line-height: 30rpx;
+    border-radius: 4rpx;
+}
+.urgent-hide{
+    display: none;
 }
 

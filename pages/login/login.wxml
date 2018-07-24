@@ -1,7 +1,10 @@
 <!--登录页面-->
 <view class="container">
     <!--首页logo-->
-    <image src="./../../assets/images/icon/house.png" class="logo"></image>
+    <view class="logo-wrapper">
+        <image src="./../../assets/images/icon/house.png" class="logo"></image>
+        <view class="logo-title">看房助手</view>
+    </view>
     <form bindsubmit="login" >
         <!--输入框-->
         <view class="input-wrapper">

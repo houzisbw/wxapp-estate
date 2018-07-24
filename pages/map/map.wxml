@@ -3,6 +3,7 @@
     <map id="map"
          longitude="{{longitude}}"
          latitude="{{latitude}}"
+         markers="{{estateMarkers}}"
          scale="{{mapScale}}"
          class="map">
         <cover-view class="top-shadow-wrapper">

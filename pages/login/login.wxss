@@ -10,13 +10,23 @@ page{
     /*防止margin错位出去，生成bfc*/
     overflow: hidden;
 }
-.logo{
+.logo-wrapper{
     width:200rpx;
-    height:200rpx;
     margin: 0 auto;
     margin-top: 10vh;
     display: block;
     margin-bottom: 100rpx;
+}
+.logo-title{
+    width:100%;
+    font-size: 26rpx;
+    font-weight: bold;
+    text-align: center;
+    letter-spacing: 5rpx;
+}
+.logo{
+    width:200rpx;
+    height:200rpx;
 }
 .input-wrapper{
     height:90rpx;
