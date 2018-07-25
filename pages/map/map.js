@@ -23,7 +23,20 @@ Page({
     //房屋列表数据
 		estateListData:[],
     //地图markers
-    estateMarkers:[]
+    estateMarkers:[],
+		//当前点击的房屋序号
+		currentTapIndex:'',
+		//当前点击的房屋地址
+		currentTapPosition:'',
+		//当前房屋是否访问
+		currentIsVisit:false,
+		//是否是初始状态
+		isInitialState:true,
+		//是否处于地址获取中
+		isInLocationSearching:false,
+		//已看数量
+		visitedNum:'',
+		unvisitedNum:''
     //需要缓存房屋坐标，防止多次请求腾讯api
 
   },
@@ -31,6 +44,21 @@ Page({
   initMapData(){
     var username = wx.getStorageSync('username');
 		var self = this;
+    //数据初始化
+		self.setData({
+			isInitialState:true,
+			currentTapIndex:'',
+			//当前点击的房屋地址
+			currentTapPosition:'',
+			//当前房屋是否访问
+			currentIsVisit:false,
+			visitedNum:'',
+			unvisitedNum:'',
+			//这里得重置数组，否则数组会数据叠加
+			estateListData:[],
+			//地图markers
+			estateMarkers:[],
+		});
 		var promise = new Promise(function(resolve,reject){
 			getOtherInfo(username,function(res){
 				let status = res.data.status;
@@ -92,7 +120,9 @@ Page({
                 resolve({
                   targetLatitude:lat,
                   targetLongitude:lng,
-                  index:item.estateIndex
+                  index:item.estateIndex,
+									isVisit:item.isVisit,
+									roadNumber:item.estateRoadNumber
                 })
 							}else{
 								wx.showToast({
@@ -109,39 +139,28 @@ Page({
         promiseList.push(positionPromise)
       });
 			//全部地址解析完成,如果调用超出5次/秒，返回undefined
+			var visitedNum = 0 ,unvisitedNum = 0;
       Promise.all(promiseList).then((result)=>{
         var markerList = [];
         result.forEach((item,index)=>{
+        	item.isVisit?visitedNum++:unvisitedNum++;
           var marker = {
-						iconPath: "/assets/images/icon/estate_marker.png",
-						id: index,
+						iconPath: item.isVisit?"/assets/images/icon/estate_visited_marker.png":'/assets/images/icon/estate_marker.png',
+						id: item.index,
 						latitude: item.targetLatitude,
 						longitude: item.targetLongitude,
 						width: 45,
-						height: 45
-          }
+						height: 45,
+						alpha:1
+          };
           markerList.push(marker)
         });
         self.setData({
-					estateMarkers:markerList
+					estateMarkers:self.data.estateMarkers.concat(markerList),
+					visitedNum:visitedNum,
+					unvisitedNum:unvisitedNum
         })
-      }).catch((error) => {
-				wx.showToast({
-					title: '地址解析错误!',
-					image:'/assets/images/icon/toast_warning.png',
-					duration: 2000
-				})
-			})
-
-
-
-
-
-
-
-
-
-
+      })
 
     },function(status){
       if(status===-2){
@@ -172,17 +191,160 @@ Page({
     })
 
   },
+	//地图上marker点击回调
+	markerTap: function(e){
+		var markerId = e.markerId;
+		//如果点击到自己位置的marker
+		if(markerId==-1){
+			return
+		}
+		this.setData({
+			isInitialState:false
+		});
+		//根据markerId找到对应的房屋数据
+		this.data.estateListData.forEach((item)=>{
+			//可以隐式转换字符串为数字
+			if(item.estateIndex == markerId){
+				this.setData({
+					currentIsVisit:item.isVisit,
+					currentTapIndex:item.estateIndex,
+					currentTapPosition:item.estateRoadNumber
+				})
+			}
+		});
+	},
+	//地图被点击
+	mapOnTap: function(){
+		this.setData({
+			isInitialState:true,
+		})
+	},
+
+	//点击导航
+	navigate: function(e){
+		if(this.data.isInLocationSearching){
+			return;
+		}
+		var self = this;
+		this.setData({
+			isInLocationSearching:true
+		});
+		var estateIndex = e.currentTarget.dataset.index;
+		//根据index获取目标地址
+		var targetPos = '';
+		this.data.estateListData.forEach((item)=>{
+			if(item.estateIndex == estateIndex){
+				targetPos = item.estateRoadNumber;
+			}
+		});
+		var lat,lng;
+		qqMapSDK.geocoder({
+			address: '成都市'+targetPos,
+			success: function(res) {
+				//调用成功
+				if(res.status===0){
+					lat = res.result.location.lat;
+					lng = res.result.location.lng;
+					//调用微信内置地图进行导航
+					wx.openLocation({
+						latitude:lat,
+						longitude:lng
+					})
+				}else{
+					wx.showToast({
+						title: '地址解析错误!',
+						image:'/assets/images/icon/toast_warning.png',
+						duration: 2000
+					})
+				}
+			},
+			fail: function() {},
+			complete: function(res) {
+				self.setData({
+					isInLocationSearching:false
+				});
+			}
+		});
+	},
+	//获取自己的当前位置
+	getOwnPosition(){
+		var self = this;
+		wx.getLocation({
+			type:'gcj02',
+			success:function(res){
+				var latitude = res.latitude;
+				var longitude = res.longitude;
+				//id为特殊值-1代表自己
+				var selfMarker = {
+					iconPath: "/assets/images/icon/my-pos.png",
+					id: -1,
+					latitude: latitude,
+					longitude: longitude,
+					width: 30,
+					height:30,
+					alpha:1
+				};
+				self.setData({
+					estateMarkers:self.data.estateMarkers.concat([selfMarker])
+				})
+			},
+			fail:function(){
+				wx.showToast({
+					title: '位置获取失败!',
+					image:'/assets/images/icon/toast_warning.png',
+					duration: 2000
+				});
+			}
+		})
+	},
+
+	//位置复位按钮
+	resetPosition: function(){
+		this.setData({
+			//地图默认纬度
+			latitude:30.658292,
+			//地图默认经度
+			longitude:104.066448,
+			scale:16
+		})
+	},
+
+	//智能路线按钮
+	showSmartRouteStrategy :function(){
+		var self = this;
+		//判断房屋个数是否大于10个
+		if(this.data.estateListData.length>10){
+			wx.showToast({
+				title: '房屋数量过多!',
+				image:'/assets/images/icon/toast_warning.png',
+				duration: 2000
+			});
+			return
+		}
+		wx.showActionSheet({
+			itemList: ['计算公交看房最短路径', '计算骑行看房最短路径', '计算驾车看房最短路径'],
+			success: function(res) {
+				self.caculateSmartRouting(res.tapIndex);
+			},
+			fail: function(res) {
+				//wx.showActionSheet 点击取消或蒙层时，回调 fail
+			}
+		})
+	},
+	//处理智能路线计算
+	caculateSmartRouting: function(index){
+		//加上toast表明正在计算中
+
+	},
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    console.log('mappage onload')
 		//初始化地图sdk
 		qqMapSDK = new QQMapWX({
 			key: '5RQBZ-3YO6I-HAGGQ-5T5BU-5RNHK-NIF3N'
 		});
-    this.initMapData()
   },
 
   /**
@@ -196,7 +358,8 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-		console.log('mappage onshow')
+		this.initMapData();
+		this.getOwnPosition();
   },
 
   /**

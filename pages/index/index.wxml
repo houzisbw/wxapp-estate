@@ -50,13 +50,16 @@
                         <!--右侧信息展示区域-->
                         <view class="estate-info-detail">
                             <view class="estate-info-line">
-                                <span class="estate-badge {{item.isVisit?'':'unvisit'}}">派单序号</span><span class="estate-index ">{{item.estateIndex}} <span class="urgent {{item.isUrgent?'':'urgent-hide'}}">加急</span></span>
+                                <span class="estate-badge {{item.isVisit?'':'unvisit'}}">派单序号</span>
+                                <span class="estate-index ">{{item.estateIndex}} <span class="urgent {{item.isUrgent?'':'urgent-hide'}}">加急</span></span>
                             </view>
                             <view class="estate-info-line">
-                                <span class="estate-badge {{item.isVisit?'':'unvisit'}}">联系电话</span><span class="estate-index ">{{item.estateTelephone}}</span>
+                                <span class="estate-badge {{item.isVisit?'':'unvisit'}}">联系电话</span>
+                                <span class="estate-index " >{{item.estateTelephone}} <span catchtap="dialPhone" data-phone="{{item.estateTelephone}}" class="phone-dial"> 拨号</span></span>
                             </view>
                             <view class="estate-info-line border-bottom">
-                                <span class="estate-badge {{item.isVisit?'':'unvisit'}}">房屋地址</span><span class="estate-index ">{{item.estatePosition}}</span>
+                                <span class="estate-badge {{item.isVisit?'':'unvisit'}}">房屋地址</span>
+                                <span class="estate-index ">{{item.estatePosition}}</span>
                             </view>
                             <!--是否完成-->
                             <view class="estate-is-visit {{item.isVisit?'':'estate-is-unvisit'}}">

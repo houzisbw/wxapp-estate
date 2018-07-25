@@ -5,7 +5,20 @@
          latitude="{{latitude}}"
          markers="{{estateMarkers}}"
          scale="{{mapScale}}"
+         bindtap="mapOnTap"
+         bindmarkertap="markerTap"
          class="map">
+        <!--左下角智能路线按钮-->
+        <cover-view class="smart-btn-wrapper" bindtap="showSmartRouteStrategy">
+            <cover-image class="smart-btn" src="/assets/images/icon/smart.png">
+            </cover-image>
+        </cover-view>
+        <!--右下角复位按钮-->
+        <cover-view class="reset-position" bindtap="resetPosition">
+            <cover-image class="reset-btn" src="/assets/images/icon/reset-position.png">
+            </cover-image>
+        </cover-view>
+        <!--顶部阴影-->
         <cover-view class="top-shadow-wrapper">
             <cover-image class="top-shadow" src="/assets/images/icon/shadow.png">
             </cover-image>
@@ -14,6 +27,25 @@
         <cover-view class="bottom-shadow-wrapper">
             <cover-image class="bottom-shadow" src="/assets/images/icon/shadow_bottom.png">
             </cover-image>
+        </cover-view>
+        <!--地图顶部信息栏-->
+        <cover-view class="top-bar-info {{isInitialState?'hide':'show'}}">
+            <cover-view class="top-bar-left">
+                <cover-view class="top-bar-info-wrapper ">
+                    房屋序号: {{currentTapIndex}}
+                    <cover-view class="badge-visit {{currentIsVisit?'visited-color':'unvisited-color'}}">
+                        {{currentIsVisit?'已看':'未看'}}
+                    </cover-view>
+                </cover-view>
+                <cover-view class="top-bar-info-wrapper">房屋地址: {{currentTapPosition}}</cover-view>
+            </cover-view>
+            <cover-view class="top-bar-right {{currentIsVisit?'visited':'unvisited'}}" data-index="{{currentTapIndex}}" bindtap="navigate">
+                <cover-image src="/assets/images/icon/navigate.png" class="navigate"></cover-image>
+            </cover-view>
+        </cover-view>
+        <cover-view class="top-bar-info {{!isInitialState?'hide':'show top-bar-info-center'}}">
+            <!--初始状态-->
+            <cover-view class="initial-word">已看{{visitedNum}} 未看{{unvisitedNum}} 点击房屋进行导航</cover-view>
         </cover-view>
     </map>
 </view>

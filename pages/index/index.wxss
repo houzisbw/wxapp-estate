@@ -234,4 +234,8 @@ page{
 .urgent-hide{
     display: none;
 }
+.phone-dial{
+    color: #6299c2;
+}
+
 

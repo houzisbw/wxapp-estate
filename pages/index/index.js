@@ -180,6 +180,13 @@ Page({
 			url:'/pages/detail/detail?'+queryString
 		})
 	},
+	//拨号,此处是catchtap防止冒泡
+	dialPhone(e){
+		var phoneNumber = e.currentTarget.dataset.phone;
+		wx.makePhoneCall({
+			phoneNumber: phoneNumber?phoneNumber.toString():''
+		})
+	},
   /**
    * 生命周期函数--监听页面加载
    */

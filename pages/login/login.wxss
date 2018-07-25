@@ -19,10 +19,10 @@ page{
 }
 .logo-title{
     width:100%;
-    font-size: 26rpx;
+    font-size: 30rpx;
     font-weight: bold;
     text-align: center;
-    letter-spacing: 5rpx;
+    letter-spacing: 14rpx;
 }
 .logo{
     width:200rpx;
