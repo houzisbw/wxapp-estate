@@ -3,9 +3,14 @@
 var getEstateDataList = require('./../../api/index').getEstateDataList;
 //拉去首页其他信息的url
 var getOtherInfo = require('./../../api/index').getOtherInfo;
-//map的sdk
+//配置信息
+var config = require('./../../config/config');
+//腾讯地图的sdk
 var QQMapWX = require('../../lib/qqmap-wx-jssdk.min.js');
 var qqMapSDK;
+//高德地图
+var amapFile = require('../../lib/amap-wx.js');
+var myAmapFun;
 Page({
 
   /**
@@ -36,7 +41,34 @@ Page({
 		isInLocationSearching:false,
 		//已看数量
 		visitedNum:'',
-		unvisitedNum:''
+		unvisitedNum:'',
+		//自己当前位置
+		selfPosition:{lat:'',lng:''},
+		//地图上所有marker的坐标信息对象,key为房屋index，value为经纬度对象
+		totalMarkersPositionObj:{},
+		//路线种类
+		routeType:{
+
+		},
+
+
+
+		/** 智能路线计算相关数据结构 **/
+
+		/**
+		 * 邻接矩阵和房屋index的对应关系,注意邻接矩阵的下标0是看房人员当前位置
+		 * key:矩阵下标(字符串) value:房屋index(数字)
+		 */
+		adjacentMatrixToIndexMap:{},
+		/**
+		 * 当前位置和未看房屋间的邻接矩阵，注意0是当前位置,距离需要通过高德地图api算出
+		 * 每个值是[distance,[path]]这样一个数组，第一个值是距离，第二个值是路径数组
+		 */
+		adjacentMatrix:[]
+
+
+
+
     //需要缓存房屋坐标，防止多次请求腾讯api
 
   },
@@ -58,6 +90,8 @@ Page({
 			estateListData:[],
 			//地图markers
 			estateMarkers:[],
+			adjacentMatrixToIndexMap:{},
+			totalMarkersPositionObj:{}
 		});
 		var promise = new Promise(function(resolve,reject){
 			getOtherInfo(username,function(res){
@@ -106,6 +140,8 @@ Page({
 			self.setData({
 				estateListData:res
 			})
+			//初始化邻接矩阵和房屋index的对应关系map
+			self.initAdjacentMatrixToIndexMap(res);
       //根据房屋列表获取每个房屋的经纬度信息,此处并发量5次/秒,需要特殊处理
       var promiseList = [];
 			res.forEach(function(item){
@@ -139,7 +175,7 @@ Page({
         promiseList.push(positionPromise)
       });
 			//全部地址解析完成,如果调用超出5次/秒，返回undefined
-			var visitedNum = 0 ,unvisitedNum = 0;
+			var visitedNum = 0 ,unvisitedNum = 0, posObj = {};
       Promise.all(promiseList).then((result)=>{
         var markerList = [];
         result.forEach((item,index)=>{
@@ -153,12 +189,17 @@ Page({
 						height: 45,
 						alpha:1
           };
-          markerList.push(marker)
+          markerList.push(marker);
+					posObj[item.index] = {
+						lat:item.targetLatitude,
+						lng:item.targetLongitude
+					};
         });
         self.setData({
 					estateMarkers:self.data.estateMarkers.concat(markerList),
 					visitedNum:visitedNum,
-					unvisitedNum:unvisitedNum
+					unvisitedNum:unvisitedNum,
+					totalMarkersPositionObj:posObj
         })
       })
 
@@ -191,6 +232,22 @@ Page({
     })
 
   },
+	//初始化邻接矩阵和房屋index的对应关系map
+	initAdjacentMatrixToIndexMap: function(res){
+  	var tempMap = {},cnt=1;
+  	res.forEach((item)=>{
+  		//只计算未看房屋
+  		if(!item.isVisit){
+  			tempMap[cnt++]=item.estateIndex
+			}
+		});
+  	//保存看房人员自己的对应关系
+  	tempMap[0] = 0;
+		//初始化
+		this.setData({
+			adjacentMatrixToIndexMap:tempMap
+		})
+	},
 	//地图上marker点击回调
 	markerTap: function(e){
 		var markerId = e.markerId;
@@ -285,7 +342,8 @@ Page({
 					alpha:1
 				};
 				self.setData({
-					estateMarkers:self.data.estateMarkers.concat([selfMarker])
+					estateMarkers:self.data.estateMarkers.concat([selfMarker]),
+					selfPosition:{lat:latitude,lng:longitude}
 				})
 			},
 			fail:function(){
@@ -311,9 +369,19 @@ Page({
 
 	//智能路线按钮
 	showSmartRouteStrategy :function(){
-		var self = this;
+		var self = this,
+				len = this.data.estateListData.length;
+		//判断房屋个数是否为0，若为0则不计算
+		if(len === 0){
+			wx.showToast({
+				title: '无可计算房屋!',
+				image:'/assets/images/icon/toast_warning.png',
+				duration: 2000
+			});
+			return
+		}
 		//判断房屋个数是否大于10个
-		if(this.data.estateListData.length>10){
+		if(len>10){
 			wx.showToast({
 				title: '房屋数量过多!',
 				image:'/assets/images/icon/toast_warning.png',
@@ -322,7 +390,7 @@ Page({
 			return
 		}
 		wx.showActionSheet({
-			itemList: ['计算公交看房最短路径', '计算骑行看房最短路径', '计算驾车看房最短路径'],
+			itemList: ['计算驾车看房最短路径', '计算骑行看房最短路径', '计算公交看房最短路径'],
 			success: function(res) {
 				self.caculateSmartRouting(res.tapIndex);
 			},
@@ -331,20 +399,202 @@ Page({
 			}
 		})
 	},
-	//处理智能路线计算
+	//旅行商问题动态规划算法
+	travelingProblemSolver(adjMatrix){
+		//dp表行数
+		var houseCount = adjMatrix.length;
+		//dp表总列数
+		var totalCols = 1<<(houseCount-1);
+		//二维dp表，每一项是数组:第一项是距离，第二项是数组，表示经过的路径(起点，终点)
+		var dp = [];
+		for(let i=0;i<houseCount;i++){
+			let temp = [];
+			for(let j=0;j<totalCols;j++){
+				temp.push([Infinity,[]])
+			}
+			dp.push(temp)
+		}
+		//dp第一列初始化
+		for(let i=0;i<houseCount;i++){
+			dp[i][0][0] = adjMatrix[i][0][0];
+			dp[i][0][1].push([0,i]);
+		}
+		//求dp表剩下的列，由第一列递推
+		for(var j=1;j<totalCols;j++){
+			for(var i=0;i<houseCount;i++){
+				//如果已经到过了j，则continue
+				if(((j>>(i-1)) & 1) === 1){
+					continue;
+				}
+				//依次遍历k个城市搜寻最短
+				for(var k=1;k<houseCount;k++){
+					//如果不能到k城市则continue
+					if(((j>>(k-1))&1)===0){
+						continue;
+					}
+					if(dp[i][j][0]>adjMatrix[i][k][0]+dp[k][j^(1<<(k-1))][0]){
+						dp[i][j][0]=adjMatrix[i][k][0]+dp[k][j^(1<<(k-1))][0];
+						//必须slice创建副本,temp是原来已有的路径数组
+						let temp = dp[k][j^(1<<(k-1))][1].slice();
+						//此处k是起点，i是终点
+						temp.push([k,i]);
+						dp[i][j][1]=temp;
+					}
+				}
+			}
+		}
+		//获取最佳路径,貌似有bug
+
+
+
+
+		var bestDistance = dp[0][totalCols-1][0],
+				bestPath = dp[0][totalCols-1][1];
+		console.log(adjMatrix)
+		bestPath.forEach((path)=>{
+			//获取实际的房屋编号
+			let startIndex = this.data.adjacentMatrixToIndexMap[path[0]],
+					endIndex = this.data.adjacentMatrixToIndexMap[path[1]];
+			console.log([path[0],startIndex,'-----',path[1],endIndex])
+		})
+
+	},
+	//处理智能路线计算,每次点击都重新计算
 	caculateSmartRouting: function(index){
+		//1 首先计算出已看房屋和自己位置的邻接矩阵，此处并发调用高德地图的路径服务(分种类)
+		//保存每2个点间的路径数组steps
+		var promise = this.initAdjacentMatrix(index);
+		promise.then(()=>{
+			//再通过算法算出最短路径
+			var adjMatrix = this.data.adjacentMatrix;
+			this.travelingProblemSolver(adjMatrix)
+
+		});
+
+
+
+
+		//3 用polyline画出最短路径的线条
+
+
 		//加上toast表明正在计算中
+		//公交看房最短路径
+		if(index === 0){
+
+		}
+
+	},
+	//初始化邻接矩阵,只计算未看的房屋
+	initAdjacentMatrix(type){
+		var self = this;
+		return new Promise((resolve,reject)=>{
+			//promise的数组
+			var promiseList = [];
+			//邻接矩阵大小
+			var	adjMatrixSize = Object.keys(this.data.adjacentMatrixToIndexMap).length;
+			//初始化邻接矩阵，初始值为[Infinity,[]],第二个参数是polyline的points数组(2个点间的实际路径数组)
+			var tempMatrix = Array(adjMatrixSize).fill(Infinity).map(()=>Array(adjMatrixSize).fill(Infinity).map(()=>[Infinity,[]]));
+			//缓存数组，防止多次请求{i,j},{j,i}
+			var cache = {};
+			var posObj = this.data.totalMarkersPositionObj;
+			//加入自己当前的位置
+			posObj[0] = {lat:this.data.selfPosition.lat, lng:this.data.selfPosition.lng};
+			for(let i=0;i<adjMatrixSize;i++){
+				for(let j=0;j<adjMatrixSize;j++){
+					//获取到每2个点间的坐标,且2点不能相同
+					if(!cache[i+'-'+j] && i!==j){
+						//获取邻接矩阵{i,j}对应的2个点的经纬度
+						let origin = posObj[this.data.adjacentMatrixToIndexMap[i]].lng+','+posObj[this.data.adjacentMatrixToIndexMap[i]].lat,
+								dest = posObj[this.data.adjacentMatrixToIndexMap[j]].lng+','+posObj[this.data.adjacentMatrixToIndexMap[j]].lat;
+						cache[i+'-'+j] = true;
+						cache[j+'-'+i] = true;
+						//生成promise,计算2点间实际距离和路径数组
+						promiseList.push(this.getRouteByType(i,j,type,origin,dest))
+					}
+				}
+			}
+			Promise.all(promiseList).then(function(result){
+				//填充邻接矩阵
+				result.forEach((item)=>{
+					//注意矩阵是对称的
+					tempMatrix[parseInt(item.i,10)][parseInt(item.j,10)] = [parseInt(item.distance,10),item.path];
+					tempMatrix[parseInt(item.j,10)][parseInt(item.i,10)] = [parseInt(item.distance,10),item.path];
+				});
+				self.setData({
+					adjacentMatrix:tempMatrix
+				})
+				resolve()
+			}).catch((error) => {
+				wx.showToast({
+					title: '地址解析出错!',
+					image:'/assets/images/icon/toast_warning.png',
+					duration: 2000
+				});
+			})
+
+		});
 
 	},
 
+	//不同策略的路径计算
+	getRouteByType(row,col,type,origin,dest){
+		if(type === 0){
+			//驾车
+			return new Promise(function(resolve,reject){
+				let distance = 1;
+				myAmapFun.getDrivingRoute({
+					origin: origin,
+					destination: dest,
+					success: function(data){
+						var points = [];
+						if(data.paths && data.paths[0] && data.paths[0].steps){
+							var steps = data.paths[0].steps;
+							for(var i = 0; i < steps.length; i++){
+								var poLen = steps[i].polyline.split(';');
+								for(var j = 0;j < poLen.length; j++){
+									points.push({
+										longitude: parseFloat(poLen[j].split(',')[0]),
+										latitude: parseFloat(poLen[j].split(',')[1])
+									})
+								}
+							}
+						}
+						if(data.paths[0] && data.paths[0].distance){
+								distance = data.paths[0].distance;
+						}
+						resolve({
+							i:row,
+							j:col,
+							distance:distance,
+							path:points
+						})
+					},
+					fail: function(info){
+						reject()
+					}
+				})
+			})
+		}else if(type === 1){
+			//骑行
+			return new Promise(function(resolve,reject){
+
+			})
+		}else if(type === 2){
+			//公交
+			return new Promise(function(resolve,reject){
+
+			})
+		}
+	},
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
 		//初始化地图sdk
 		qqMapSDK = new QQMapWX({
-			key: '5RQBZ-3YO6I-HAGGQ-5T5BU-5RNHK-NIF3N'
+			key: config.qqMapKey
 		});
+		myAmapFun = new amapFile.AMapWX({key:config.AMapKey});
   },
 
   /**
@@ -360,6 +610,7 @@ Page({
   onShow: function () {
 		this.initMapData();
 		this.getOwnPosition();
+
   },
 
   /**

@@ -1,4 +1,7 @@
 // pages/detail/detail.js
+//配置信息
+var config = require('./../../config/config');
+//sdk
 var QQMapWX = require('../../lib/qqmap-wx-jssdk.min.js');
 var qqMapSDK;
 //util
@@ -446,7 +449,7 @@ Page({
 		});
 		//初始化地图sdk
 		qqMapSDK = new QQMapWX({
-			key: '5RQBZ-3YO6I-HAGGQ-5T5BU-5RNHK-NIF3N'
+			key: config.qqMapKey
 		});
 		this.pageInit(options);
 
