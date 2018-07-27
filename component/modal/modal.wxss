@@ -1,0 +1,12 @@
+/* component/modal/modal.wxss */
+.modal-wrapper{
+    width:100%;
+    height:100%;
+    z-index:1000;
+}
+.overlay{
+    width:100%;
+    height:100%;
+    z-index:1001;
+    background-color: rgba(0,0,0,0.15);
+}

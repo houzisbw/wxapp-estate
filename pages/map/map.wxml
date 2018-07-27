@@ -6,11 +6,17 @@
          markers="{{estateMarkers}}"
          scale="{{mapScale}}"
          bindtap="mapOnTap"
+         polyline="{{polyline}}"
          bindmarkertap="markerTap"
          class="map">
-        <!--左下角智能路线按钮-->
+        <!--左下角智能路线详情按钮-->
+        <cover-view class="smart-route-detail" bindtap="showSmartRouteDetail">
+            <cover-image class="smart-route-detail-btn" src="/assets/images/icon/smart.png">
+            </cover-image>
+        </cover-view>
+        <!--右下角智能路线按钮-->
         <cover-view class="smart-btn-wrapper" bindtap="showSmartRouteStrategy">
-            <cover-image class="smart-btn" src="/assets/images/icon/smart.png">
+            <cover-image class="smart-btn" src="/assets/images/icon/smart_search.png">
             </cover-image>
         </cover-view>
         <!--右下角复位按钮-->
@@ -46,6 +52,16 @@
         <cover-view class="top-bar-info {{!isInitialState?'hide':'show top-bar-info-center'}}">
             <!--初始状态-->
             <cover-view class="initial-word">已看{{visitedNum}} 未看{{unvisitedNum}} 点击房屋进行导航</cover-view>
+        </cover-view>
+        <!--最佳路线的详情遮罩-->
+        <cover-view class="best-route-overlay">
+            <!--弹窗-->
+            <cover-view class="best-route-pop-up">
+                <!--关闭按钮-->
+                <cover-view class="close-best-route" catchtap="closeBestRoute">
+                    <cover-image src="/assets/images/icon/close_feedback.png" class="close-best-route-img"></cover-image>
+                </cover-view>
+            </cover-view>
         </cover-view>
     </map>
 </view>

@@ -98,8 +98,8 @@ page{
     background-color:#ff5641 ;
 }
 .navigate{
-    width:50%;
-    height:50%;
+    width:40%;
+    height:40%;
 }
 .show{
     display: flex;
@@ -120,8 +120,8 @@ page{
     justify-content: center;
 }
 .reset-btn{
-    height:70%;
-    width:70%;
+    height:50%;
+    width:50%;
 }
 .smart-btn-wrapper{
     position: absolute;
@@ -136,7 +136,56 @@ page{
     justify-content: center;
 }
 .smart-btn{
-    height:80%;
-    width:80%;
+    height:50%;
+    width:50%;
+}
+.smart-route-detail{
+    position: absolute;
+    bottom:240rpx;
+    right:15rpx;
+    width:80rpx;
+    height:80rpx;
+    display: flex;
+    border-radius: 80rpx;
+    background-color: #fff;
+    align-items: center;
+    justify-content: center;
+}
+.smart-route-detail-btn{
+    height:60%;
+    width:60%;
+}
+/*最佳路线详情弹框的组件的cover-view的样式*/
+.best-route-overlay{
+    position: absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    z-index:1000;
+    background-color: rgba(0,0,0,0.15);
+}
+/*最佳路线详情弹窗*/
+.best-route-pop-up{
+    z-index:1001;
+    position: absolute;
+    left:50%;
+    top:50%;
+    transform: translate(-50%,-50%);
+    width:85%;
+    height:70%;
+    background-color: #fff;
+    border-radius: 20rpx;
+}
+.close-best-route{
+    position: absolute;
+    right:15rpx;
+    top:15rpx;
+    width:30rpx;
+    height:30rpx;
+}
+.close-best-route-img{
+    width:100%;
+    height:100%;
 }
 

@@ -1,0 +1,6 @@
+<!--弹窗组件-->
+<view class="modal-wrapper">
+    <!--遮罩-->
+    <view class="overlay">
+    </view>
+</view>

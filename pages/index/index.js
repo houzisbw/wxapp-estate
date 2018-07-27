@@ -176,6 +176,10 @@ Page({
 			estateposition:estatePosition
 		};
 		var queryString = formatQueryString(queryObj);
+
+
+		console.log(queryObj)
+
 		wx.navigateTo({
 			url:'/pages/detail/detail?'+queryString
 		})

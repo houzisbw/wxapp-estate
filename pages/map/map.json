@@ -1,3 +1,6 @@
 {
-  "navigationBarTitleText":"看房地图页"
+  "navigationBarTitleText":"看房地图页",
+  "usingComponents":{
+    "modal-component":"/component/modal/modal"
+  }
 }

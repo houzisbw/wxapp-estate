@@ -251,7 +251,7 @@ Page({
 	pageInit(options){
 		var self = this;
 		//获取首页传过来的参数
-		var estateIndex = options.estateindex,
+		var estateIndex = parseInt(options.estateindex,10),
 				latestDate = options.latestdate,
 				position = options.estateposition;
 		//获取房屋在地图上的位置

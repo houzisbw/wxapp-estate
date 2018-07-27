@@ -4,7 +4,8 @@
     "pages/index/index",
     "pages/mine/mine",
     "pages/map/map",
-    "pages/detail/detail"
+    "pages/detail/detail",
+    "component/modal/modal"
   ],
   "window": {
     "backgroundTextStyle": "light",

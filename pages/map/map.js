@@ -46,10 +46,8 @@ Page({
 		selfPosition:{lat:'',lng:''},
 		//地图上所有marker的坐标信息对象,key为房屋index，value为经纬度对象
 		totalMarkersPositionObj:{},
-		//路线种类
-		routeType:{
-
-		},
+		//地图上的polyline
+		polyline:[],
 
 
 
@@ -74,6 +72,11 @@ Page({
   },
   //初始化地图数据
   initMapData(){
+  	//进入loading
+		wx.showLoading({
+			title:'数据加载中',
+			mask:true
+		});
     var username = wx.getStorageSync('username');
 		var self = this;
     //数据初始化
@@ -91,7 +94,8 @@ Page({
 			//地图markers
 			estateMarkers:[],
 			adjacentMatrixToIndexMap:{},
-			totalMarkersPositionObj:{}
+			totalMarkersPositionObj:{},
+			polyline:[]
 		});
 		var promise = new Promise(function(resolve,reject){
 			getOtherInfo(username,function(res){
@@ -140,6 +144,15 @@ Page({
 			self.setData({
 				estateListData:res
 			})
+			//此处如果房屋数量超过20个(腾讯api的qps上限)则提示用户
+			if(res.length>config.tencentQPS){
+				wx.showToast({
+					title: '房屋数量过多!',
+					image:'/assets/images/icon/toast_warning.png',
+					duration: 2000
+				});
+				return
+			}
 			//初始化邻接矩阵和房屋index的对应关系map
 			self.initAdjacentMatrixToIndexMap(res);
       //根据房屋列表获取每个房屋的经纬度信息,此处并发量5次/秒,需要特殊处理
@@ -177,6 +190,7 @@ Page({
 			//全部地址解析完成,如果调用超出5次/秒，返回undefined
 			var visitedNum = 0 ,unvisitedNum = 0, posObj = {};
       Promise.all(promiseList).then((result)=>{
+				wx.hideLoading();
         var markerList = [];
         result.forEach((item,index)=>{
         	item.isVisit?visitedNum++:unvisitedNum++;
@@ -202,8 +216,8 @@ Page({
 					totalMarkersPositionObj:posObj
         })
       })
-
     },function(status){
+    	wx.hideLoading();
       if(status===-2){
 				wx.showToast({
 					title: '请重新登录!',
@@ -370,11 +384,26 @@ Page({
 	//智能路线按钮
 	showSmartRouteStrategy :function(){
 		var self = this,
-				len = this.data.estateListData.length;
-		//判断房屋个数是否为0，若为0则不计算
-		if(len === 0){
+				len = 0;
+		//如果房屋数量过多则提示用户
+		if(this.data.estateListData.length>config.tencentQPS){
 			wx.showToast({
-				title: '无可计算房屋!',
+				title: '房屋数量过多!',
+				image:'/assets/images/icon/toast_warning.png',
+				duration: 2000
+			});
+			return
+		}
+		//只计算未看房屋
+		this.data.estateListData.forEach((item)=>{
+			if(!item.isVisit){
+				len++;
+			}
+		});
+		//判断[未看]房屋个数是否太少，太少则不计算
+		if(len < 2){
+			wx.showToast({
+				title: '房屋数量过少!',
 				image:'/assets/images/icon/toast_warning.png',
 				duration: 2000
 			});
@@ -390,7 +419,7 @@ Page({
 			return
 		}
 		wx.showActionSheet({
-			itemList: ['计算驾车看房最短路径', '计算骑行看房最短路径', '计算公交看房最短路径'],
+			itemList: ['计算驾车看房最短路径', '计算骑行看房最短路径'],
 			success: function(res) {
 				self.caculateSmartRouting(res.tapIndex);
 			},
@@ -443,46 +472,54 @@ Page({
 				}
 			}
 		}
-		//获取最佳路径,貌似有bug
-
-
-
-
 		var bestDistance = dp[0][totalCols-1][0],
 				bestPath = dp[0][totalCols-1][1];
-		console.log(adjMatrix)
-		bestPath.forEach((path)=>{
-			//获取实际的房屋编号
-			let startIndex = this.data.adjacentMatrixToIndexMap[path[0]],
-					endIndex = this.data.adjacentMatrixToIndexMap[path[1]];
-			console.log([path[0],startIndex,'-----',path[1],endIndex])
+		var pathPointsArray = [];
+		//此时由于不需要返回出发点，因此需要计算顺时针逆时针看完房屋的总路程，取最短的一个
+		//首先顺时针计算路程
+		var clockwisePath = [],clockwiseDistance = 0;
+		for(let i=0;i<bestPath.length-1;i++){
+			let path = bestPath[i];
+			clockwiseDistance += this.data.adjacentMatrix[path[0]][path[1]][0];
+			clockwisePath.push([path[0],path[1]]);
+		}
+		//逆时针计算路程
+		var antiClockwisePath = [], antiClockwiseDistance = 0;
+		for(let i=1;i<bestPath.length;i++){
+			let path = bestPath[i];
+			antiClockwiseDistance += this.data.adjacentMatrix[path[0]][path[1]][0];
+			antiClockwisePath.push([path[0],path[1]]);
+		}
+		//最佳路径
+		var finalBestPath = clockwiseDistance > antiClockwiseDistance ? antiClockwisePath : clockwisePath;
+		finalBestPath.forEach((path,index)=>{
+			pathPointsArray.push({
+				points: this.data.adjacentMatrix[path[0]][path[1]][1],
+				color: "#39ac6a",
+				width: 6,
+				arrowLine:true,
+				arrowIconPath:'/assets/images/icon/path_arrow.png'
+			})
+		});
+		this.setData({
+			polyline:pathPointsArray
 		})
-
+		//隐藏loading
+		wx.hideLoading();
 	},
 	//处理智能路线计算,每次点击都重新计算
 	caculateSmartRouting: function(index){
-		//1 首先计算出已看房屋和自己位置的邻接矩阵，此处并发调用高德地图的路径服务(分种类)
-		//保存每2个点间的路径数组steps
+		//进入loading
+		wx.showLoading({
+			title:'计算中',
+			mask:true
+		});
+		//首先计算出已看房屋和自己位置的邻接矩阵，此处并发调用高德地图的路径服务(分种类)
 		var promise = this.initAdjacentMatrix(index);
 		promise.then(()=>{
-			//再通过算法算出最短路径
-			var adjMatrix = this.data.adjacentMatrix;
-			this.travelingProblemSolver(adjMatrix)
-
+			//通过算法算出最短路径
+			this.travelingProblemSolver(this.data.adjacentMatrix)
 		});
-
-
-
-
-		//3 用polyline画出最短路径的线条
-
-
-		//加上toast表明正在计算中
-		//公交看房最短路径
-		if(index === 0){
-
-		}
-
 	},
 	//初始化邻接矩阵,只计算未看的房屋
 	initAdjacentMatrix(type){
@@ -521,19 +558,19 @@ Page({
 					tempMatrix[parseInt(item.j,10)][parseInt(item.i,10)] = [parseInt(item.distance,10),item.path];
 				});
 				self.setData({
-					adjacentMatrix:tempMatrix
+					adjacentMatrix:tempMatrix,
+					polyline:[]
 				})
 				resolve()
 			}).catch((error) => {
+				wx.hideLoading();
 				wx.showToast({
 					title: '地址解析出错!',
 					image:'/assets/images/icon/toast_warning.png',
 					duration: 2000
 				});
 			})
-
 		});
-
 	},
 
 	//不同策略的路径计算
@@ -545,6 +582,8 @@ Page({
 				myAmapFun.getDrivingRoute({
 					origin: origin,
 					destination: dest,
+					//策略:距离最短
+					strategy:2,
 					success: function(data){
 						var points = [];
 						if(data.paths && data.paths[0] && data.paths[0].steps){
@@ -577,7 +616,38 @@ Page({
 		}else if(type === 1){
 			//骑行
 			return new Promise(function(resolve,reject){
-
+				let distance = 1;
+				myAmapFun.getRidingRoute({
+					origin: origin,
+					destination: dest,
+					success: function(data){
+						console.log(data)
+						var points = [];
+						//此处官网有误，官网是data.paths[0].rides,其实应该是steps
+						if(data.paths && data.paths[0] && data.paths[0].steps){
+							var steps = data.paths[0].steps;
+							for(var i = 0; i < steps.length; i++){
+								var poLen = steps[i].polyline.split(';');
+								for(var j = 0;j < poLen.length; j++){
+									points.push({
+										longitude: parseFloat(poLen[j].split(',')[0]),
+										latitude: parseFloat(poLen[j].split(',')[1])
+									})
+								}
+							}
+						}
+						if(data.paths[0] && data.paths[0].distance){
+							distance = data.paths[0].distance;
+						}
+						resolve({
+							i:row,
+							j:col,
+							distance:distance,
+							path:points
+						})
+					},
+					fail: function(info){reject()}
+				})
 			})
 		}else if(type === 2){
 			//公交
@@ -585,6 +655,11 @@ Page({
 
 			})
 		}
+	},
+
+	//展示最佳路径的详情
+	showSmartRouteDetail(){
+
 	},
   /**
    * 生命周期函数--监听页面加载
