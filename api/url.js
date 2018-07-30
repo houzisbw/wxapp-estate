@@ -21,7 +21,11 @@ var url = {
 	otherInfoUrl:localHost+'/wxApp/getOtherInfo',
 	/** 详情页 **/
 	getDetailInfoOfEstateUrl:localHost+'/wxApp/getDetailInfoOfEstate',
-	submitFeedbackUrl:localHost+'/wxApp/submitFeedback'
+	submitFeedbackUrl:localHost+'/wxApp/submitFeedback',
+	/** 我的页面 **/
+	saveAvatarUrl:localHost+'/wxApp/saveAvatar',
+	getPersonalInfoUrl:localHost+'/wxApp/getPersonalInfo',
+	logoutUrl:localHost+'/wxApp/logout',
 
 };
 //移动端测试的url
@@ -37,6 +41,10 @@ var mobileTestUrl = {
 	otherInfoUrl:mobileTestHost+'/wxApp/getOtherInfo',
 	/** 详情页 **/
 	getDetailInfoOfEstateUrl:mobileTestHost+'/wxApp/getDetailInfoOfEstate',
-	submitFeedbackUrl:mobileTestHost+'/wxApp/submitFeedback'
+	submitFeedbackUrl:mobileTestHost+'/wxApp/submitFeedback',
+	/** 我的页面 **/
+	saveAvatarUrl:mobileTestHost+'/wxApp/saveAvatar',
+	getPersonalInfoUrl:mobileTestHost+'/wxApp/getPersonalInfo',
+	logoutUrl:mobileTestHost+'/wxApp/logout',
 };
 module.exports = mobileTestUrl;

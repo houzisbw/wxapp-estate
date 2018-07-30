@@ -51,15 +51,29 @@
         </cover-view>
         <cover-view class="top-bar-info {{!isInitialState?'hide':'show top-bar-info-center'}}">
             <!--初始状态-->
-            <cover-view class="initial-word">已看{{visitedNum}} 未看{{unvisitedNum}} 点击房屋进行导航</cover-view>
+            <cover-view class="initial-word"> 已看{{visitedNum}} 未看{{unvisitedNum}} 点击房屋进行导航! </cover-view>
         </cover-view>
         <!--最佳路线的详情遮罩-->
-        <cover-view class="best-route-overlay">
+        <cover-view class="best-route-overlay" wx:if="{{isShowBestRouteOverlay}}" bindtap="closeBestRoute">
             <!--弹窗-->
             <cover-view class="best-route-pop-up">
                 <!--关闭按钮-->
-                <cover-view class="close-best-route" catchtap="closeBestRoute">
-                    <cover-image src="/assets/images/icon/close_feedback.png" class="close-best-route-img"></cover-image>
+                <!--<cover-view class="close-best-route" bindtap="closeBestRoute">-->
+                    <!--<cover-image src="/assets/images/icon/close_feedback.png" class="close-best-route-img"></cover-image>-->
+                <!--</cover-view>-->
+                <!--标题-->
+                <cover-view class="best-route-detail-title">路线详情-{{bestDistance}}-{{pathDuration}}</cover-view>
+                <cover-view class="sep-line"></cover-view>
+                <cover-view class="detail-wrapper">
+                    <cover-view class="detail-item-wrapper">
+                        <block wx:for="{{pathDetailInfo}}" wx:key="{{index}}">
+                            <cover-view class="detail-item">
+                                <cover-image src="{{index !== pathDetailInfo.length-1?'/assets/images/icon/green_dot.png':'/assets/images/icon/red_dot.png'}}" class="detail-green-dot"></cover-image>
+                                <cover-view class="detail-desc">{{item.start===0?'起点':item.start}} - {{item.end}}  距离{{item.distance}} 时间{{item.duration}}</cover-view>
+                            </cover-view>
+                            <cover-view class="vertical-line" wx:if="{{index !== pathDetailInfo.length-1}}"></cover-view>
+                        </block>
+                    </cover-view>
                 </cover-view>
             </cover-view>
         </cover-view>

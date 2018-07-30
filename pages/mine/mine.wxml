@@ -1,2 +1,36 @@
 <!--pages/mine/mine.wxml-->
-<text>pages/mine/mine.wxml</text>
+<view class="mine-wrapper">
+    <view class="personal-info-wrapper">
+        <view class="personal-info-left">
+            <view class="realname">{{realname}}</view>
+            <view class="username">{{username}}</view>
+        </view>
+        <view class="personal-info-right" bindtap="previewAvatar">
+            <image src="{{avatarUrl}}" class="portrait" mode="aspectFill"></image>
+        </view>
+    </view>
+    <view class="sep-line"></view>
+    <view class="item-wrapper">
+        <view class="item" bindtap="modifyImage">
+            <view class="item-left">
+                修改头像
+            </view>
+            <view class="item-right">
+                <image src="/assets/images/icon/mine_modify.png" class="mine_modify"></image>
+            </view>
+        </view>
+        <view class="item">
+            <view class="item-left">
+                历史记录
+            </view>
+            <view class="item-right">
+                <image src="/assets/images/icon/mine_history.png" class="mine_modify"></image>
+            </view>
+        </view>
+    </view>
+    <view class="sep-line"></view>
+    <view class="logout" bindtap="logout">
+        退出登录
+    </view>
+
+</view>

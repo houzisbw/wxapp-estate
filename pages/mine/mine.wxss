@@ -1,1 +1,88 @@
 /* pages/mine/mine.wxss */
+page{
+    background-color: #f6f6f6;
+}
+.mine-wrapper{
+
+}
+.personal-info-wrapper{
+    height:240rpx;
+    display: flex;
+    flex-direction: row;
+    background-color:#fff;
+}
+.personal-info-left{
+    height:100%;
+    flex-grow:1;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding-left: 80rpx;
+}
+.personal-info-right{
+    width:240rpx;
+    height:100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.sep-line{
+    height:20rpx;
+    background-color: #f6f6f6;
+}
+.portrait{
+    width:80%;
+    height:80%;
+    border-radius: 50%;
+}
+.username{
+    font-size: 25rpx;
+    color: #878787;
+}
+.realname{
+    font-size: 45rpx;
+    font-weight: bold;
+    color: #343434;
+    margin-bottom: 20rpx;
+}
+.item-wrapper{
+    padding:0 40rpx;
+    background-color:#fff;
+}
+.item{
+    height:130rpx;
+    border-bottom: 1rpx solid #e9e9e9;
+    display: flex;
+    flex-direction: row;
+}
+.item-right{
+    width:130rpx;
+    height:100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+.item-left{
+    flex-grow:1;
+    height:100%;
+    line-height: 130rpx;
+    font-size: 30rpx;
+    color:#515151;
+}
+.mine_modify{
+    width:40%;
+    height:40%;
+    border-radius: 50%;
+}
+.logout{
+    height:110rpx;
+    color: #ee493e;
+    line-height: 110rpx;
+    font-size: 30rpx;
+    text-align: center;
+    position: fixed;
+    bottom:0;
+    left:0;
+    width:100%;
+    background-color:#fff;
+}

@@ -32,7 +32,8 @@ Page({
 		latestDate:'',
 		totalNum:0,
 		visitedNum:0,
-		unvisitedNum:0
+		unvisitedNum:0,
+		avatarUrl:'/assets/images/icon/avatar.png'
   },
   //选项卡点击
 	tabClick: function (e) {
@@ -118,6 +119,7 @@ Page({
 			if(status === 1){
 				var data = res.data;
 				self.setData({
+					avatarUrl:data.avatarUrl,
 					realname:data.realname,
 					latestDate:data.latestDate,
 					totalNum:data.staffEstateTotalNum,
@@ -176,10 +178,6 @@ Page({
 			estateposition:estatePosition
 		};
 		var queryString = formatQueryString(queryObj);
-
-
-		console.log(queryObj)
-
 		wx.navigateTo({
 			url:'/pages/detail/detail?'+queryString
 		})
@@ -195,7 +193,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-   	//this.initData();
+
   },
 
   /**

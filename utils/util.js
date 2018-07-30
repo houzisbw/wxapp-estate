@@ -23,7 +23,26 @@ const formatQueryString = (obj)=>{
   return result.join('&');
 }
 
+//秒数转小时分钟表示
+const secondToHourMinute = (seconds)=>{
+	var result = '';
+	if(seconds<3600){
+		result += Math.floor(seconds/60)+'分钟';
+	}else{
+		var hour = Math.floor(seconds / 3600);
+		var second = Math.floor((seconds - hour*3600)/60);
+		result = hour+'小时'+(second?(second+'分钟'):'');
+	}
+	return result
+}
+//距离转公里
+const meterToKM = (meters)=>{
+	return (parseInt(meters,10)/1000).toFixed(1)+'公里';
+};
+
 module.exports = {
   formatTime: formatTime,
-	formatQueryString
+	formatQueryString,
+	secondToHourMinute,
+	meterToKM
 }

@@ -24,7 +24,7 @@ page{
 .staff-image{
     width:80%;
     height:80%;
-
+    border-radius: 50%;
 }
 /*该view内2行文字位于顶部和底部*/
 .staff-info-wrapper{

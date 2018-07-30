@@ -4,7 +4,7 @@
     <view class="staff-info">
         <!--头像-->
         <view class="staff-image-wrapper">
-            <image src="/assets/images/icon/avatar.png" mode="aspectFill" class="staff-image"/>
+            <image src="{{avatarUrl}}" mode="aspectFill" class="staff-image"/>
         </view>
         <!--个人信息-->
         <view class="staff-info-wrapper">
@@ -51,7 +51,7 @@
                         <view class="estate-info-detail">
                             <view class="estate-info-line">
                                 <span class="estate-badge {{item.isVisit?'':'unvisit'}}">派单序号</span>
-                                <span class="estate-index ">{{item.estateIndex}} <span class="urgent {{item.isUrgent?'':'urgent-hide'}}">加急</span></span>
+                                <span class="estate-index ">{{item.estateIndex}} <span class="urgent {{item.isUrgent?'':'urgent-hide'}}">{{item.urgentInfo}}</span></span>
                             </view>
                             <view class="estate-info-line">
                                 <span class="estate-badge {{item.isVisit?'':'unvisit'}}">联系电话</span>

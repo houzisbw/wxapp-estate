@@ -15,7 +15,13 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-  
+  	//如果已登录则跳转首页
+		if(wx.getStorageSync('user-cookie')){
+			//重新登录逻辑,跳转到登录页面,redirectTo不保留当前页面,关闭该页面
+			wx.switchTab({
+				url: '/pages/index/index'
+			})
+		}
   },
 
   /**
