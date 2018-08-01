@@ -2,6 +2,8 @@
 var saveAvatar = require('./../../api/mine').saveAvatar;
 var getPersonalInfo = require('./../../api/mine').getPersonalInfo;
 var logoutInterface = require('./../../api/mine').logout;
+//上传图片的url
+var uploadUrl = require('./../../api/url').imageUploadUrl;
 Page({
 
   /**
@@ -20,6 +22,9 @@ Page({
 	},
   //修改头像
 	modifyImage: function(){
+		if(this.data.username === '没有名字啦'){
+			return
+		}
   	let self = this;
 		wx.chooseImage({
 			count: 1, // 默认9
@@ -32,53 +37,41 @@ Page({
 				});
 				// 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
 				var tempFilePath = res.tempFilePaths[0];
-        //上传图片到第三方图床网站
+				//必须设置cookie防止后端拦截为未登录
+				var cookie = wx.getStorageSync('user-cookie');
+        //上传图片到服务端
 				wx.uploadFile({
-          url:'https://sm.ms/api/upload',
+          url:uploadUrl,
 					filePath:tempFilePath,
-          name:'smfile',
+          name:self.data.username,
+					//cookie必须添加
+					header:{'cookie':cookie},
+					formData:{
+          	username:self.data.username
+					},
 					complete: function(){
           	wx.hideLoading();
 					},
 					success: function(res){
-						var data = JSON.parse(res.data);
-						var code = data.code;
-						if(code === 'success'){
-						  var url = data.data.url;
-						  var username = wx.getStorageSync('username');
-              //保存数据库
-							saveAvatar(url,username,function(res){
-								if(res.data.status === 1){
-									wx.showToast({
-										title: '修改成功!',
-										duration: 2000
-									})
-									//刷新
-									self.initData();
-								}else{
-									wx.showToast({
-										title: '上传失败!',
-										image:'/assets/images/icon/toast_warning.png',
-										duration: 2000
-									})
-								}
-							},function(){
-								//上传失败
-								wx.showToast({
-									title: '上传失败!',
-									image:'/assets/images/icon/toast_warning.png',
-									duration: 2000
+						wx.showToast({
+							title: '更新成功!',
+							duration: 2000
+						});
+						var data = JSON.parse(res.data)
+						if(data.status === 1){
+							if(data.avatarUrl){
+								self.setData({
+									avatarUrl:data.avatarUrl
 								})
-							})
-            }else{
-              //上传失败
+								self.initData()
+							}
+						}else{
 							wx.showToast({
-								title: '上传失败!',
+								title: '读取信息失败!',
 								image:'/assets/images/icon/toast_warning.png',
 								duration: 2000
 							})
-            }
-
+						}
 					}
         })
 			}
@@ -95,7 +88,7 @@ Page({
 						realname = res.data.info.realname;
 				self.setData({
 					username:username,
-					avatarUrl:avatarUrl,
+					avatarUrl:avatarUrl?avatarUrl:'/assets/images/icon/avatar.png',
 					realname:realname
 				});
 			}else{
@@ -111,6 +104,13 @@ Page({
 				image:'/assets/images/icon/toast_warning.png',
 				duration: 2000
 			})
+		})
+	},
+
+	//跳转到历史数据
+	goToHistoryPage: function(){
+		wx.navigateTo({
+			url:"/pages/history/history"
 		})
 	},
 

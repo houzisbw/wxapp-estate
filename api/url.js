@@ -30,6 +30,9 @@ var url = {
 };
 //移动端测试的url
 var mobileTestUrl = {
+	/** 上传图片 **/
+	imageUploadUrl:mobileTestHost+'/wxApp/imageUpload',
+	/** 登录 **/
 	//测试服务器接口,生产环境需要修改前半部分，换成https
 	loginUrl:mobileTestHost+'/wxApp/wxLogin',
 	//验证是否登录的接口

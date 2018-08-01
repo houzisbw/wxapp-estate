@@ -19,7 +19,7 @@
                 <image src="/assets/images/icon/mine_modify.png" class="mine_modify"></image>
             </view>
         </view>
-        <view class="item">
+        <view class="item" bindtap="goToHistoryPage">
             <view class="item-left">
                 历史记录
             </view>

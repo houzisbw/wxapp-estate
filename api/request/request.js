@@ -12,6 +12,8 @@ const baseRequest = (type,data,url,successHandler,failHandler,completeHandler)=>
 		success:function(res){
 			//重新登录,这里做统一拦截,后台也有统一拦截
 			if(res.data.status === -2){
+				//清除掉所有缓存
+				wx.clearStorageSync();
 				wx.redirectTo({
 					url:'/pages/login/login'
 				})

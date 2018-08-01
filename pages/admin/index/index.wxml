@@ -1,0 +1,50 @@
+<!--pages/admin/index/index.wxml-->
+<view class="admin-wrapper">
+    <!--顶部人员信息-->
+    <view class="staff-info">
+        <!--头像-->
+        <view class="staff-image-wrapper">
+            <image src="/assets/images/icon/avatar.png" mode="aspectFill" class="staff-image"/>
+        </view>
+        <!--个人信息-->
+        <view class="staff-info-wrapper">
+            <view class="staff-realname">管理员</view>
+            <view class="staff-text-wrapper">
+                <view class="staff-allocation-time">派单时间: 2018/8/1</view>
+                <view class="staff-detail">
+                    <text class="staff-estate-number no-padding-left delimeter {{activeIndex===0?'highlight-color':''}}" >总单数6</text>
+                    <text class="staff-estate-number delimeter {{activeIndex===1?'highlight-color':''}}">已看2</text>
+                    <text class="staff-estate-number no-border-right {{activeIndex===2?'highlight-color':''}}">未看4</text>
+                </view>
+            </view>
+        </view>
+    </view>
+    <!--选项卡-->
+    <view class="weui-tab tab-margin-top">
+        <view class="weui-navbar pos-static">
+            <block wx:for="{{tabs}}" wx:key="*this">
+                <view id="{{index}}" class="weui-navbar__item {{activeIndex == index ? 'weui-bar__item_on' : ''}}" bindtap="tabClick">
+                    <view class="weui-navbar__title">{{item}}</view>
+                </view>
+            </block>
+            <view class="weui-navbar__slider my-navbar-slider-width" style="left: {{sliderLeft}}px; transform: translateX({{sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px);"></view>
+        </view>
+    </view>
+    <!--搜索-->
+    <view class="weui-search-bar" id="weui-search-bar">
+        <view class="weui-search-bar__form">
+            <view class="weui-search-bar__box">
+                <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
+                <input type="text" class="weui-search-bar__input" placeholder="搜索" placeholder-class="plac" bindinput="searchInput" />
+            </view>
+        </view>
+        <view class="weui-search-bar__cancel-btn search-btn" bindtap="search">搜索</view>
+    </view>
+    <!--tab的内容区域,滑动视图-->
+    <scroll-view style="height:{{scrollViewHeight}}px" scroll-y class="data-scroll-view">
+    </scroll-view>
+    <!--数据统计-->
+    <view class="statistic-btn">
+        数据统计
+    </view>
+</view>

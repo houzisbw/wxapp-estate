@@ -120,10 +120,22 @@ Page({
 				wx.setStorageSync('user-cookie',res.header['Set-Cookie']||res.header['set-cookie']);
 				//保存用户名
 				wx.setStorageSync('username',res.data.username);
-				//跳转到首页
-				wx.switchTab({
-					url: '/pages/index/index'
-				})
+				//保存权限
+				wx.setStorageSync('auth',res.data.auth);
+				//这里做权限处理，管理员只能跳转到特定的页面，该页面不是tabbar页面
+				let auth = res.data.auth;
+				//普通员工
+				if(auth === '1'){
+					//跳转到首页
+					wx.switchTab({
+						url: '/pages/index/index'
+					})
+				}else if(auth === '0'){
+					//管理员
+					wx.redirectTo({
+						url:'/pages/admin/index/index'
+					})
+				}
 			}
 		},function(err){
 			wx.hideLoading();
