@@ -1,2 +1,65 @@
 <!--pages/admin/history/history.wxml-->
-<text>pages/admin/history/history.wxml</text>
+<view class="history-wrapper">
+    <picker bindchange="bindPickerChange" value="{{index}}" range="{{timeSelectorArray}}">
+    </picker>
+</view>
+<!--底部3个选择按钮-->
+<view class="bottom-btn-wrapper">
+    <!--日期选择器-->
+    <picker bindchange="bindTimeSelectorChange"
+            value="{{timeSelectedIndex}}"
+            range="{{timeSelectorArray}}"
+            class="picker-wrapper bottom-btn-left"
+    >
+        <view class="bottom-btn ">
+            <image src="/assets/images/icon/history-time.png" class="bottom-btn-image" mode="scaleToFill"/>
+        </view>
+    </picker>
+    <picker bindchange="bindChartSelectorChange"
+            value="{{chartSelectedIndex}}"
+            range="{{chartTypeArray}}"
+            class="picker-wrapper bottom-btn-left"
+    >
+        <view class="bottom-btn ">
+            <image src="/assets/images/icon/history-type.png" class="bottom-btn-image" mode="scaleToFill"/>
+        </view>
+    </picker>
+    <picker bindchange="bindStaffSelectorChange"
+            value="{{staffSelectedIndex}}"
+            range="{{staffNameList}}"
+            class="picker-wrapper"
+    >
+        <view class="bottom-btn ">
+            <image src="/assets/images/icon/history-staff.png" class="bottom-btn-image" mode="scaleToFill"/>
+        </view>
+    </picker>
+    <view class="generate-graph-btn">生成统计图</view>
+</view>
+
+<!--起止日期选择框-->
+<view class="start-end-time-overlay">
+    <!--起始日期选择弹框-->
+    <view class="start-time-modal">
+        <view class="start-time-modal-title">
+            请选择起始时间
+        </view>
+        <view class="start-time-picker-view">
+            <picker-view indicator-class="indicator-class"
+                         style="width: 100%; height: 300rpx;"
+                         bindchange="bindChange">
+                <picker-view-column >
+                    <view wx:for="{{startTimeYears}}" class="picker-view-column-view" >{{item}}年</view>
+                </picker-view-column>
+                <picker-view-column >
+                    <view wx:for="{{startTimeMonth}}" class="picker-view-column-view" >{{item}}月</view>
+                </picker-view-column>
+                <picker-view-column >
+                    <view wx:for="{{startTimeDay}}" class="picker-view-column-view" >{{item}}日</view>
+                </picker-view-column>
+            </picker-view>
+        </view>
+        <view class="start-time-btn">
+            确定
+        </view>
+    </view>
+</view>

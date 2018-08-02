@@ -1,1 +1,109 @@
 /* pages/admin/history/history.wxss */
+page{
+    width:100%;
+    background-color: #f9f9f9;
+}
+.bottom-btn-wrapper{
+    position: fixed;
+    bottom:0;
+    height:80rpx;
+    left:0;
+    width:100%;
+    display: flex;
+    flex-direction: row;
+    border-top:1rpx solid #e2e2e2;
+    background-color: #fff;
+}
+.bottom-btn{
+    flex-grow: 1;
+    height:80rpx;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.bottom-btn-left{
+    border-right:1rpx solid #e2e2e2;
+}
+.bottom-btn-mid{
+    border-right:1rpx solid #e2e2e2;
+}
+.bottom-btn-right{
+
+}
+.bottom-btn-image{
+    width:45rpx;
+    height:45rpx;
+}
+.generate-graph-btn{
+    height:100%;
+    background-color: #39ac6a;
+    width:200rpx;
+    line-height: 80rpx;
+    color:#fff;
+    font-size: 25rpx;
+    text-align: center;
+}
+.picker-wrapper{
+    flex-grow:1;
+    height:80rpx;
+}
+/*起止日期选择框的遮罩*/
+.start-end-time-overlay{
+    position: fixed;
+    left:0;
+    top:0;
+    right:0;
+    bottom:0;
+    background-color: rgba(0,0,0,0.15);
+    z-index:10000;
+}
+.start-time-modal{
+    z-index:10001;
+    width:80%;
+    height:50%;
+    background-color: #fff;
+    border-radius: 20rpx;
+    position: absolute;
+    left:50%;
+    top:50%;
+    transform: translate(-50%,-50%);
+    display: flex;
+    flex-direction: column;
+}
+.start-time-modal-title{
+    height:60rpx;
+    line-height: 60rpx;
+    background-color: #fff;
+    color: #5c5c5c;
+    text-align: center;
+    font-size: 30rpx;
+    border-radius: 20rpx 20rpx 0 0;
+}
+.start-time-btn{
+    height:80rpx;
+    background-color:#39ac6a;
+    line-height: 80rpx;
+    font-size: 30rpx;
+    text-align: center;
+    color:#fff;
+    border-radius: 0 0 20rpx 20rpx;
+}
+.start-time-picker-view{
+    flex-grow:1;
+    width:100%;
+    box-sizing: border-box;
+    padding:20rpx;
+    display: flex;
+    align-items: center;
+}
+.picker-view-column-view{
+    line-height: 60rpx;
+    height:60rpx;
+    font-size:30rpx;
+    text-align:center;
+}
+.indicator-class{
+    height: 60rpx;
+    line-height:60rpx;
+}

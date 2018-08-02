@@ -4,10 +4,12 @@
   width: 0;
   height: 0;
   color: transparent;
+  display: none;
 }
 /*隐藏滚动条需要隐藏这个滚动滑块*/
 ::-webkit-scrollbar-thumb{
   width: 0!important;
   height: 0!important;
   color: transparent!important;
+  display: none;
 }

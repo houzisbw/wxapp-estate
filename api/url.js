@@ -26,6 +26,10 @@ var url = {
 	saveAvatarUrl:localHost+'/wxApp/saveAvatar',
 	getPersonalInfoUrl:localHost+'/wxApp/getPersonalInfo',
 	logoutUrl:localHost+'/wxApp/logout',
+	/** 管理员首页 **/
+	adminGetEstateDataUrl:localHost+'/wxApp/adminGetEstateData',
+	searchUrl:localHost+'/wxApp/search',
+	getStaffNameListUrl:localHost+'/wxApp/getStaffList'
 
 };
 //移动端测试的url
@@ -49,5 +53,9 @@ var mobileTestUrl = {
 	saveAvatarUrl:mobileTestHost+'/wxApp/saveAvatar',
 	getPersonalInfoUrl:mobileTestHost+'/wxApp/getPersonalInfo',
 	logoutUrl:mobileTestHost+'/wxApp/logout',
+	/** 管理员首页 **/
+	adminGetEstateDataUrl:mobileTestHost+'/wxApp/adminGetEstateData',
+	searchUrl:mobileTestHost+'/wxApp/search',
+	getStaffNameListUrl:mobileTestHost+'/wxApp/getStaffList'
 };
 module.exports = mobileTestUrl;

@@ -10,12 +10,16 @@
         <view class="staff-info-wrapper">
             <view class="staff-realname">管理员</view>
             <view class="staff-text-wrapper">
-                <view class="staff-allocation-time">派单时间: 2018/8/1</view>
+                <view class="staff-allocation-time">派单时间: {{latestDate}}</view>
                 <view class="staff-detail">
-                    <text class="staff-estate-number no-padding-left delimeter {{activeIndex===0?'highlight-color':''}}" >总单数6</text>
-                    <text class="staff-estate-number delimeter {{activeIndex===1?'highlight-color':''}}">已看2</text>
-                    <text class="staff-estate-number no-border-right {{activeIndex===2?'highlight-color':''}}">未看4</text>
+                    <text class="staff-estate-number no-padding-left delimeter {{activeIndex===0?'highlight-color':''}}" >总单数{{totalNum}}</text>
+                    <text class="staff-estate-number delimeter {{activeIndex===1?'highlight-color':''}}">已看{{visitedNum}}</text>
+                    <text class="staff-estate-number no-border-right {{activeIndex===2?'highlight-color':''}}">未看{{unvisitedNum}}</text>
                 </view>
+            </view>
+            <!--数据统计-->
+            <view class="statistic-btn" bindtap="goToStatisticPage">
+                数据统计
             </view>
         </view>
     </view>
@@ -33,18 +37,61 @@
     <!--搜索-->
     <view class="weui-search-bar" id="weui-search-bar">
         <view class="weui-search-bar__form">
-            <view class="weui-search-bar__box">
+            <view class="weui-search-bar__box pos-relative">
                 <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
-                <input type="text" class="weui-search-bar__input" placeholder="搜索" placeholder-class="plac" bindinput="searchInput" />
+                <input type="text"
+                       class="weui-search-bar__input"
+                       placeholder="搜索"
+                       value="{{searchKeywords}}"
+                       placeholder-class="plac"
+                       bindinput="searchInput"
+                />
+                <icon type="clear" size="{{15}}" class="clear-search-input {{searchKeywords.length>0?'clear-icon-show':''}}" bindtap="clearSearchInput"/>
             </view>
         </view>
         <view class="weui-search-bar__cancel-btn search-btn" bindtap="search">搜索</view>
     </view>
     <!--tab的内容区域,滑动视图-->
     <scroll-view style="height:{{scrollViewHeight}}px" scroll-y class="data-scroll-view">
+        <!--是否加载中-->
+        <block wx:if="{{isScrollViewLoading}}">
+            <view class="empty-result">
+                <image src="/assets/images/icon/loading.png" class="loading-img" mode="aspectFill"/>
+            </view>
+        </block>
+        <block wx:else>
+            <!--信息列表-->
+            <block wx:if="{{!isEstateListEmpty}}">
+                <block wx:for="{{estateListData}}" wx:key="{{index}}">
+                    <view class="estate-info-wrapper {{(index===estateListData.length-1)?'no-border-bottom':''}}">
+                        <!--右侧信息展示区域-->
+                        <view class="estate-info-detail">
+                            <view class="estate-info-line">
+                                <span class="estate-badge {{item.isVisit?'':'unvisit'}}">派单序号</span>
+                                <span class="estate-index ">{{item.estateIndex}} <span class="urgent">{{item.staffName}}</span></span>
+                            </view>
+                            <view class="estate-info-line">
+                                <span class="estate-badge {{item.isVisit?'':'unvisit'}}">联系电话</span>
+                                <span class="estate-index " >{{item.estateTelephone}}</span>
+                            </view>
+                            <view class="estate-info-line border-bottom">
+                                <span class="estate-badge {{item.isVisit?'':'unvisit'}}">房屋地址</span>
+                                <span class="estate-index ">{{item.estatePosition}}</span>
+                            </view>
+                            <!--是否完成-->
+                            <view class="estate-is-visit {{item.isVisit?'':'estate-is-unvisit'}}">
+                                {{item.isVisit?'已完成':'未完成'}}
+                            </view>
+                        </view>
+                    </view>
+                </block>
+            </block>
+            <block wx:else>
+                <!--无结果空白提示-->
+                <view class="empty-result">
+                    <image src="/assets/images/bg/empty.png" class="empty-img" mode="aspectFill"/>
+                </view>
+            </block>
+        </block>
     </scroll-view>
-    <!--数据统计-->
-    <view class="statistic-btn">
-        数据统计
-    </view>
 </view>

@@ -33,7 +33,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 3,
+			"current": 4,
 			"list": [
 				{
 					"id": -1,
@@ -56,7 +56,13 @@
 				{
 					"id": -1,
 					"name": "管理员首页",
-					"pathName": "pages/admin/index/index"
+					"pathName": "pages/admin/index/index",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "管理员历史页",
+					"pathName": "pages/admin/history/history"
 				}
 			]
 		}
