@@ -1,3 +1,6 @@
 {
-  "navigationBarTitleText":"数据统计"
+  "navigationBarTitleText":"数据统计",
+  "usingComponents": {
+    "ec-canvas": "../../_echarts/ec-canvas/ec-canvas"
+  }
 }

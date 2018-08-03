@@ -1,7 +1,10 @@
 <!--pages/admin/history/history.wxml-->
 <view class="history-wrapper">
-    <picker bindchange="bindPickerChange" value="{{index}}" range="{{timeSelectorArray}}">
-    </picker>
+    <!--图表-->
+    <ec-canvas id="mychart-dom-bar"
+               canvas-id="mychart-bar"
+               ec="{{ ec }}">
+    </ec-canvas>
 </view>
 <!--底部3个选择按钮-->
 <view class="bottom-btn-wrapper">
@@ -33,33 +36,65 @@
             <image src="/assets/images/icon/history-staff.png" class="bottom-btn-image" mode="scaleToFill"/>
         </view>
     </picker>
-    <view class="generate-graph-btn">生成统计图</view>
+    <view class="generate-graph-btn" bindtap="generateGraph">生成统计图</view>
 </view>
 
 <!--起止日期选择框-->
-<view class="start-end-time-overlay">
+<view class="start-end-time-overlay" wx:if="{{isStartTimeShow}}">
     <!--起始日期选择弹框-->
     <view class="start-time-modal">
         <view class="start-time-modal-title">
-            请选择起始时间
+            {{!isShowEndTimeSelector?'请选择起始时间':'请选择结束时间 (起始:'+startTimeYearResult+'/'+startTimeMonthResult+'/'+startTimeDayResult+')'}}
         </view>
-        <view class="start-time-picker-view">
-            <picker-view indicator-class="indicator-class"
-                         style="width: 100%; height: 300rpx;"
-                         bindchange="bindChange">
-                <picker-view-column >
-                    <view wx:for="{{startTimeYears}}" class="picker-view-column-view" >{{item}}年</view>
-                </picker-view-column>
-                <picker-view-column >
-                    <view wx:for="{{startTimeMonth}}" class="picker-view-column-view" >{{item}}月</view>
-                </picker-view-column>
-                <picker-view-column >
-                    <view wx:for="{{startTimeDay}}" class="picker-view-column-view" >{{item}}日</view>
-                </picker-view-column>
-            </picker-view>
-        </view>
-        <view class="start-time-btn">
-            确定
-        </view>
+        <block wx:if="{{isFetchingTime}}">
+            <view class="weui-loadmore loadmore-center">
+                <view class="weui-loading"></view>
+                <view class="weui-loadmore__tips">正在加载</view>
+            </view>
+        </block>
+        <block wx:else>
+            <block wx:if="{{!isShowEndTimeSelector}}">
+                <!--起始时间选择器-->
+                <view class="start-time-picker-view">
+                    <picker-view indicator-class="indicator-class"
+                                 style="width: 100%; height: 300rpx;"
+                                 bindchange="bindStartTimePickerViewChange">
+                        <picker-view-column >
+                            <view wx:for="{{startTimeYears}}" class="picker-view-column-view" wx:key="{{index}}">{{item}}年</view>
+                        </picker-view-column>
+                        <picker-view-column >
+                            <view wx:for="{{startTimeMonth}}" class="picker-view-column-view" wx:key="{{index}}">{{item}}月</view>
+                        </picker-view-column>
+                        <picker-view-column >
+                            <view wx:for="{{startTimeDay}}" class="picker-view-column-view" wx:key="{{index}}">{{item}}日</view>
+                        </picker-view-column>
+                    </picker-view>
+                </view>
+                <view class="start-time-btn" catchtap="selectStartTime">
+                    确定
+                </view>
+            </block>
+            <block wx:else>
+                <!--终止时间选择器-->
+                <view class="start-time-picker-view">
+                    <picker-view indicator-class="indicator-class"
+                                 style="width: 100%; height: 300rpx;"
+                                 bindchange="bindEndTimePickerViewChange">
+                        <picker-view-column >
+                            <view wx:for="{{startTimeYears}}" class="picker-view-column-view" wx:key="{{index}}">{{item}}年</view>
+                        </picker-view-column>
+                        <picker-view-column >
+                            <view wx:for="{{startTimeMonth}}" class="picker-view-column-view" wx:key="{{index}}">{{item}}月</view>
+                        </picker-view-column>
+                        <picker-view-column >
+                            <view wx:for="{{startTimeDay}}" class="picker-view-column-view" wx:key="{{index}}">{{item}}日</view>
+                        </picker-view-column>
+                    </picker-view>
+                </view>
+                <view class="start-time-btn" catchtap="selectEndTime">
+                    确定
+                </view>
+            </block>
+        </block>
     </view>
 </view>

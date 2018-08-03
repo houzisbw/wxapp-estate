@@ -29,7 +29,9 @@ var url = {
 	/** 管理员首页 **/
 	adminGetEstateDataUrl:localHost+'/wxApp/adminGetEstateData',
 	searchUrl:localHost+'/wxApp/search',
-	getStaffNameListUrl:localHost+'/wxApp/getStaffList'
+	getStaffNameListUrl:localHost+'/wxApp/getStaffList',
+	getTimeFromServerUrl:localHost+'/wxApp/getTimeFromServer',
+	getEstateGraphDataUrl:localHost+'/wxApp/getEstateGraphDataUrl'
 
 };
 //移动端测试的url
@@ -56,6 +58,8 @@ var mobileTestUrl = {
 	/** 管理员首页 **/
 	adminGetEstateDataUrl:mobileTestHost+'/wxApp/adminGetEstateData',
 	searchUrl:mobileTestHost+'/wxApp/search',
-	getStaffNameListUrl:mobileTestHost+'/wxApp/getStaffList'
+	getStaffNameListUrl:mobileTestHost+'/wxApp/getStaffList',
+	getTimeFromServerUrl:mobileTestHost+'/wxApp/getTimeFromServer',
+	getEstateGraphDataUrl:mobileTestHost+'/wxApp/getEstateGraphDataUrl'
 };
 module.exports = mobileTestUrl;

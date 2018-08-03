@@ -22,9 +22,26 @@ var staffListUrl = require('../url').getStaffNameListUrl;
 const getStaffList = (successHandler,failHandler,completeHandler)=>{
 	baseRequest('POST',{},staffListUrl,successHandler,failHandler,completeHandler);
 }
+//从服务器获取时间
+var getTimeFromServerUrl = require('../url').getTimeFromServerUrl;
+const getTimeFromServer = (successHandler,failHandler,completeHandler)=>{
+	baseRequest('POST',{},getTimeFromServerUrl,successHandler,failHandler,completeHandler);
+}
+//获取图表数据
+var getEstateGraphDataUrl = require('../url').getEstateGraphDataUrl;
+const getEstateGraphData = (chartType,startTimeStr,endTimeStr,staffName,successHandler,failHandler,completeHandler)=>{
+	baseRequest('POST',{
+		chartType:chartType,
+		startTimeStr:startTimeStr,
+		endTimeStr:endTimeStr,
+		staffName:staffName
+	},getEstateGraphDataUrl,successHandler,failHandler,completeHandler);
+}
 
 module.exports = {
 	adminGetEstateList,
 	searchEstateList,
-	getStaffList
+	getStaffList,
+	getTimeFromServer,
+	getEstateGraphData
 }
