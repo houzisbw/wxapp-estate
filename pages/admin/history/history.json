@@ -2,5 +2,6 @@
   "navigationBarTitleText":"数据统计",
   "usingComponents": {
     "ec-canvas": "../../_echarts/ec-canvas/ec-canvas"
-  }
+  },
+  "disableScroll": true
 }

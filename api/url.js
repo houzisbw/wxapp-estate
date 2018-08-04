@@ -7,7 +7,7 @@ var localHost = 'http://localhost:5000';
 //生产环境的地址
 var productionHost  = '';
 //手机端调试ip端口
-var mobileTestHost = 'http://192.168.0.102:5000';
+var mobileTestHost = 'http://192.168.0.100:5000';
 //各种接口的url地址
 var url = {
 	//测试服务器接口,生产环境需要修改前半部分，换成https

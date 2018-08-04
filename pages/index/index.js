@@ -135,7 +135,7 @@ Page({
 			}
 		},function(){
 			wx.showToast({
-				title: '数据读取错误!',
+				title: '数据读取错误!!',
 				image:'/assets/images/icon/toast_warning.png',
 				duration: 2000
 			})
@@ -157,6 +157,10 @@ Page({
 	},
 	//初始化首页数据
 	initData(){
+  	//如果是管理员跳转管理员界面
+		if(wx.getStorageSync('auth')==='0'){
+			wx.redirectTo({	url:'/pages/admin/index/index'})
+		}
 		//计算页面剩下的高度
 		this.caculateLeftHeightForScrollView();
 		//获取用户登录名

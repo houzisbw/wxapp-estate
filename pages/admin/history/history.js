@@ -12,9 +12,9 @@ function initChart(canvas, width, height) {
 		height: height
 	});
 	canvas.setChart(chart);
-
+	chart&&chart.showLoading();
 	var option = {
-		color: ['#37a2da', '#32c5e9', '#67e0e3'],
+		color: ['#39ac6a', '#ff5e50'],
 		tooltip: {
 			trigger: 'axis',
 			axisPointer: {            // 坐标轴指示器，坐标轴触发有效
@@ -22,7 +22,7 @@ function initChart(canvas, width, height) {
 			}
 		},
 		legend: {
-			data: ['热度', '正面', '负面']
+			data: ['已看', '未看']
 		},
 		grid: {
 			left: 20,
@@ -48,7 +48,7 @@ function initChart(canvas, width, height) {
 			{
 				type: 'category',
 				axisTick: { show: false },
-				data: ['汽车之家', '今日头条', '百度贴吧', '一点资讯', '微信', '微博', '知乎'],
+				data: [],
 				axisLine: {
 					lineStyle: {
 						color: '#999'
@@ -61,53 +61,27 @@ function initChart(canvas, width, height) {
 		],
 		series: [
 			{
-				name: '热度',
+				name: '已看',
 				type: 'bar',
+				stack:'one',
 				label: {
 					normal: {
-						show: true,
+						show: false,
 						position: 'inside'
 					}
 				},
-				data: [300, 270, 340, 344, 300, 320, 310],
-				itemStyle: {
-					// emphasis: {
-					//   color: '#37a2da'
-					// }
-				}
+				data: [],
 			},
 			{
-				name: '正面',
+				name: '未看',
 				type: 'bar',
-				stack: '总量',
+				stack: 'one',
 				label: {
 					normal: {
-						show: true
+						show: false
 					}
 				},
-				data: [120, 102, 141, 174, 190, 250, 220],
-				itemStyle: {
-					// emphasis: {
-					//   color: '#32c5e9'
-					// }
-				}
-			},
-			{
-				name: '负面',
-				type: 'bar',
-				stack: '总量',
-				label: {
-					normal: {
-						show: true,
-						position: 'left'
-					}
-				},
-				data: [-20, -32, -21, -34, -90, -130, -110],
-				itemStyle: {
-					// emphasis: {
-					//   color: '#67e0e3'
-					// }
-				}
+				data: [],
 			}
 		]
 	};
@@ -163,7 +137,8 @@ Page({
 		/** echarts 相关**/
 		ec: {
 			onInit: initChart
-		}
+		},
+		hasGraphData:true
 
   },
   //日期选择器change
@@ -174,8 +149,10 @@ Page({
     //如果选择的是自选(对应0)则弹框指引用户先选择起始日期，再选择结束日期
     if(e.detail.value==='0'){
     	this.setData({
-				isStartTimeShow:true
-			})
+				isStartTimeShow:true,
+				//隐藏图表防止遮住时间选择器
+				hasGraphData:false
+			});
 			//获取时间
 			this.getTodayTimeFromServer()
 		}else if(e.detail.value==='1'){
@@ -258,7 +235,7 @@ Page({
       }else{
 				//失败
 				wx.showToast({
-					title: '数据读取失败!',
+					title: '数据读取失败!!',
 					image:'/assets/images/icon/toast_warning.png',
 					duration: 2000
 				})
@@ -270,9 +247,7 @@ Page({
 				image:'/assets/images/icon/toast_warning.png',
 				duration: 2000
 			})
-    },function(){
-
-    })
+    },function(){})
   },
 	//点击自选按钮后从服务器获取今天的时间,不能从客户端获取，防止用户修改手机时间
 	getTodayTimeFromServer(){
@@ -474,7 +449,8 @@ Page({
 			isShowEndTimeSelector:false,
 			isStartTimeShow:false,
 			finalStartTimeStr:finalStartTimeStr,
-			finalEndTimeStr:finalEndTimeStr
+			finalEndTimeStr:finalEndTimeStr,
+			hasGraphData:true
 		})
 	},
 	//检查时间是否正确
@@ -485,6 +461,9 @@ Page({
 	},
 	//生成统计图
 	generateGraph: function(){
+		var self = this;
+		//开启加载;
+		chart&&chart.showLoading()
 		getEstateGraphData(
 				this.data.finalChartType,
 				this.data.finalStartTimeStr,
@@ -493,18 +472,114 @@ Page({
 		function(res){
 			//请求成功
 			if(res.data.status === 1){
-				console.log(res.data.dataArray)
+				//设置图表数据
+				self.setGraphData(res.data.type,res.data.dataArray)
+				self.setData({
+					hasGraphData:true
+				})
 			}else if(res.data.status === -1){
-
+				wx.showToast({
+					title: '查询错误!',
+					image:'/assets/images/icon/toast_warning.png',
+					duration: 2000
+				})
 			}else{
 				//结果为空
+				wx.showToast({
+					title: '无相关数据!',
+					image:'/assets/images/icon/toast_warning.png',
+					duration: 2000
+				});
+				chart&&chart.hideLoading();
+				//显示无数据的背景页面
+				self.setData({
+					hasGraphData:false
+				})
 			}
 		},function(){
 			//请求失败
+			wx.showToast({
+				title: '查询错误!',
+				image:'/assets/images/icon/toast_warning.png',
+				duration: 2000
+			})
 		},function(){
 			//请求完成
+			chart&&chart.hideLoading();
 		})
 	},
+	//设置图表结果,graphType是图表类型，house是房屋数量，staff是人员看房数
+	setGraphData: function(graphType,houseData){
+		if(graphType==='house'){
+			//初始化y轴列表
+			var yAxisData = houseData.map((item)=>{
+				var key = Object.keys(item)[0];
+				var splitted = key.split('-');
+				return splitted[0]+'/'+parseInt(splitted[1],10)+'/'+splitted[2]
+			});
+			//初始化已看列表
+			var visitedData = houseData.map((item)=>item[Object.keys(item)[0]].visit)
+			//初始化未看列表
+			var unvisitedData = houseData.map((item)=>item[Object.keys(item)[0]].unvisit)
+			//更新图表数据
+			chart&&chart.setOption({
+				yAxis: [
+					{
+						type: 'category',
+						axisTick: { show: false },
+						data: yAxisData,
+						axisLine: {
+							lineStyle: {
+								color: '#999'
+							}
+						},
+						axisLabel: {
+							color: '#666',
+							align:'right'
+						}
+					}
+				],
+				xAxis:[{
+					minInterval:1
+				}],
+				series: [
+					{
+						name: '已看',
+						type: 'bar',
+						stack:'one',
+						label: {
+							normal: {
+								show: false,
+								position: 'inside'
+							}
+						},
+						data: visitedData,
+					},
+					{
+						name: '未看',
+						type: 'bar',
+						stack: 'one',
+						label: {
+							normal: {
+								show: false
+							}
+						},
+						data: unvisitedData,
+					}
+				],
+				dataZoom: [
+					{
+						type: 'slider',
+						show: true,
+						yAxisIndex: [0],
+						left: '93%'
+					}
+
+				]
+			});
+		}
+	},
+
   /**
    * 生命周期函数--监听页面加载
    */
@@ -516,7 +591,7 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-  
+		this.generateGraph();
   },
 
   /**

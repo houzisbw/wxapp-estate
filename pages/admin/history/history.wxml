@@ -1,10 +1,16 @@
 <!--pages/admin/history/history.wxml-->
 <view class="history-wrapper">
-    <!--图表-->
-    <ec-canvas id="mychart-dom-bar"
-               canvas-id="mychart-bar"
-               ec="{{ ec }}">
-    </ec-canvas>
+    <!--图表,这里不能用wx:if会出bug，而且性能不好-->
+    <view class="graph-wrapper" hidden="{{!hasGraphData}}">
+        <ec-canvas id="mychart-dom-bar"
+                   canvas-id="mychart-bar"
+                   ec="{{ ec }}">
+        </ec-canvas>
+    </view>
+    <view class="empty-wrapper" hidden="{{hasGraphData}}">
+        <image src="/assets/images/bg/empty.png" class="empty-img">
+        </image>
+    </view>
 </view>
 <!--底部3个选择按钮-->
 <view class="bottom-btn-wrapper">
