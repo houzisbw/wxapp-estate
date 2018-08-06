@@ -22,7 +22,7 @@ function initChart(canvas, width, height) {
 			}
 		},
 		legend: {
-			data: ['已看', '未看']
+			data: ['已看', '未看'],
 		},
 		grid: {
 			left: 20,
@@ -98,8 +98,9 @@ Page({
   data: {
     //底部3个选择器的数据结构
 		timeSelectorArray:['自选','本周','本月'],
-    chartTypeArray:['看房数量','接单数量'],
+    chartTypeArray:['总体看房情况','个人看房情况'],
     staffNameList:['-全部-'],
+		realStaffNameList:[],
     //3个选择器选中的结果index
     timeSelectedIndex:1,
     chartSelectedIndex:0,
@@ -134,12 +135,19 @@ Page({
 		finalStaffName:'',
 		//最终发给后台的图表类型,分为house,staff 2种
 		finalChartType:'house',
+		//是否正在获取图表数据
+		isFetchingGraphData:false,
 		/** echarts 相关**/
 		ec: {
 			onInit: initChart
 		},
-		hasGraphData:true
-
+		hasGraphData:true,
+		//总共已看的数量
+		totalVisitedNum:0,
+		//总共未看的数量
+		totalUnvisitedNum:0,
+		//图表类型(house,staff)默认house
+		graphType:'house'
   },
   //日期选择器change
 	bindTimeSelectorChange: function(e){
@@ -185,11 +193,11 @@ Page({
 		let d = new Date();
 		finalEndTimeStr = d.getFullYear()+'-'
 				+((d.getMonth()+1)<10?('0'+(d.getMonth()+1)):(d.getMonth()+1))
-				+'-'+d.getDate();
+				+'-'+(d.getDate()<10?('0'+d.getDate()):d.getDate());
 		d.setDate(1);
 		finalStartTimeStr = d.getFullYear()+'-'+
 				((d.getMonth()+1)<10?('0'+(d.getMonth()+1)):(d.getMonth()+1))
-				+'-'+d.getDate();
+				+'-'+(d.getDate()<10?('0'+d.getDate()):d.getDate());
 		this.setData({
 			finalStartTimeStr:finalStartTimeStr,
 			finalEndTimeStr:finalEndTimeStr
@@ -202,7 +210,7 @@ Page({
 		let d = new Date();
 		finalEndTimeStr = d.getFullYear()+'-'
 				+((d.getMonth()+1)<10?('0'+(d.getMonth()+1)):(d.getMonth()+1))
-				+'-'+d.getDate();
+				+'-'+(d.getDate()<10?('0'+d.getDate()):d.getDate());
 		//判断是否是周末
 		var isWeekend = d.getDay() === 0 || d.getDay()=== 6;
 		if(isWeekend){
@@ -213,7 +221,7 @@ Page({
 		}
 		finalStartTimeStr = d.getFullYear()+'-'+
 				((d.getMonth()+1)<10?('0'+(d.getMonth()+1)):(d.getMonth()+1))
-				+'-'+d.getDate();
+				+'-'+(d.getDate()<10?('0'+d.getDate()):d.getDate());
 		this.setData({
 			finalStartTimeStr:finalStartTimeStr,
 			finalEndTimeStr:finalEndTimeStr
@@ -461,7 +469,14 @@ Page({
 	},
 	//生成统计图
 	generateGraph: function(){
+		if(this.data.isFetchingGraphData){
+			return
+		}
 		var self = this;
+		self.setData({
+			isFetchingGraphData:true,
+			graphType:this.data.finalChartType
+		});
 		//开启加载;
 		chart&&chart.showLoading()
 		getEstateGraphData(
@@ -475,7 +490,9 @@ Page({
 				//设置图表数据
 				self.setGraphData(res.data.type,res.data.dataArray)
 				self.setData({
-					hasGraphData:true
+					hasGraphData:true,
+					totalVisitedNum:res.data.totalVisitedNum,
+					totalUnvisitedNum:res.data.totalUnvisitedNum
 				})
 			}else if(res.data.status === -1){
 				wx.showToast({
@@ -506,6 +523,9 @@ Page({
 		},function(){
 			//请求完成
 			chart&&chart.hideLoading();
+			self.setData({
+				isFetchingGraphData:false
+			});
 		})
 	},
 	//设置图表结果,graphType是图表类型，house是房屋数量，staff是人员看房数
@@ -522,61 +542,128 @@ Page({
 			//初始化未看列表
 			var unvisitedData = houseData.map((item)=>item[Object.keys(item)[0]].unvisit)
 			//更新图表数据
-			chart&&chart.setOption({
-				yAxis: [
-					{
-						type: 'category',
-						axisTick: { show: false },
-						data: yAxisData,
-						axisLine: {
-							lineStyle: {
-								color: '#999'
-							}
-						},
-						axisLabel: {
-							color: '#666',
-							align:'right'
-						}
-					}
-				],
-				xAxis:[{
-					minInterval:1
-				}],
-				series: [
-					{
-						name: '已看',
-						type: 'bar',
-						stack:'one',
-						label: {
-							normal: {
-								show: false,
-								position: 'inside'
-							}
-						},
-						data: visitedData,
-					},
-					{
-						name: '未看',
-						type: 'bar',
-						stack: 'one',
-						label: {
-							normal: {
-								show: false
-							}
-						},
-						data: unvisitedData,
-					}
-				],
-				dataZoom: [
-					{
-						type: 'slider',
-						show: true,
-						yAxisIndex: [0],
-						left: '93%'
-					}
-
-				]
+			chart&&chart.setOption(this.getHouseTotalOption(yAxisData,visitedData,unvisitedData));
+		}else{
+			//看房人员看房具体数量
+			//初始化y轴数据
+			var yAxisData = houseData.map((item)=>{
+				return Object.keys(item)[0]
 			});
+			//得到看房[人员名字，已看，未看]的数组
+			var staffVisitList = houseData.map((item)=>{
+				let key = Object.keys(item)[0];
+				return [key,item[key].visit,item[key].unvisit]
+			});
+
+			this.setData({
+				realStaffNameList:staffVisitList
+			});
+
+			//初始化已看列表
+			var visitedData = houseData.map((item)=>item[Object.keys(item)[0]].visit);
+			//初始化未看列表
+			var unvisitedData = houseData.map((item)=>item[Object.keys(item)[0]].unvisit);
+			//更新图表数据
+			chart&&chart.setOption(this.getHouseStaffOption(yAxisData,visitedData,unvisitedData));
+		}
+	},
+
+	//获取看房人员option配置信息
+	getHouseStaffOption: function(yAxisData,visitedData,unvisitedData){
+		return {
+			yAxis: [
+				{
+					type: 'category',
+					axisTick: { show: false },
+					data: yAxisData,
+					axisLine: {
+						lineStyle: {
+							color: '#999'
+						}
+					},
+					axisLabel: {
+						color: '#666',
+						align:'right'
+					}
+				}
+			],
+			xAxis:[{
+				minInterval:1
+			}],
+			series: [
+				{
+					name: '已看',
+					type: 'bar',
+					stack:'one',
+					label: {
+						normal: {
+							show: false,
+							position: 'inside'
+						}
+					},
+					data: visitedData,
+				},
+				{
+					name: '未看',
+					type: 'bar',
+					stack: 'one',
+					label: {
+						normal: {
+							show: false
+						}
+					},
+					data: unvisitedData,
+				}
+			]
+		}
+	},
+	//获取看房总数option配置信息
+	getHouseTotalOption: function(yAxisData,visitedData,unvisitedData){
+		return {
+			yAxis: [
+				{
+					type: 'category',
+					axisTick: { show: false },
+					data: yAxisData,
+					axisLine: {
+						lineStyle: {
+							color: '#999'
+						}
+					},
+					axisLabel: {
+						color: '#666',
+						align:'right'
+					}
+				}
+			],
+			xAxis:[{
+				minInterval:1
+			}],
+			series: [
+				{
+					name: '已看',
+					type: 'bar',
+					stack:'one',
+					label: {
+						normal: {
+							show: false,
+							position: 'inside'
+						}
+					},
+					data: visitedData,
+				},
+				{
+					name: '未看',
+					type: 'bar',
+					stack: 'one',
+					label: {
+						normal: {
+							show: false
+						}
+					},
+					data: unvisitedData,
+				}
+			]
 		}
 	},
 

@@ -57,10 +57,6 @@
         <cover-view class="best-route-overlay" wx:if="{{isShowBestRouteOverlay}}" bindtap="closeBestRoute">
             <!--弹窗-->
             <cover-view class="best-route-pop-up">
-                <!--关闭按钮-->
-                <!--<cover-view class="close-best-route" bindtap="closeBestRoute">-->
-                    <!--<cover-image src="/assets/images/icon/close_feedback.png" class="close-best-route-img"></cover-image>-->
-                <!--</cover-view>-->
                 <!--标题-->
                 <cover-view class="best-route-detail-title">路线详情-{{bestDistance}}-{{pathDuration}}</cover-view>
                 <cover-view class="sep-line"></cover-view>

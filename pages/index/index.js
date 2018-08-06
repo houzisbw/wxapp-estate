@@ -82,12 +82,14 @@ Page({
 					duration: 2000
 				})
 			}else if(status === 0){
-				//数据为空
-				wx.showToast({
-					title: '没有查询到记录!',
-					image:'/assets/images/icon/toast_warning.png',
-					duration: 2000
-				});
+				//数据为空,且不是管理员
+				if(wx.getStorageSync('auth')!=='0'){
+					wx.showToast({
+						title: '没有查询到记录!',
+						image:'/assets/images/icon/toast_warning.png',
+						duration: 2000
+					});
+				}
 				self.setData({
 					isEstateListEmpty:true
 				})
@@ -191,6 +193,15 @@ Page({
 		var phoneNumber = e.currentTarget.dataset.phone;
 		wx.makePhoneCall({
 			phoneNumber: phoneNumber?phoneNumber.toString():''
+		})
+	},
+	//显示反馈信息
+	showFeedback: function(e){
+		let info = e.currentTarget.dataset.feedback;
+		wx.showModal({
+			title:'反馈信息',
+			content:info,
+			showCancel:false
 		})
 	},
   /**

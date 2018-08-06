@@ -14,6 +14,9 @@ var myAmapFun;
 //util
 var secondToHourMinute = require('../../utils/util').secondToHourMinute;
 var meterToKM = require('../../utils/util').meterToKM;
+
+//邻接矩阵，不放在data里，因为数据量太大超过1024kb
+var adjacentMatrix = [];
 Page({
 
   /**
@@ -50,9 +53,6 @@ Page({
 		//地图上所有marker的坐标信息对象,key为房屋index，value为经纬度对象
 		totalMarkersPositionObj:{},
 
-
-
-
 		/** 智能路线计算相关数据结构 **/
 
 		/**
@@ -75,8 +75,6 @@ Page({
 		bestDistance:'',
 		//总耗时
 		pathDuration:''
-
-
   },
   //初始化地图数据
   initMapData(){
@@ -88,6 +86,7 @@ Page({
     var username = wx.getStorageSync('username');
 		var self = this;
     //数据初始化
+		adjacentMatrix=[];
 		self.setData({
 			isInitialState:true,
 			currentTapIndex:'',
@@ -427,8 +426,8 @@ Page({
 			});
 			return
 		}
-		//判断房屋个数是否大于10个
-		if(len>10){
+		//判断房屋个数是否大于上限
+		if(len>config.smartRouteHouseLimit){
 			wx.showToast({
 				title: '房屋数量过多!',
 				image:'/assets/images/icon/toast_warning.png',
@@ -499,16 +498,16 @@ Page({
 		var clockwisePath = [],clockwiseDistance = 0,clockwiseDuration = 0;
 		for(let i=0;i<bestPath.length-1;i++){
 			let path = bestPath[i];
-			clockwiseDistance += this.data.adjacentMatrix[path[0]][path[1]][0];
-			clockwiseDuration += this.data.adjacentMatrix[path[0]][path[1]][1];
+			clockwiseDistance += adjacentMatrix[path[0]][path[1]][0];
+			clockwiseDuration += adjacentMatrix[path[0]][path[1]][1];
 			clockwisePath.push([path[0],path[1]]);
 		}
 		//逆时针计算路程
 		var antiClockwisePath = [], antiClockwiseDistance = 0, antiClockwiseDurantion = 0;
 		for(let i=1;i<bestPath.length;i++){
 			let path = bestPath[i];
-			antiClockwiseDistance += this.data.adjacentMatrix[path[0]][path[1]][0];
-			antiClockwiseDurantion += this.data.adjacentMatrix[path[0]][path[1]][1];
+			antiClockwiseDistance += adjacentMatrix[path[0]][path[1]][0];
+			antiClockwiseDurantion += adjacentMatrix[path[0]][path[1]][1];
 			antiClockwisePath.push([path[0],path[1]]);
 		}
 		//最佳路径
@@ -520,7 +519,7 @@ Page({
 		var tempPathDetailInfo = [];
 		finalBestPath.forEach((path,index)=>{
 			pathPointsArray.push({
-				points: this.data.adjacentMatrix[path[0]][path[1]][2],
+				points: adjacentMatrix[path[0]][path[1]][2],
 				color: "#39ac6a",
 				width: 7,
 				borderColor:'#5b5b5b',
@@ -530,8 +529,8 @@ Page({
 			tempPathDetailInfo.push({
 				start:this.data.adjacentMatrixToIndexMap[path[1]],
 				end:this.data.adjacentMatrixToIndexMap[path[0]],
-				duration:secondToHourMinute(this.data.adjacentMatrix[path[0]][path[1]][1]),
-				distance:meterToKM(this.data.adjacentMatrix[path[0]][path[1]][0])
+				duration:secondToHourMinute(adjacentMatrix[path[0]][path[1]][1]),
+				distance:meterToKM(adjacentMatrix[path[0]][path[1]][0])
 			})
 		});
 		this.setData({
@@ -554,7 +553,7 @@ Page({
 		var promise = this.initAdjacentMatrix(index);
 		promise.then(()=>{
 			//通过算法算出最短路径
-			this.travelingProblemSolver(this.data.adjacentMatrix)
+			this.travelingProblemSolver(adjacentMatrix)
 		});
 	},
 	//初始化邻接矩阵,只计算未看的房屋
@@ -593,10 +592,10 @@ Page({
 					tempMatrix[parseInt(item.i,10)][parseInt(item.j,10)] = [parseInt(item.distance,10),parseInt(item.duration,10),item.path];
 					tempMatrix[parseInt(item.j,10)][parseInt(item.i,10)] = [parseInt(item.distance,10),parseInt(item.duration,10),item.path];
 				});
+				adjacentMatrix = tempMatrix
 				self.setData({
-					adjacentMatrix:tempMatrix,
 					polyline:[]
-				})
+				});
 				resolve()
 			}).catch((error) => {
 				wx.hideLoading();

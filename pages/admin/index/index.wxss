@@ -279,3 +279,21 @@
 .pos-relative{
     position: relative;
 }
+/* 底部退出 */
+.admin-logout{
+    position: fixed;
+    right:30rpx;
+    bottom:30rpx;
+    height:60rpx;
+    width:60rpx;
+    background-color: #ff503a;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items:center;
+}
+.admin-logout-img{
+    width:70%;
+    height:70%;
+    z-index:100000;
+}

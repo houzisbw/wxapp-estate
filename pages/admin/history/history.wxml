@@ -2,15 +2,51 @@
 <view class="history-wrapper">
     <!--图表,这里不能用wx:if会出bug，而且性能不好-->
     <view class="graph-wrapper" hidden="{{!hasGraphData}}">
+        <view class="graph-title">
+            {{finalStartTimeStr}}至{{finalEndTimeStr}}{{finalChartType==='house'?'看房详情':'个人看房详情'}}
+        </view>
+        <view class="sep-line">
+        </view>
         <ec-canvas id="mychart-dom-bar"
                    canvas-id="mychart-bar"
                    ec="{{ ec }}">
         </ec-canvas>
+        <view class="sep-line">
+        </view>
+        <!--已看未看数量-->
+        <view class="visit-num-wrapper">
+            <view class="visit-num-line">
+                <view class="visit-title">已看数量</view>
+                <view class="visit-num">
+                    <view class="visit-word">{{totalVisitedNum}}</view>
+                </view>
+            </view>
+            <view class="visit-num-line no-border">
+                <view class="visit-title">未看数量</view>
+                <view class="visit-num">
+                    <view class="unvisit-word">{{totalUnvisitedNum}}</view>
+                </view>
+            </view>
+        </view>
+        <view class="sep-line">
+        </view>
+        <!--个人看房情况-->
+        <view class="personal-house-num-wrapper" wx:if="{{graphType==='staff'}}">
+            <block wx:for="{{realStaffNameList}}" wx:key="{{index}}">
+                <view class="visit-num-line {{index!==staffNameList.length-1?'no-border':''}}">
+                    <view class="visit-title">{{item[0]}}</view>
+                    <view class="visit-num">
+                        <view class="visit-word">{{item[1]}}/{{item[1]+item[2]}}</view>
+                    </view>
+                </view>
+            </block>
+        </view>
     </view>
     <view class="empty-wrapper" hidden="{{hasGraphData}}">
         <image src="/assets/images/bg/empty.png" class="empty-img">
         </image>
     </view>
+
 </view>
 <!--底部3个选择按钮-->
 <view class="bottom-btn-wrapper">

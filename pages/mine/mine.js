@@ -139,6 +139,8 @@ Page({
 		})
 	},
   onLoad: function (options) {
+		//数据只在onload里更新一次，不在onshow里更新，否则页面频繁闪烁
+		this.initData();
   },
 
   /**
@@ -152,7 +154,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-		this.initData();
+
   },
 
   /**

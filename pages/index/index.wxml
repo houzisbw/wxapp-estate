@@ -65,6 +65,16 @@
                             <view class="estate-is-visit {{item.isVisit?'':'estate-is-unvisit'}}">
                                 {{item.isVisit?'已完成':'未完成'}}
                             </view>
+                            <!--是否反馈-->
+                            <view class="estate-is-feedback"
+                                  data-feedback="{{item.feedback}}"
+                                  catchtap="showFeedback"
+                                  wx:if="{{item.isFeedback}}">
+                                已反馈
+                            </view>
+                            <view class="estate-is-feedback estate-is-unfeedback" wx:else>
+                                未反馈
+                            </view>
                         </view>
                     </view>
                 </block>

@@ -1,6 +1,7 @@
 // pages/admin/index/index.js
 var adminGetEstateList = require('./../../../api/admin/index').adminGetEstateList;
 var searchEstateList = require('./../../../api/admin/index').searchEstateList;
+var logoutInterface = require('./../../../api/mine').logout;
 Page({
 
   /**
@@ -185,6 +186,30 @@ Page({
 	goToStatisticPage: function(){
 		wx.navigateTo({
 			url:'/pages/admin/history/history'
+		})
+	},
+	//登出
+	adminLogout: function(){
+		let self = this;
+		wx.showModal({
+			content:'确定退出登录?',
+			title:'提示',
+			success: function(res) {
+				//确定退出
+				if (res.confirm) {
+					//清除storage相关内容
+					logoutInterface(self.data.username,function(res){
+						//必须在后台清除完session后才能清除本机缓存，否则cookie无法传达给后台
+						wx.clearStorageSync();
+						//退出成功,跳转登录页
+						wx.redirectTo({
+							url:'/pages/login/login'
+						})
+					},function(){
+						//退出失败
+					})
+				}
+			}
 		})
 	},
 

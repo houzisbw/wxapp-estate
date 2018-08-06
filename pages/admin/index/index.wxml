@@ -94,4 +94,8 @@
             </block>
         </block>
     </scroll-view>
+    <!--底部退出登录按钮-->
+    <view class="admin-logout" catchtap="adminLogout">
+        <image src="/assets/images/icon/admin_logout.png" mode="aspectFill" class="admin-logout-img"/>
+    </view>
 </view>

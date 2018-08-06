@@ -128,17 +128,31 @@ page{
 }
 .estate-is-visit{
     position: absolute;
-    right:0;
-    top:-20rpx;
+    right:10rpx;
+    top:-10rpx;
     font-size: 20rpx;
-    border-radius: 0 10rpx 0 0;
+    border-radius: 10rpx;
     padding:10rpx;
     color:#fff;
-    background-color: #1aad19;
+    background-color: #39ac6a;
     line-height: 1;
 }
+.estate-is-feedback{
+    position: absolute;
+    right:95rpx;
+    top:-10rpx;
+    font-size: 20rpx;
+    border-radius: 10rpx;
+    padding:10rpx;
+    color:#fff;
+    background-color: #39ac6a;
+    line-height: 1;
+}
+.estate-is-unfeedback{
+    background-color: #c4c4c4;
+}
 .estate-is-unvisit{
-    background-color: #ff9e1e;
+    background-color: #c4c4c4;
 }
 
 .estate-info-line{
@@ -155,7 +169,7 @@ page{
     /*line-height不写1，否则对不齐*/
     line-height: 30rpx;
     text-align: center;
-    background-color: #1aad19;
+    background-color: #39ac6a;
     padding:0 5rpx;
     color:#fff;
     display: inline-block;
@@ -187,7 +201,7 @@ page{
     margin-top: 6rpx;
 }
 .unvisit{
-    background-color: #ff9e1e;
+    background-color: #39ac6a;
 }
 .unvisit-color{
     color:#ff9e1e;
@@ -211,7 +225,7 @@ page{
     height:64rpx;
 }
 .highlight-color{
-    color:#1aad19;
+    color:#39ac6a;
     font-size: 29rpx;
 }
 /*按下去的样式*/
@@ -220,7 +234,7 @@ page{
 }
 .urgent{
     color: #fff;
-    background-color:#c5301d ;
+    background-color:#6299c2 ;
     box-sizing: border-box;
     display: inline-block;
     font-size: 20rpx;
