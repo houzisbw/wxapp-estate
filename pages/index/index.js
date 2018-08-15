@@ -96,7 +96,8 @@ Page({
 			}else{
 				//数据获取成功
 				self.setData({
-					estateListData:res.data.estateData.estateData
+					estateListData:res.data.estateData.estateData,
+					isEstateListEmpty:false
 				})
 			}
 
@@ -121,7 +122,7 @@ Page({
 			if(status === 1){
 				var data = res.data;
 				self.setData({
-					avatarUrl:data.avatarUrl,
+					avatarUrl:data.avatarUrl?data.avatarUrl:'/assets/images/icon/avatar.png',
 					realname:data.realname,
 					latestDate:data.latestDate,
 					totalNum:data.staffEstateTotalNum,

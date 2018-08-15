@@ -109,9 +109,14 @@ Page({
 
 	//跳转到历史数据
 	goToHistoryPage: function(){
-		wx.navigateTo({
-			url:"/pages/history/history"
+		wx.showToast({
+			title: '该功能日后开发!',
+			image:'/assets/images/icon/toast_warning.png',
+			duration: 2000
 		})
+		// wx.navigateTo({
+		// 	url:"/pages/history/history"
+		// })
 	},
 
 	//退出登录

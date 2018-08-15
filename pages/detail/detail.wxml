@@ -28,82 +28,84 @@
     </view>
     <!--操作界面-->
     <view class="info-area">
-        <!--是否看房-->
-        <view class="visit-badge-wrapper">
-            <view class="visit-badge {{estateDetailObj.isVisit?'':'no-visit-color'}}">
-                {{estateDetailObj.isVisit?'已看':'未看'}}
+        <view class="info-area-wrapper">
+            <!--是否看房-->
+            <view class="visit-badge-wrapper">
+                <view class="visit-badge {{estateDetailObj.isVisit?'':'no-visit-color'}}">
+                    {{estateDetailObj.isVisit?'已看':'未看'}}
+                </view>
+            </view>
+            <!--具体房屋信息-->
+            <view class="detail-estate-info">
+                <view class="detail-estate-title">
+                    房屋信息
+                </view>
+                <view class="detail-estate-item-wrapper">
+                    <view class="detail-estate-item-title">
+                        房屋序号 :
+                    </view>
+                    <view class="detail-estate-item-desc">
+                        {{estateDetailObj.index!==undefined?estateDetailObj.index:'无'}}
+                    </view>
+                </view>
+                <view class="detail-estate-item-wrapper">
+                    <view class="detail-estate-item-title">
+                        分配日期 :
+                    </view>
+                    <view class="detail-estate-item-desc">
+                        {{estateDetailObj.date!==undefined?estateDetailObj.date:'无'}}
+                    </view>
+                </view>
+                <view class="detail-estate-item-wrapper">
+                    <view class="detail-estate-item-title">
+                        业务来源 :
+                    </view>
+                    <view class="detail-estate-item-desc">
+                        {{estateDetailObj.bank!==undefined?(estateDetailObj.bank+estateDetailObj.company):'无'}}
+                    </view>
+                </view>
+                <view class="detail-estate-item-wrapper">
+                    <view class="detail-estate-item-title">
+                        房屋面积 :
+                    </view>
+                    <view class="detail-estate-item-desc">
+                        {{estateDetailObj.area!==undefined?(estateDetailObj.area+'平方米'):'无'}}
+                    </view>
+                </view>
+                <view class="detail-estate-item-wrapper">
+                    <view class="detail-estate-item-title">
+                        联系电话 :
+                    </view>
+                    <view class="detail-estate-item-desc">
+                        {{estateDetailObj.telephone!==undefined?(estateDetailObj.telephone):'无'}}
+                    </view>
+                    <view class="check-detail-address"
+                          data-telephone="{{estateDetailObj.telephone}}"
+                          bindtap="dialPhone"
+                    >
+                        拨打电话
+                    </view>
+                </view>
+                <view class="detail-estate-item-wrapper">
+                    <view class="detail-estate-item-title">
+                        房屋地址 :
+                    </view>
+                    <view class="detail-estate-item-desc">
+                        {{estateDetailObj.roadNumber!==undefined?(estateDetailObj.roadNumber+estateDetailObj.detailPosition):'无'}}
+                    </view>
+                    <view class="check-detail-address"
+                          data-addr="{{estateDetailObj.roadNumber+estateDetailObj.detailPosition}}"
+                          bindtap="showAddressInfo"
+                    >
+                        查看详情
+                    </view>
+                </view>
             </view>
         </view>
-        <!--具体房屋信息-->
-        <view class="detail-estate-info">
-            <view class="detail-estate-title">
-                房屋信息
-            </view>
-            <view class="detail-estate-item-wrapper">
-                <view class="detail-estate-item-title">
-                    房屋序号 :
-                </view>
-                <view class="detail-estate-item-desc">
-                    {{estateDetailObj.index!==undefined?estateDetailObj.index:'无'}}
-                </view>
-            </view>
-            <view class="detail-estate-item-wrapper">
-                <view class="detail-estate-item-title">
-                    分配日期 :
-                </view>
-                <view class="detail-estate-item-desc">
-                    {{estateDetailObj.date!==undefined?estateDetailObj.date:'无'}}
-                </view>
-            </view>
-            <view class="detail-estate-item-wrapper">
-                <view class="detail-estate-item-title">
-                    业务来源 :
-                </view>
-                <view class="detail-estate-item-desc">
-                    {{estateDetailObj.bank!==undefined?(estateDetailObj.bank+estateDetailObj.company):'无'}}
-                </view>
-            </view>
-            <view class="detail-estate-item-wrapper">
-                <view class="detail-estate-item-title">
-                    房屋面积 :
-                </view>
-                <view class="detail-estate-item-desc">
-                    {{estateDetailObj.area!==undefined?(estateDetailObj.area+'平方米'):'无'}}
-                </view>
-            </view>
-            <view class="detail-estate-item-wrapper">
-                <view class="detail-estate-item-title">
-                    联系电话 :
-                </view>
-                <view class="detail-estate-item-desc">
-                    {{estateDetailObj.telephone!==undefined?(estateDetailObj.telephone):'无'}}
-                </view>
-                <view class="check-detail-address"
-                      data-telephone="{{estateDetailObj.telephone}}"
-                      bindtap="dialPhone"
-                >
-                    拨打电话
-                </view>
-            </view>
-            <view class="detail-estate-item-wrapper">
-                <view class="detail-estate-item-title">
-                    房屋地址 :
-                </view>
-                <view class="detail-estate-item-desc">
-                    {{estateDetailObj.roadNumber!==undefined?(estateDetailObj.roadNumber+estateDetailObj.detailPosition):'无'}}
-                </view>
-                <view class="check-detail-address"
-                      data-addr="{{estateDetailObj.roadNumber+estateDetailObj.detailPosition}}"
-                      bindtap="showAddressInfo"
-                >
-                    查看详情
-                </view>
-            </view>
+        <!--反馈按钮-->
+        <view class="feedback-btn" bindtap="showFeedbackLayer">
+            <view class="text-wrapper">看房反馈</view>
         </view>
-    </view>
-    <!--反馈按钮-->
-    <view class="feedback-btn" bindtap="showFeedbackLayer">
-        看房反馈
     </view>
     <view class="feedback-wrapper" animation="{{feedbackPanelAnimationData}}">
         <!--和输入页面对应-->
@@ -160,7 +162,7 @@
                 {{isInFeedbacking?'提交中...':'提交反馈'}}
             </view>
         </view>
-        <view class="feedback-detail-input {{isInInputMode?'feedback-input-active':'feedback-input-inactive'}}" >
+        <view class="feedback-detail-input {{isInInputMode?'feedback-input-active-block':'feedback-input-inactive'}}" >
             <view class="feedback-detail-input-title">
                 <view class="feedback-other-reason">其他原因</view>
                 <view class="feedback-input-return" bindtap="closeInputPage">完成</view>

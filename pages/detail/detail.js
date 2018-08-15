@@ -191,7 +191,8 @@ Page({
 				//查询成功
 				//获取输入框的值
 				var textareaValue = res.data.estateDetail.feedback;
-				var realValue = textareaValue.split(self.data.delimeter)[1];
+				//初始情况下textareaValue为空字符串
+				var realValue = textareaValue?textareaValue.split(self.data.delimeter)[1]:'';
 				self.setData({
 					estateDetailObj:res.data.estateDetail,
 					feedbackSwitch:res.data.estateDetail.isVisit,
