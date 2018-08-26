@@ -5,10 +5,10 @@
     "pages/mine/mine",
     "pages/map/map",
     "pages/detail/detail",
-    "component/modal/modal",
     "pages/history/history",
     "pages/admin/index/index",
-    "pages/admin/history/history"
+    "pages/admin/history/history",
+    "pages/form/form"
   ],
   "window": {
     "backgroundTextStyle": "light",

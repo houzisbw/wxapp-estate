@@ -36,11 +36,11 @@
         </cover-view>
         <!--地图顶部信息栏-->
         <cover-view class="top-bar-info {{isInitialState?'hide':'show'}}">
-            <cover-view class="top-bar-left">
+            <cover-view class="top-bar-left" bindtap="goToDetailPage" data-index="{{currentTapIndex}}">
                 <cover-view class="top-bar-info-wrapper ">
                     房屋序号: {{currentTapIndex}}
                     <cover-view class="badge-visit {{currentIsVisit?'visited-color':'unvisited-color'}}">
-                        {{currentIsVisit?'已看':'未看'}}
+                        {{currentIsVisit?'已反馈':'未反馈'}}
                     </cover-view>
                 </cover-view>
                 <cover-view class="top-bar-info-wrapper">房屋地址: {{currentTapPosition}}</cover-view>
@@ -51,7 +51,7 @@
         </cover-view>
         <cover-view class="top-bar-info {{!isInitialState?'hide':'show top-bar-info-center'}}">
             <!--初始状态-->
-            <cover-view class="initial-word"> 已看{{visitedNum}} 未看{{unvisitedNum}} 点击房屋进行导航! </cover-view>
+            <cover-view class="initial-word"> 已反馈{{visitedNum}} 未反馈{{unvisitedNum}} 点击房屋进行导航! </cover-view>
         </cover-view>
         <!--最佳路线的详情遮罩-->
         <cover-view class="best-route-overlay" wx:if="{{isShowBestRouteOverlay}}" bindtap="closeBestRoute">

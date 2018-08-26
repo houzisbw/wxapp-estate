@@ -91,4 +91,4 @@ var productionUrl = {
 	getTimeFromServerUrl:productionHost+'/wxApp/getTimeFromServer',
 	getEstateGraphDataUrl:productionHost+'/wxApp/getEstateGraphDataUrl'
 };
-module.exports = productionUrl;
+module.exports = mobileTestUrl;

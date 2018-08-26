@@ -1,0 +1,30 @@
+/* component/checkbox/checkbox.wxss */
+.check-box-wrapper{
+
+}
+/*隐藏原生的checkbox*/
+.checkbox-hide{
+    position: absolute;
+    left:-9999px;
+}
+/*checkbox方块*/
+.checkbox-item{
+
+}
+.checkbox-label{
+    /*label默认block，这里需要水平排列*/
+    display: inline-block;
+    font-size: 20rpx;
+    padding:10rpx;
+    border:1px solid #bcbcbc;
+    border-radius: 8rpx;
+    margin-right: 20rpx;
+    margin-bottom: 20rpx;
+    color: #4e4e4e;
+    font-weight: bold;
+}
+.label-checked{
+   border-color: #39ac6a;
+   background-color: rgba(57,172,106,0.2);
+   color:#39ac6a;
+}

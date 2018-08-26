@@ -4,14 +4,14 @@
 		"ignore": []
 	},
 	"setting": {
-		"urlCheck": true,
+		"urlCheck": false,
 		"es6": true,
 		"postcss": true,
 		"minified": true,
 		"newFeature": true
 	},
 	"compileType": "miniprogram",
-	"libVersion": "2.2.2",
+	"libVersion": "2.2.4",
 	"appid": "wx3402c1e63fc5fd98",
 	"projectname": "wxapp-estate",
 	"isGameTourist": false,
@@ -33,7 +33,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 4,
+			"current": 5,
 			"list": [
 				{
 					"id": -1,
@@ -62,7 +62,13 @@
 				{
 					"id": -1,
 					"name": "管理员历史页",
-					"pathName": "pages/admin/history/history"
+					"pathName": "pages/admin/history/history",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "表单页面",
+					"pathName": "pages/form/form"
 				}
 			]
 		}

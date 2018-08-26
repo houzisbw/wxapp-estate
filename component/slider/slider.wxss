@@ -1,0 +1,12 @@
+/* component/slider/slider.wxss */
+.slider-wrapper{
+    height:70rpx;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.switch-text{
+    margin-left: 40rpx;
+    font-size: 24rpx;
+    color:#4e4e4e;
+}

@@ -1,0 +1,34 @@
+<!--component/radio/radio.wxml-->
+<view class="radio-group-wrapper">
+    <radio-group bindchange="onRadioChange">
+        <label wx:for="{{options}}" wx:key="value">
+            <radio class="radio-hide"
+                   value="{{item.value}}"
+                   checked="{{item.checked}}">
+            </radio>
+            <view class="radio-label {{item.checked?'label-checked':''}}">
+                {{item.name}}
+            </view>
+        </label>
+        <!--其他选项-->
+        <label class="other" wx:if="hasOther">
+            <radio class="radio-hide"
+                   value="otherRadioValue"
+                   checked="{{otherRadioChecked}}">
+            </radio>
+            <view class="radio-label other-label {{otherRadioChecked?'other-label-checked':''}}">
+                其他
+            </view>
+        </label>
+    </radio-group>
+    <input type="text"
+           wx:if="{{otherRadioChecked}}"
+           class="radio-input"
+           bindinput="handleOnInput"
+           placeholder-class="placeholder-class"
+           focus="{{inputFocus}}"
+           bindblur="handleBlur"
+           maxlength="15"
+           placeholder="在此输入自定义值"
+    />
+</view>

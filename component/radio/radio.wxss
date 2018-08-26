@@ -1,0 +1,34 @@
+/* component/radio/radio.wxss */
+.radio-hide{
+    position: absolute;
+    left:-9999px;
+}
+.radio-label{
+    /*label默认block，这里需要水平排列*/
+    display: inline-block;
+    font-size: 20rpx;
+    padding:10rpx;
+    border:1px solid #bcbcbc;
+    border-radius: 8rpx;
+    margin-right: 20rpx;
+    margin-bottom: 20rpx;
+    color: #4e4e4e;
+    font-weight: bold;
+}
+.label-checked{
+    border-color: #39ac6a;
+    background-color: rgba(57,172,106,0.2);
+    color:#39ac6a;
+}
+.other-label{
+    border-color: #ffa349;
+    color:#ffa349;
+}
+.other-label-checked{
+    background-color: rgba(255,163,73,0.2);
+}
+.radio-input{
+    height:40rpx;
+    font-size: 25rpx;
+    color: #575757;
+}

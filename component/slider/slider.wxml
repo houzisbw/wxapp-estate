@@ -1,0 +1,5 @@
+<!--component/slider/slider.wxml-->
+<view class="slider-wrapper">
+    <switch bindchange="switchChange" checked="{{checked}}" class="switch-comp"/>
+    <span class="switch-text">{{checked?trueLabel:falseLabel}}</span>
+</view>

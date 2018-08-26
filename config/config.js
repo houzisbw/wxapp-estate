@@ -7,5 +7,7 @@ module.exports = {
 	//腾讯地图qps上限
 	tencentQPS:20,
 	//智能路径规划房屋数量上限
-	smartRouteHouseLimit:10
+	smartRouteHouseLimit:10,
+	//地图页面刷新间隔:5分钟
+	mapPageUpdateInterval:1000*60*5
 }

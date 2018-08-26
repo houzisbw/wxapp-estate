@@ -365,3 +365,18 @@ page{
     background-color: #ececec;
     color: #c9c9c9;
 }
+
+
+/*填写查看表*/
+.go-to-form-page{
+    display: inline-block;
+    float:right;
+    font-size: 22rpx;
+    height:30rpx;
+    font-weight: normal;
+    line-height: 30rpx;
+    background-color: #39ac6a;
+    color:#fff;
+    padding:5rpx 15rpx;
+    border-radius: 45rpx;
+}

@@ -8,6 +8,8 @@ var qqMapSDK;
 var formatTime = require('../../utils/util').formatTime;
 var getDetailInfoOfEstate = require('../../api/detail').getDetailInfoOfEstate;
 var submitFeedbackRequest = require('../../api/detail').submitFeedbackRequest;
+//工具函数
+var formatQueryString = require('./../../utils/util').formatQueryString;
 Page({
 
   /**
@@ -25,13 +27,15 @@ Page({
     //地图上marker的气泡
 		callout:{
 			content:'',
-      color:'#fff',
+			//必须6位，否则安卓机显示颜色异常
+      color:'#ffffff',
       fontSize:10,
 			borderRadius:13,
+			//必须设置，否则安卓机一片黑色
 			bgColor:'#ff4e3f',
 			padding:3,
 			display:'ALWAYS',
-      textAling:'center'
+			textAlign:'center'
     },
 		latestDate:'',
 		estateIndex:'',
@@ -388,6 +392,16 @@ Page({
 	//提交反馈
 	submitFeedback(){
 		var self = this;
+		//如果未看且未写原因，禁止提交
+		if(!this.data.feedbackSwitch && !this.data.reasonForRadioBtn && !this.data.otherReason){
+			wx.showToast({
+				title: '请填写原因!',
+				image:'/assets/images/icon/toast_warning.png',
+				duration: 2000
+			});
+			return
+		}
+		//如果正在反馈中
 		if(this.data.isInFeedbacking){
 			return
 		}
@@ -437,7 +451,18 @@ Page({
 		})
 	},
 
-
+	//去往填写表单页面
+	goToFormPage: function(){
+		//加上本单的日期和序号，唯一确定这个单
+		let queryObj = {
+			estateIndex:this.data.estateIndex,
+			estateDate:this.data.latestDate,
+		};
+		let queryStr = formatQueryString(queryObj);
+		wx.navigateTo({
+			url:'/pages/form/form?'+queryStr
+		})
+	},
 
   /**
    * 生命周期函数--监听页面加载

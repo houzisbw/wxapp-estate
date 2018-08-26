@@ -38,7 +38,8 @@
             <!--具体房屋信息-->
             <view class="detail-estate-info">
                 <view class="detail-estate-title">
-                    房屋信息
+                    <span>房屋信息</span>
+                    <span class="go-to-form-page" bindtap="goToFormPage">填写表单</span>
                 </view>
                 <view class="detail-estate-item-wrapper">
                     <view class="detail-estate-item-title">

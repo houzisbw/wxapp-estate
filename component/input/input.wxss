@@ -1,0 +1,26 @@
+/* component/input/input.wxss */
+.input-wrapper{
+    height:60rpx;
+    position: relative;
+}
+.input{
+    height:100%;
+    font-size: 25rpx;
+    color: #575757;
+    padding-right:60rpx;
+    box-sizing: border-box;
+}
+.clear-btn{
+    position: absolute;
+    right:0;
+    top:0;
+    height:60rpx;
+    width:60rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.clear-btn-img{
+    width:60%;
+    height:60%;
+}

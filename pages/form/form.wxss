@@ -1,0 +1,44 @@
+/* pages/form/form.wxss */
+page{
+   background-color: #f4f4f4;
+}
+.form-title{
+    display: flex;
+    height:120rpx;
+    background-color: #ffffff;
+    box-sizing: border-box;
+    padding:0 40rpx 10rpx 40rpx;
+}
+.estate-place-img-wrapper{
+    width:120rpx;
+    height:100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.estate-place-text{
+    flex-grow:1;
+    height:100%;
+    text-align: center;
+    color: #616161;
+    font-size: 30rpx;
+    line-height: 110rpx;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    box-sizing: border-box;
+    padding:0 30rpx;
+}
+.estate-place-image{
+    width:90%;
+    height:70%;
+}
+.sep-line{
+    height:20rpx;
+    background-color: #f4f4f4;
+}
+.form-wrapper{
+    background-color: #fff;
+    box-sizing: border-box;
+    padding:10rpx 20rpx;
+}

@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText":"看房表单填写",
+  "usingComponents":{
+    "estate-checkbox":"/component/checkbox/checkbox",
+    "estate-radio":"/component/radio/radio",
+    "estate-slider":"/component/slider/slider",
+    "estate-input":"/component/input/input",
+    "estate-structure":"/component/structure/structure"
+  }
+}

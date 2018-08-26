@@ -1,0 +1,61 @@
+<!--component/structure/structure.wxml-->
+<view class="structure-wrapper">
+    <!--每一行的结构-->
+    <view class="floor-wrapper" wx:for="{{innerData}}" wx:key="index">
+        <!--左侧楼层文字-->
+        <view class="floor-text">
+            {{index+1}}楼
+        </view>
+        <!--右侧输入框-->
+        <view class="input-wrapper">
+            <view class="input-inner-wrapper">
+                <!--具体控制输入框宽度，input默认长度是父元素的100%-->
+                <view class="input-width-control-wrapper">
+                    <input type="number"
+                           maxlength="2"
+                           data-row="{{index}}"
+                           data-column="{{0}}"
+                           bindinput="handleInput"
+                           class="inner-input"
+                           value="{{item[0]}}"/>
+                </view>
+                <view class="input-title">
+                    室
+                </view>
+                <view class="input-width-control-wrapper">
+                    <input type="number"
+                           maxlength="2"
+                           data-row="{{index}}"
+                           data-column="{{1}}"
+                           bindinput="handleInput"
+                           class="inner-input"
+                           value="{{item[1]}}"/>
+                </view>
+                <view class="input-title">
+                    厅
+                </view>
+                <view class="input-width-control-wrapper">
+                    <input type="number"
+                           maxlength="2"
+                           data-row="{{index}}"
+                           data-column="{{2}}"
+                           bindinput="handleInput"
+                           class="inner-input"
+                           value="{{item[2]}}"/>
+                </view>
+                <view class="input-title last-title">
+                    卫
+                </view>
+            </view>
+        </view>
+    </view>
+    <!--增加减少按钮-->
+    <view class="btn-wrapper">
+        <view class="btn" bindtap="handleAdd" wx:if="{{innerData.length !== maxFloor}}">
+            <image src="/assets/images/icon/input-add.png" class="btn-img"></image>
+        </view>
+        <view class="btn" bindtap="handleMinus" wx:if="{{innerData.length !== 1}}">
+            <image src="/assets/images/icon/input-minus.png" class="btn-img"></image>
+        </view>
+    </view>
+</view>

@@ -1,0 +1,51 @@
+<!--pages/form/form.wxml-->
+<view>
+    <!--顶部小区位置信息-->
+    <view class="form-title">
+        <view class="estate-place-img-wrapper">
+            <image src="./../../assets/images/icon/estate_icon.png" class="estate-place-image"></image>
+        </view>
+        <view class="estate-place-text">
+            成都市翰林南城6栋二单元12号
+        </view>
+    </view>
+    <view class="sep-line"></view>
+    <!--表单具体项-->
+    <view class="form-wrapper">
+        <estate-checkbox
+                options="{{facilityCheckboxData}}"
+                parent-key="facilityCheckboxData"
+                bindcheckboxchange="handleCheckboxChange">
+        </estate-checkbox>
+        <view class="sep-line"></view>
+        <estate-radio
+                options="{{estateProperty}}"
+                parent-key="estateProperty"
+                hasOther="true"
+                bindradiochange="handleRadioChange"
+        >
+        </estate-radio>
+        <view class="sep-line"></view>
+        <estate-slider checked="{{estatePos.checked}}"
+                       trueLabel="{{estatePos.trueLabel}}"
+                       falseLabel="{{estatePos.falseLabel}}"
+                       parent-key="estatePos"
+                       bindswitchchange="handleSwitchChange"
+        >
+        </estate-slider>
+        <view class="sep-line"></view>
+        <estate-input parent-key="totalFloor"
+                      value="{{totalFloor}}"
+                      inputType="number"
+                      bindinputchange="handleInputChange"
+        >
+        </estate-input>
+        <view class="sep-line"></view>
+        <estate-structure structureData="{{structureData}}"
+                          parent-key="structureData"
+                          bindstructureinputchange="handleStructureChange"
+        >
+
+        </estate-structure>
+    </view>
+</view>

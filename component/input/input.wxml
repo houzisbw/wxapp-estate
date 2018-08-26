@@ -1,0 +1,14 @@
+<!--component/input/input.wxml-->
+<view class="input-wrapper">
+    <input type="{{inputType}}"
+           class="input"
+           value="{{value}}"
+           bindinput="handleOnInput"
+           placeholder="请输入数据"
+    />
+    <view class="clear-btn"
+          wx:if="{{value!==''}}"
+          bindtap="handleTap">
+        <image src="/assets/images/icon/search_clear.png" class="clear-btn-img"></image>
+    </view>
+</view>

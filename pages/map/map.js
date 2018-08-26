@@ -14,6 +14,7 @@ var myAmapFun;
 //util
 var secondToHourMinute = require('../../utils/util').secondToHourMinute;
 var meterToKM = require('../../utils/util').meterToKM;
+var formatQueryString = require('./../../utils/util').formatQueryString;
 
 //邻接矩阵，不放在data里，因为数据量太大超过1024kb
 var adjacentMatrix = [];
@@ -52,6 +53,8 @@ Page({
 		selfPosition:{lat:'',lng:''},
 		//地图上所有marker的坐标信息对象,key为房屋index，value为经纬度对象
 		totalMarkersPositionObj:{},
+		//最近的日期
+		latestDate:'',
 
 		/** 智能路线计算相关数据结构 **/
 
@@ -151,9 +154,11 @@ Page({
 				duration: 2000
 			})
     }).then(function(res){
+    	let latestDate = res[0]&&res[0].date;
 			self.setData({
-				estateListData:res
-			})
+				estateListData:res,
+				latestDate:latestDate
+			});
 			//此处如果房屋数量超过20个(腾讯api的qps上限)则提示用户
 			if(res.length>config.tencentQPS){
 				wx.showToast({
@@ -180,6 +185,7 @@ Page({
                   targetLatitude:lat,
                   targetLongitude:lng,
                   index:item.estateIndex,
+									isFeedback:item.isFeedback,
 									isVisit:item.isVisit,
 									roadNumber:item.estateRoadNumber
                 })
@@ -201,11 +207,11 @@ Page({
 			var visitedNum = 0 ,unvisitedNum = 0, posObj = {};
       Promise.all(promiseList).then((result)=>{
 				wx.hideLoading();
-        var markerList = [];
+        var markerList = [],latestDate='';
         result.forEach((item,index)=>{
-        	item.isVisit?visitedNum++:unvisitedNum++;
+					(item.isVisit||item.isFeedback)?visitedNum++:unvisitedNum++;
           var marker = {
-						iconPath: item.isVisit?"/assets/images/icon/estate_visited_marker.png":'/assets/images/icon/estate_marker.png',
+						iconPath: (item.isVisit||item.isFeedback)?"/assets/images/icon/estate_visited_marker.png":'/assets/images/icon/estate_marker.png',
 						id: item.index,
 						latitude: item.targetLatitude,
 						longitude: item.targetLongitude,
@@ -260,8 +266,8 @@ Page({
 	initAdjacentMatrixToIndexMap: function(res){
   	var tempMap = {},cnt=1;
   	res.forEach((item)=>{
-  		//只计算未看房屋
-  		if(!item.isVisit){
+  		//只计算未看且未反馈
+  		if(!item.isVisit&&!item.isFeedback){
   			tempMap[cnt++]=item.estateIndex
 			}
 		});
@@ -287,7 +293,7 @@ Page({
 			//可以隐式转换字符串为数字
 			if(item.estateIndex == markerId){
 				this.setData({
-					currentIsVisit:item.isVisit,
+					currentIsVisit:item.isVisit||item.isFeedback,
 					currentTapIndex:item.estateIndex,
 					currentTapPosition:item.estateRoadNumber
 				})
@@ -411,9 +417,9 @@ Page({
 			});
 			return
 		}
-		//只计算未看房屋
+		//只计算未看或者未反馈房屋
 		this.data.estateListData.forEach((item)=>{
-			if(!item.isVisit){
+			if(!item.isVisit || !item.isFeedback){
 				len++;
 			}
 		});
@@ -436,9 +442,13 @@ Page({
 			return
 		}
 		wx.showActionSheet({
-			itemList: ['计算驾车看房最短路径', '计算骑行看房最短路径'],
+			itemList: ['计算驾车看房最短路径', '计算骑行看房最短路径','刷新页面数据'],
 			success: function(res) {
-				self.caculateSmartRouting(res.tapIndex);
+				if(res.tapIndex===2){
+					self.updatePageData();
+				}else{
+					self.caculateSmartRouting(res.tapIndex);
+				}
 			},
 			fail: function(res) {
 				//wx.showActionSheet 点击取消或蒙层时，回调 fail
@@ -556,7 +566,7 @@ Page({
 			this.travelingProblemSolver(adjacentMatrix)
 		});
 	},
-	//初始化邻接矩阵,只计算未看的房屋
+	//初始化邻接矩阵,只计算未看或者未反馈的房屋
 	initAdjacentMatrix(type){
 		var self = this;
 		return new Promise((resolve,reject)=>{
@@ -715,6 +725,21 @@ Page({
 			isShowBestRouteOverlay:false
 		})
 	},
+	//点击地图顶部信息条进入对应详情页
+	goToDetailPage: function(e){
+		let index = e.currentTarget.dataset.index,
+				pos = this.data.currentTapPosition,
+				date = this.data.latestDate;
+		var queryObj = {
+			estateindex:index,
+			latestdate:date,
+			estateposition:pos
+		};
+		var queryString = formatQueryString(queryObj);
+		wx.navigateTo({
+			url:'/pages/detail/detail?'+queryString
+		})
+	},
   /**
    * 生命周期函数--监听页面加载
    */
@@ -724,7 +749,30 @@ Page({
 			key: config.qqMapKey
 		});
 		myAmapFun = new amapFile.AMapWX({key:config.AMapKey});
+		this.updatePageData();
   },
+	//保存页面初次访问时间
+	saveFirstVisitTime: function(){
+  	let timeNow = Date.now();
+  	wx.setStorageSync('mapPageFirstVisitTime',timeNow)
+	},
+	//5分钟更新一次地图数据
+	checkAndUpdateData: function(){
+		//获取缓存中的时间
+		let lastVisitTime = parseInt(wx.getStorageSync('mapPageFirstVisitTime'),10);
+		//当前时间
+		let timeNow = Date.now();
+		if(timeNow - lastVisitTime > config.mapPageUpdateInterval){
+			this.updatePageData();
+		}
+	},
+	//刷新页面数据
+	updatePageData: function(){
+		this.initMapData();
+		this.getOwnPosition();
+		//保存页面初次访问时间
+		this.saveFirstVisitTime();
+	},
 
   /**
    * 生命周期函数--监听页面初次渲染完成
@@ -737,9 +785,8 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-		this.initMapData();
-		this.getOwnPosition();
-
+		//5分钟更新一次地图数据
+		this.checkAndUpdateData()
   },
 
   /**
