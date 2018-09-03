@@ -42,3 +42,58 @@ page{
     box-sizing: border-box;
     padding:10rpx 20rpx;
 }
+.form-item-title{
+    height:50rpx;
+    color: #4b4b4b;
+    display: flex;
+    align-items: center;
+}
+.form-item-title-text{
+    font-size: 22rpx;
+    height:40rpx;
+    line-height: 40rpx;
+    padding:0 10rpx;
+    background-color: #39ac6a;
+    color:#fff;
+    display: inline-block;
+    border-radius: 10rpx;
+}
+.submit{
+    height:120rpx;
+    background-color: #39ac6a;
+    line-height: 120rpx;
+    text-align: center;
+    color:#fff;
+    font-size: 35rpx;
+}
+.btn-wrapper{
+    position:fixed;
+    right:20rpx;
+    bottom:140rpx;
+    width:50rpx;
+    height:100rpx;
+    background-color: #fff;
+    box-shadow: 0 0 7rpx 3rpx #cbcbcb;
+    border-radius: 6rpx;
+}
+.to-top{
+    box-sizing: border-box;
+    border-bottom: 1rpx solid #c5c5c5;
+    width:100%;
+    height:50rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.to-bottom{
+    box-sizing: border-box;
+    width:100%;
+    height:50rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.btn-img{
+    width:80%;
+    height:80%;
+}

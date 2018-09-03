@@ -99,20 +99,20 @@ Component({
 			this.trigger(newResult)
 		},
     //处理失去焦点
-		// handleBlur: function(e){
-    //   let value = e.detail.value;
-			// //获取该值所在行数
-			// let row = e.target.dataset.row || 0;
-			// //获取该值所在列数
-			// let column = e.target.dataset.column || 0;
-    //   if(!value){
-    //     let newData = this.data.innerData;
-    //     newData[row][column]=0;
-    //     this.setData({
-    //       innerData:newData
-    //     })
-    //   }
-    // }
+		handleBlur: function(e){
+      let value = e.detail.value;
+			//获取该值所在行数
+			let row = e.target.dataset.row || 0;
+			//获取该值所在列数
+			let column = e.target.dataset.column || 0;
+      if(!value){
+        let newData = this.data.innerData;
+        newData[row][column]=0;
+        this.setData({
+          innerData:newData
+        })
+      }
+    }
   },
 	/**
 	 * 组件ready方法

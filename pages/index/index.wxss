@@ -148,6 +148,17 @@ page{
     background-color: #39ac6a;
     line-height: 1;
 }
+.estate-is-old{
+    position: absolute;
+    right:180rpx;
+    top:-10rpx;
+    font-size: 20rpx;
+    border-radius: 10rpx;
+    padding:10rpx;
+    color:#fff;
+    background-color: #da5155;
+    line-height: 1;
+}
 .estate-is-unfeedback{
     background-color: #c4c4c4;
 }

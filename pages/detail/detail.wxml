@@ -135,12 +135,12 @@
                     <view class="feedback-radio-btn {{feedbackSwitch?'forbid-selection':''}} {{(activeRadioIndex==='1')?'active-radio-btn':''}}"
                           data-reason="客户没空约明天看房"
                           data-index="1" >
-                        客户没空约明天看房
+                        客户没空约下个工作日看房
                     </view>
                     <view class="feedback-radio-btn {{feedbackSwitch?'forbid-selection':''}} {{(activeRadioIndex==='2')?'active-radio-btn':''}}"
                           data-reason="暂时不评估该房屋"
                           data-index="2">
-                        暂时不评估该房屋
+                        客户暂时不评估该房屋
                     </view>
                     <view class="feedback-radio-btn {{feedbackSwitch?'forbid-selection':''}} {{(activeRadioIndex==='3')?'active-radio-btn':''}}"
                           data-reason="看不到现场"
@@ -150,7 +150,7 @@
                     <view class="feedback-radio-btn {{feedbackSwitch?'forbid-selection':''}} {{(activeRadioIndex==='4')?'active-radio-btn':''}}"
                           data-reason="取消看房"
                           data-index="4">
-                        取消看房
+                        客户取消看房
                     </view>
                 </view>
                 <!--输入框页面按钮-->
@@ -170,8 +170,8 @@
             </view>
             <view class="feedback-sep-line"></view>
             <view class="feedback-input">
-                <textarea placeholder="请输入原因，最长30个字符"
-                          maxlength="30"
+                <textarea placeholder="请输入原因，最长100个字符"
+                          maxlength="100"
                           value="{{defaultTextareaValue}}"
                           bindinput="textareaInputChange"
                           class="feedback-input-component"

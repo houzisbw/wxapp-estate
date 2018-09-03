@@ -457,6 +457,7 @@ Page({
 		let queryObj = {
 			estateIndex:this.data.estateIndex,
 			estateDate:this.data.latestDate,
+			estatePosition:this.data.estateDetailObj.roadNumber+this.data.estateDetailObj.detailPosition
 		};
 		let queryStr = formatQueryString(queryObj);
 		wx.navigateTo({

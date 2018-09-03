@@ -19,6 +19,16 @@ Component({
 		hasOther:{
 			type:Boolean,
 			value:false
+		},
+		//其他项是否选中
+		otherRadioHasChecked:{
+			type:Boolean,
+			value:false
+		},
+		//输入框初始值
+		inputInitialValue:{
+			type:String,
+			value:''
 		}
   },
 
@@ -33,6 +43,11 @@ Component({
 
   },
 
+	ready: function(){
+  	this.setData({
+			otherRadioChecked:this.data.otherRadioHasChecked
+		})
+	},
   /**
    * 组件的方法列表
    */
@@ -54,7 +69,7 @@ Component({
 			}
 
 			var myEventDetail = {
-				changedValue:value,
+				changedValue:value === 'otherRadioValue'?'':value,
 				parentKey:this.data.parentKey
 			};
 			var myEventOption = {};
@@ -62,13 +77,27 @@ Component({
 			this.triggerEvent('radiochange', myEventDetail, myEventOption)
     },
 		handleOnInput: function(e){
-			let inputValue = e.detail.value
-			//将input的value传递给父组件
+			let inputValue = e.detail.value;
+			var myEventDetail = {
+				changedValue:inputValue,
+				parentKey:this.data.parentKey
+			};
+			var myEventOption = {};
+			//将组件内更新的单选数据传递到父组件
+			this.triggerEvent('radiochange', myEventDetail, myEventOption)
 		},
 		//处理输入框失去焦点
-		handleBlur: function(e){
-			let value = e.detail.value;
-
+		handleBlur: function(e){},
+		//处理输入框获得焦点
+		handleFocus: function(e){
+			let inputValue = e.detail.value;
+			var myEventDetail = {
+				changedValue:inputValue,
+				parentKey:this.data.parentKey
+			};
+			var myEventOption = {};
+			//将组件内更新的单选数据传递到父组件
+			this.triggerEvent('radiochange', myEventDetail, myEventOption)
 		}
   }
 })

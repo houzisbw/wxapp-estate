@@ -1,0 +1,5 @@
+<!--component/collapse/collapse.wxml-->
+<view class="collapse-wrapper" >
+    <!--承载子组件:collapse-item-->
+    <slot></slot>
+</view>

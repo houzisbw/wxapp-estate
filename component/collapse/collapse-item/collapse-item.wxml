@@ -1,0 +1,16 @@
+<!--component/collapse/collapse-item/collapse-item.wxml-->
+<view class="collapse-item-wrapper">
+    <!--标题-->
+    <view class="collapse-item-header" bindtap="handleHeaderTap">
+        <!--左侧title-->
+        <view class="title">{{title}}</view>
+        <!--右侧箭头-->
+        <view class="arrow">
+            <image src="{{!isActive?'/assets/images/icon/collapse-arrow-left.png':'/assets/images/icon/collapse-arrow-down.png'}}" class="arrow-img"></image>
+        </view>
+    </view>
+    <!--内容-->
+    <view class="collapse-item-content {{isActive ? 'show':'hide' }}">
+        <slot></slot>
+    </view>
+</view>

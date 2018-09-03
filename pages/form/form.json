@@ -5,6 +5,8 @@
     "estate-radio":"/component/radio/radio",
     "estate-slider":"/component/slider/slider",
     "estate-input":"/component/input/input",
-    "estate-structure":"/component/structure/structure"
+    "estate-structure":"/component/structure/structure",
+    "estate-collapse":"/component/collapse/collapse",
+    "estate-collapse-item":"/component/collapse/collapse-item/collapse-item"
   }
 }

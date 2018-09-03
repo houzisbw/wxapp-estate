@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "collapse-item":"./collapse-item/collapse-item"
+  }
+}

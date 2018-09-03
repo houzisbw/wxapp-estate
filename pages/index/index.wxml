@@ -44,6 +44,7 @@
                 <block wx:for="{{estateListData}}" wx:key="{{index}}">
                     <view data-id="{{item.estateIndex}}"
                           data-pos="{{item.estateRoadNumber}}"
+                          data-date="{{item.date?item.date:''}}"
                           class="estate-info-wrapper {{(index===estateListData.length-1)?'no-border-bottom':''}}"
                           bindtap="switchToDetailPage"
                     >
@@ -74,6 +75,10 @@
                             </view>
                             <view class="estate-is-feedback estate-is-unfeedback" wx:else>
                                 未反馈
+                            </view>
+                            <!--是否是上次的单-->
+                            <view class="estate-is-old" wx:if="{{item.isOldData}}" catchtap="showTipsOfLast">
+                                旧
                             </view>
                         </view>
                     </view>

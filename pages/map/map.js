@@ -155,6 +155,11 @@ Page({
 			})
     }).then(function(res){
     	let latestDate = res[0]&&res[0].date;
+    	//这里只显示最近一次派单的数据，不显示上次的
+			res = res.filter((item)=>{
+				return !item.isOldData
+			});
+
 			self.setData({
 				estateListData:res,
 				latestDate:latestDate

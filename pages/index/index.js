@@ -177,7 +177,7 @@ Page({
 	switchToDetailPage(e){
 		//获取详情页id,currentTarget指的是绑定事件的元素而不是触发事件的元素
 		var estateIndex = e.currentTarget.dataset.id;
-		var latestDate = this.data.latestDate;
+		var latestDate = e.currentTarget.dataset.date;
 		var estatePosition = e.currentTarget.dataset.pos;
 		var queryObj = {
 			estateindex:estateIndex,
@@ -194,6 +194,14 @@ Page({
 		var phoneNumber = e.currentTarget.dataset.phone;
 		wx.makePhoneCall({
 			phoneNumber: phoneNumber?phoneNumber.toString():''
+		})
+	},
+	//显示是上次排单
+	showTipsOfLast: function(e){
+		wx.showToast({
+			title: '该单为上次所派单!',
+			duration:2000,
+			icon:'none'
 		})
 	},
 	//显示反馈信息

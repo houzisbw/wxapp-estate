@@ -1,51 +1,184 @@
 <!--pages/form/form.wxml-->
-<view>
+<view id="form-wrapper">
     <!--顶部小区位置信息-->
     <view class="form-title">
-        <view class="estate-place-img-wrapper">
+        <view class="estate-place-img-wrapper" >
             <image src="./../../assets/images/icon/estate_icon.png" class="estate-place-image"></image>
         </view>
         <view class="estate-place-text">
-            成都市翰林南城6栋二单元12号
+            {{estatePosition}}
         </view>
     </view>
     <view class="sep-line"></view>
-    <!--表单具体项-->
-    <view class="form-wrapper">
-        <estate-checkbox
-                options="{{facilityCheckboxData}}"
-                parent-key="facilityCheckboxData"
-                bindcheckboxchange="handleCheckboxChange">
-        </estate-checkbox>
-        <view class="sep-line"></view>
-        <estate-radio
-                options="{{estateProperty}}"
-                parent-key="estateProperty"
-                hasOther="true"
-                bindradiochange="handleRadioChange"
-        >
-        </estate-radio>
-        <view class="sep-line"></view>
-        <estate-slider checked="{{estatePos.checked}}"
-                       trueLabel="{{estatePos.trueLabel}}"
-                       falseLabel="{{estatePos.falseLabel}}"
-                       parent-key="estatePos"
-                       bindswitchchange="handleSwitchChange"
-        >
-        </estate-slider>
-        <view class="sep-line"></view>
-        <estate-input parent-key="totalFloor"
-                      value="{{totalFloor}}"
-                      inputType="number"
-                      bindinputchange="handleInputChange"
-        >
-        </estate-input>
-        <view class="sep-line"></view>
-        <estate-structure structureData="{{structureData}}"
-                          parent-key="structureData"
-                          bindstructureinputchange="handleStructureChange"
-        >
+    <block wx:if="{{isFormLoading}}">
 
-        </estate-structure>
-    </view>
+    </block>
+    <block wx:else>
+        <!--表单具体项(不包含在折叠组件内的项)-->
+        <block wx:for="{{formDataArrayToRender}}" wx:key="index">
+            <!--输入框组件-->
+            <block wx:if="{{item.type === 'input' && !item.parentCollapseName}}">
+                <view class="form-wrapper">
+                    <!--组件标题-->
+                    <view class="form-item-title">
+                        <view class="form-item-title-text">{{item.name}}</view>
+                    </view>
+                    <estate-input parent-key="{{item.key}}"
+                                  value="{{item.defaultValue}}"
+                                  inputType="{{item.inputType}}"
+                                  bindinputchange="handleInputChange">
+                    </estate-input>
+                </view>
+                <view class="sep-line"></view>
+            </block>
+            <!--复选框组件-->
+            <block wx:if="{{item.type === 'checkbox' && !item.parentCollapseName}}">
+                <view class="form-wrapper">
+                    <!--组件标题-->
+                    <view class="form-item-title">
+                        <view class="form-item-title-text">{{item.name}}</view>
+                    </view>
+                    <estate-checkbox parent-key="{{item.key}}"
+                                     options="{{item.value}}"
+                                     bindcheckboxchange="handleCheckboxChange">
+                    </estate-checkbox>
+                </view>
+                <view class="sep-line"></view>
+            </block>
+            <!--单选框组件-->
+            <block wx:if="{{item.type === 'radio' && !item.parentCollapseName}}">
+                <view class="form-wrapper">
+                    <!--组件标题-->
+                    <view class="form-item-title">
+                        <view class="form-item-title-text">{{item.name}}</view>
+                    </view>
+                    <estate-radio parent-key="{{item.key}}"
+                                  options="{{item.value}}"
+                                  otherRadioHasChecked="{{item.otherRadioHasChecked}}"
+                                  inputInitialValue="{{item.inputInitialValue}}"
+                                  hasOther="{{item.hasOther}}"
+                                  bindradiochange="handleRadioChange">
+                    </estate-radio>
+                </view>
+                <view class="sep-line"></view>
+            </block>
+            <!--structure结构组件-->
+            <block wx:if="{{item.type === 'structure' && !item.parentCollapseName}}">
+                <view class="form-wrapper">
+                    <!--组件标题-->
+                    <view class="form-item-title">
+                        <view class="form-item-title-text">{{item.name}}</view>
+                    </view>
+                    <estate-structure parent-key="{{item.key}}"
+                                      structureData="{{item.value}}"
+                                      bindstructureinputchange="handleStructureChange">
+                    </estate-structure>
+                </view>
+                <view class="sep-line"></view>
+            </block>
+        </block>
+
+        <!--折叠组件内的项-->
+        <estate-collapse>
+            <estate-collapse-item name="1" title="客厅装修">
+                <!--表单具体项(只计算折叠组件内的项)-->
+                <block wx:for="{{formDataArrayToRender}}" wx:key="index">
+                    <block wx:if="{{item.type === 'radio' && item.parentCollapseName === '客厅装修'}}">
+                        <view class="form-wrapper">
+                            <!--组件标题-->
+                            <view class="form-item-title">
+                                <view class="form-item-title-text">{{item.name}}</view>
+                            </view>
+                            <estate-radio parent-key="{{item.key}}"
+                                          options="{{item.value}}"
+                                          otherRadioHasChecked="{{item.otherRadioHasChecked}}"
+                                          inputInitialValue="{{item.inputInitialValue}}"
+                                          hasOther="{{item.hasOther}}"
+                                          bindradiochange="handleRadioChange">
+                            </estate-radio>
+                        </view>
+                        <view class="sep-line"></view>
+                    </block>
+                </block>
+            </estate-collapse-item>
+            <estate-collapse-item name="2" title="卧室装修">
+                <!--表单具体项(只计算折叠组件内的项)-->
+                <block wx:for="{{formDataArrayToRender}}" wx:key="index">
+                    <block wx:if="{{item.type === 'radio' && item.parentCollapseName === '卧室装修'}}">
+                        <view class="form-wrapper">
+                            <!--组件标题-->
+                            <view class="form-item-title">
+                                <view class="form-item-title-text">{{item.name}}</view>
+                            </view>
+                            <estate-radio parent-key="{{item.key}}"
+                                          options="{{item.value}}"
+                                          otherRadioHasChecked="{{item.otherRadioHasChecked}}"
+                                          inputInitialValue="{{item.inputInitialValue}}"
+                                          hasOther="{{item.hasOther}}"
+                                          bindradiochange="handleRadioChange">
+                            </estate-radio>
+                        </view>
+                        <view class="sep-line"></view>
+                    </block>
+                </block>
+            </estate-collapse-item>
+            <estate-collapse-item name="3" title="厨房装修">
+                <!--表单具体项(只计算折叠组件内的项)-->
+                <block wx:for="{{formDataArrayToRender}}" wx:key="index">
+                    <block wx:if="{{item.type === 'radio' && item.parentCollapseName === '厨房装修'}}">
+                        <view class="form-wrapper">
+                            <!--组件标题-->
+                            <view class="form-item-title">
+                                <view class="form-item-title-text">{{item.name}}</view>
+                            </view>
+                            <estate-radio parent-key="{{item.key}}"
+                                          options="{{item.value}}"
+                                          otherRadioHasChecked="{{item.otherRadioHasChecked}}"
+                                          inputInitialValue="{{item.inputInitialValue}}"
+                                          hasOther="{{item.hasOther}}"
+                                          bindradiochange="handleRadioChange">
+                            </estate-radio>
+                        </view>
+                        <view class="sep-line"></view>
+                    </block>
+                </block>
+            </estate-collapse-item>
+            <estate-collapse-item name="4" title="卫生间装修">
+                <!--表单具体项(只计算折叠组件内的项)-->
+                <block wx:for="{{formDataArrayToRender}}" wx:key="index">
+                    <block wx:if="{{item.type === 'radio' && item.parentCollapseName === '卫生间装修'}}">
+                        <view class="form-wrapper">
+                            <!--组件标题-->
+                            <view class="form-item-title">
+                                <view class="form-item-title-text">{{item.name}}</view>
+                            </view>
+                            <estate-radio parent-key="{{item.key}}"
+                                          options="{{item.value}}"
+                                          otherRadioHasChecked="{{item.otherRadioHasChecked}}"
+                                          inputInitialValue="{{item.inputInitialValue}}"
+                                          hasOther="{{item.hasOther}}"
+                                          bindradiochange="handleRadioChange">
+                            </estate-radio>
+                        </view>
+                        <view class="sep-line"></view>
+                    </block>
+                </block>
+            </estate-collapse-item>
+        </estate-collapse>
+
+        <!--提交表单的按钮-->
+        <view class="submit" bindtap="submitForm">
+            提 交
+        </view>
+
+        <!--回到顶部和底部的按钮-->
+        <view class="btn-wrapper">
+            <view class="to-top" catchtap="goToTop">
+                <image src="/assets/images/icon/form_to_top.png" class="btn-img"></image>
+            </view>
+            <view class="to-bottom" catchtap="goToBottom">
+                <image src="/assets/images/icon/form_to_bottom.png" class="btn-img"></image>
+            </view>
+        </view>
+    </block>
 </view>

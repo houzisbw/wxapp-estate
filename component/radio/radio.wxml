@@ -11,7 +11,7 @@
             </view>
         </label>
         <!--其他选项-->
-        <label class="other" wx:if="hasOther">
+        <label class="other" wx:if="{{hasOther}}">
             <radio class="radio-hide"
                    value="otherRadioValue"
                    checked="{{otherRadioChecked}}">
@@ -23,11 +23,13 @@
     </radio-group>
     <input type="text"
            wx:if="{{otherRadioChecked}}"
+           value="{{inputInitialValue}}"
            class="radio-input"
            bindinput="handleOnInput"
            placeholder-class="placeholder-class"
            focus="{{inputFocus}}"
            bindblur="handleBlur"
+           bindfocus="handleFocus"
            maxlength="15"
            placeholder="在此输入自定义值"
     />

@@ -1,0 +1,48 @@
+/* component/collapse/collapse-item/collapse-item.wxss */
+.collapse-item-wrapper{
+    border-bottom: 1px solid #eaeaea;
+}
+.collapse-item-header{
+    width:100%;
+    height:40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fff;
+    padding-left:20rpx;
+    box-sizing: border-box;
+}
+.title{
+    height:100%;
+    display: flex;
+    align-items: center;
+    flex-grow:1;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 30rpx;
+    color: #535353;
+}
+.arrow{
+    width:40px;
+    height:100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.arrow-img{
+    width:40%;
+    height:40%;
+}
+.collapse-item-content{
+    transition:all 0.5s ease;
+    overflow: hidden;
+    height:0;
+}
+
+.show{
+    height:auto;
+}
+.hide{
+    height:0;
+}
