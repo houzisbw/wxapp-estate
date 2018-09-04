@@ -45,7 +45,12 @@ Component({
     },
     //格式化楼层数据
     formatFloorData: function(floorDataArray){
-			let newFloorData = floorDataArray.map((item)=>item.join(','));
+			let newFloorData = floorDataArray.map((item)=>{
+				item.forEach((it,idx)=>{
+					if(it==='')item[idx]='0';
+				});
+				return item.join(',')
+			});
 			return newFloorData.join(';');
     },
 		handleInput: function(e){

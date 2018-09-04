@@ -11,6 +11,8 @@ Page({
   data: {
     estateIndex:'',
     estateDate:'',
+		estatePosition:'',
+		estateArea:'',
 		//loading标志
 		isFormLoading:false,
 		//上面数据经过处理后要渲染到wxml的数组
@@ -184,7 +186,8 @@ Page({
 		this.setData({
 			estateIndex:options.estateIndex,
 			estateDate:options.estateDate,
-			estatePosition:options.estatePosition
+			estatePosition:options.estatePosition,
+			estateArea:options.estateArea
 		})
   },
 	//初始化表单数据
@@ -224,6 +227,9 @@ Page({
 									let key = Object.keys(item)[0];
 									formDataObj[key] = item[key];
 								});
+								//处理一些默认选项
+								formDataObj.realLocation!==undefined && (formDataObj.realLocation = self.data.estatePosition);
+								formDataObj.area!==undefined && (formDataObj.area = self.data.estateArea);
 								res({
 									formStructure:result,
 									formData:formDataObj
@@ -298,7 +304,7 @@ Page({
 				//填充复选框所有的可能值
 				let splittedCheckboxValue = valueToMerge.split(';');
 				//如果存在复选框值已经填充了，获取填充的值
-				if(splittedCheckboxValue.length>0){
+				if(valueToMerge){
 					splittedRange.forEach((item)=>{
 						if(splittedCheckboxValue.indexOf(item)!==-1){
 							options.push({

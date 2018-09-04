@@ -15,7 +15,7 @@
     </block>
     <block wx:else>
         <!--表单具体项(不包含在折叠组件内的项)-->
-        <block wx:for="{{formDataArrayToRender}}" wx:key="index">
+        <block wx:for="{{formDataArrayToRender}}" wx:key="key">
             <!--输入框组件-->
             <block wx:if="{{item.type === 'input' && !item.parentCollapseName}}">
                 <view class="form-wrapper">
@@ -82,7 +82,7 @@
         <estate-collapse>
             <estate-collapse-item name="1" title="客厅装修">
                 <!--表单具体项(只计算折叠组件内的项)-->
-                <block wx:for="{{formDataArrayToRender}}" wx:key="index">
+                <block wx:for="{{formDataArrayToRender}}" wx:key="key">
                     <block wx:if="{{item.type === 'radio' && item.parentCollapseName === '客厅装修'}}">
                         <view class="form-wrapper">
                             <!--组件标题-->
@@ -103,7 +103,7 @@
             </estate-collapse-item>
             <estate-collapse-item name="2" title="卧室装修">
                 <!--表单具体项(只计算折叠组件内的项)-->
-                <block wx:for="{{formDataArrayToRender}}" wx:key="index">
+                <block wx:for="{{formDataArrayToRender}}" wx:key="key">
                     <block wx:if="{{item.type === 'radio' && item.parentCollapseName === '卧室装修'}}">
                         <view class="form-wrapper">
                             <!--组件标题-->
@@ -124,7 +124,7 @@
             </estate-collapse-item>
             <estate-collapse-item name="3" title="厨房装修">
                 <!--表单具体项(只计算折叠组件内的项)-->
-                <block wx:for="{{formDataArrayToRender}}" wx:key="index">
+                <block wx:for="{{formDataArrayToRender}}" wx:key="key">
                     <block wx:if="{{item.type === 'radio' && item.parentCollapseName === '厨房装修'}}">
                         <view class="form-wrapper">
                             <!--组件标题-->
@@ -145,7 +145,7 @@
             </estate-collapse-item>
             <estate-collapse-item name="4" title="卫生间装修">
                 <!--表单具体项(只计算折叠组件内的项)-->
-                <block wx:for="{{formDataArrayToRender}}" wx:key="index">
+                <block wx:for="{{formDataArrayToRender}}" wx:key="key">
                     <block wx:if="{{item.type === 'radio' && item.parentCollapseName === '卫生间装修'}}">
                         <view class="form-wrapper">
                             <!--组件标题-->

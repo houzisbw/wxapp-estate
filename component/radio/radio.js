@@ -79,7 +79,7 @@ Component({
 		handleOnInput: function(e){
 			let inputValue = e.detail.value;
 			var myEventDetail = {
-				changedValue:inputValue,
+				changedValue:inputValue.replace(';',''),
 				parentKey:this.data.parentKey
 			};
 			var myEventOption = {};
