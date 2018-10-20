@@ -9,5 +9,7 @@ module.exports = {
 	//智能路径规划房屋数量上限
 	smartRouteHouseLimit:10,
 	//地图页面刷新间隔:5分钟
-	mapPageUpdateInterval:1000*60*5
+	mapPageUpdateInterval:1000*60*5,
+	//房屋反馈分隔符
+	feedbackDelimiter:"*##*"
 }

@@ -2,6 +2,7 @@
 var adminGetEstateList = require('./../../../api/admin/index').adminGetEstateList;
 var searchEstateList = require('./../../../api/admin/index').searchEstateList;
 var logoutInterface = require('./../../../api/mine').logout;
+var config = require('./../../../config/config')
 Page({
 
   /**
@@ -23,10 +24,18 @@ Page({
 		latestDate:'',
 		//scroll-view内容是否在加载
 		isScrollViewLoading:false,
+		//是否显示scroll-view的加载中(下拉到底加载更多)
+		isShowLoadMore:false,
 		//返回的数据房屋数据是否为空
 		isEstateListEmpty:false,
 		//输入框的值
-		searchKeywords:''
+		searchKeywords:'',
+		//当前页数
+		currentPage:1,
+		//每页容量
+		pageSize:10,
+		//是否是搜索状态
+		isInSearchState:false,
   },
 	//计算页面剩下的高度，用于scroll-view
 	caculateLeftHeightForScrollView(){
@@ -47,29 +56,46 @@ Page({
 				})
 			}
 		})
-
-
+	},
+	//搜索按钮事件方法
+	handleSearch: function(){
+		if(!this.data.searchKeywords || this.data.isScrollViewLoading){
+			wx.showToast({
+				title: '非法输入!',
+				image:'/assets/images/icon/toast_warning.png',
+				duration: 2000
+			});
+			return
+		}
+		//清空已有的数据,重置页数为1
+		this.setData({
+			estateListData:[],
+			currentPage:1
+		});
+		this.search();
 	},
 	//搜索按钮
 	search: function(){
 		var self = this;
+		//进入搜索状态
 		self.setData({
-			isEstateListEmpty:false
-		})
-		if(!this.data.searchKeywords || this.data.isScrollViewLoading){
-			wx.showToast({
-				title: '搜索失败!',
-				image:'/assets/images/icon/toast_warning.png',
-				duration: 2000
-			})
-			return
-		}
-		//搜索中
-		wx.showLoading({
-			title:'搜索中',
-			mask:true
+			isEstateListEmpty:false,
+			isInSearchState:true
 		});
-		searchEstateList(this.data.searchKeywords,this.data.latestDate,function(res){
+		//搜索中(非下拉加载更多不显示)
+		if(this.data.currentPage===1){
+			wx.showLoading({
+				title:'搜索中',
+				mask:true
+			});
+		}
+		//搜索改为搜索历史所有的数据
+		searchEstateList(
+				this.data.searchKeywords,
+				this.data.latestDate,
+				this.data.currentPage,
+				this.data.pageSize,
+				function(res){
 			let status = res.data.status;
 			if(status === -1){
 				wx.showToast({
@@ -78,19 +104,22 @@ Page({
 					duration: 2000
 				})
 			}else if(status === 0){
-				//未找到数据
-				wx.showToast({
-					title: '没有查询到记录!',
-					image:'/assets/images/icon/toast_warning.png',
-					duration: 2000
-				});
-				self.setData({
-					isEstateListEmpty:true
-				})
+				//只有第一次搜索时(不触发下拉),搜不到数据才显示下面的提示
+				if(self.data.estateListData.length === 0){
+					//未找到数据
+					wx.showToast({
+						title: '没有查询到记录!',
+						image:'/assets/images/icon/toast_warning.png',
+						duration: 2000
+					});
+					self.setData({
+						isEstateListEmpty:true
+					})
+				}
 			}else if(status === 1){
-				//搜索成功
+				//搜索成功,由于分页这里要concat
 				self.setData({
-					estateListData:res.data.estateData,
+					estateListData:self.data.estateListData.concat(res.data.estateData),
 				})
 			}
 		},function(){
@@ -101,6 +130,9 @@ Page({
 			})
 		},function(){
 			wx.hideLoading();
+			self.setData({
+				isShowLoadMore:false
+			})
 		})
 	},
 	//输入框
@@ -112,14 +144,18 @@ Page({
 	//选项卡点击
 	tabClick: function (e) {
 		//如果正在加载数据时返回，防止出错
-		if(this.data.isScrollViewLoading){
+		if(this.data.isScrollViewLoading || this.data.isShowLoadMore){
 			return
 		}
 		var id = e.currentTarget.id;
 		this.setData({
 			sliderOffset: e.currentTarget.offsetLeft,
 			isEstateListEmpty:false,
-			activeIndex: parseInt(id,10)
+			activeIndex: parseInt(id,10),
+			//重置页数为1
+			currentPage:1,
+			//退出搜索状态
+			isInSearchState:false
 		});
 		//根据id来加载数据，0是全部，1是已看，2是未看，每次都要从服务器拉数据
 		this.getLatestEstateData(id)
@@ -211,6 +247,37 @@ Page({
 				}
 			}
 		})
+	},
+
+	//拨号
+	dialPhone: function(e){
+		var phoneNumber = e.currentTarget.dataset.phone;
+		wx.makePhoneCall({
+			phoneNumber: phoneNumber?phoneNumber.toString():''
+		})
+	},
+
+	//点击条目显示反馈信息
+	showFeedback: function(e){
+		let feedback = e.currentTarget.dataset.feedback;
+		wx.showModal({
+			title:'反馈内容',
+			content:feedback?feedback:'无',
+			showCancel:false
+		})
+	},
+
+	//scorll-view下拉到底加载更多
+	handleLoadMore: function(){
+		//如果正在加载更多或者处于非搜索状态，则返回不做处理
+		if(!this.data.isInSearchState)return;
+		if(this.data.isShowLoadMore)return;
+		this.setData({
+			isShowLoadMore:true,
+			currentPage:this.data.currentPage+1
+		});
+		//继续搜索分页数据
+		this.search();
 	},
 
   /**

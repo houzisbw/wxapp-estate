@@ -11,10 +11,12 @@ const adminGetEstateList = (type,successHandler,failHandler,completeHandler)=>{
 };
 //搜索
 var searchUrl = require('../url').searchUrl;
-const searchEstateList = (keyword,latestDate,successHandler,failHandler,completeHandler)=>{
+const searchEstateList = (keyword,latestDate,currentPage,pageSize,successHandler,failHandler,completeHandler)=>{
 	baseRequest('POST',{
 		keyword:keyword,
-		latestDate:latestDate
+		latestDate:latestDate,
+		currentPage:currentPage,
+		pageSize:pageSize,
 	},searchUrl,successHandler,failHandler,completeHandler);
 }
 //获取看房人员列表

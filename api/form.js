@@ -13,10 +13,11 @@ const getFormStructureData = (successHandler,failHandler,completeHandler)=>{
 };
 //获取某一单的表单数据
 var getFormDataFromCorrespondingListUrl = require('./url').getFormDataFromCorrespondingListUrl;
-const getFormDataFromCorrespondingList = (index,date,successHandler,failHandler,completeHandler)=>{
+const getFormDataFromCorrespondingList = (index,date,pos,successHandler,failHandler,completeHandler)=>{
 	baseRequest('POST',{
 		estateIndex:index,
-		estateDate:date
+		estateDate:date,
+		estatePos:pos,
 	},getFormDataFromCorrespondingListUrl,successHandler,failHandler,completeHandler);
 };
 //保存填写的表单项到数据库

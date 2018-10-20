@@ -297,3 +297,8 @@
     height:70%;
     z-index:100000;
 }
+.load-more{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

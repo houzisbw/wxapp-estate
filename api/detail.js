@@ -24,7 +24,17 @@ const submitFeedbackRequest = (submitIsVisit,submitReason,submitTime,latestDate,
 		submitTime:submitTime
 	},submitFeedbackUrl,successHandler,failHandler,completeHandler)
 };
+
+//检查该单的formData是否存在(以前很早的单不存在)
+var checkFormDataExistsUrl = require('./url').checkFormDataExistsUrl;
+const checkFormDataExists = (date,index,successHandler,failHandler,completeHandler)=>{
+	baseRequest('POST',{
+		date:date,
+		index:index
+	},checkFormDataExistsUrl,successHandler,failHandler,completeHandler)
+};
 module.exports = {
 	getDetailInfoOfEstate,
-	submitFeedbackRequest
+	submitFeedbackRequest,
+	checkFormDataExists
 }

@@ -41,7 +41,7 @@
                 <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
                 <input type="text"
                        class="weui-search-bar__input"
-                       placeholder="搜索"
+                       placeholder="搜索历史数据"
                        value="{{searchKeywords}}"
                        placeholder-class="plac"
                        bindinput="searchInput"
@@ -49,10 +49,14 @@
                 <icon type="clear" size="{{15}}" class="clear-search-input {{searchKeywords.length>0?'clear-icon-show':''}}" bindtap="clearSearchInput"/>
             </view>
         </view>
-        <view class="weui-search-bar__cancel-btn search-btn" bindtap="search">搜索</view>
+        <view class="weui-search-bar__cancel-btn search-btn" bindtap="handleSearch">搜索</view>
     </view>
     <!--tab的内容区域,滑动视图-->
-    <scroll-view style="height:{{scrollViewHeight}}px" scroll-y class="data-scroll-view">
+    <scroll-view style="height:{{scrollViewHeight}}px"
+                 bindscrolltolower="handleLoadMore"
+                 lower-threshold="50"
+                 scroll-y
+                 class="data-scroll-view">
         <!--是否加载中-->
         <block wx:if="{{isScrollViewLoading}}">
             <view class="empty-result">
@@ -63,7 +67,9 @@
             <!--信息列表-->
             <block wx:if="{{!isEstateListEmpty}}">
                 <block wx:for="{{estateListData}}" wx:key="{{index}}">
-                    <view class="estate-info-wrapper {{(index===estateListData.length-1)?'no-border-bottom':''}}">
+                    <view class="estate-info-wrapper {{(index===estateListData.length-1)?'no-border-bottom':''}}"
+                          data-feedback="{{item.feedback}}"
+                          bindtap="showFeedback">
                         <!--右侧信息展示区域-->
                         <view class="estate-info-detail">
                             <view class="estate-info-line">
@@ -72,7 +78,12 @@
                             </view>
                             <view class="estate-info-line">
                                 <span class="estate-badge {{item.isVisit?'':'unvisit'}}">联系电话</span>
-                                <span class="estate-index " >{{item.estateTelephone}}</span>
+                                <span class="estate-index " >
+                                    {{item.estateTelephone}}
+                                    <span catchtap="dialPhone" data-phone="{{item.estateTelephone}}" class="phone-dial">
+                                        拨号
+                                    </span>
+                                </span>
                             </view>
                             <view class="estate-info-line border-bottom">
                                 <span class="estate-badge {{item.isVisit?'':'unvisit'}}">房屋地址</span>
@@ -85,6 +96,13 @@
                         </view>
                     </view>
                 </block>
+                <!--下拉加载更多的提示(搜索状态和非加载中才显示)-->
+                <view class="load-more" wx:if="{{isInSearchState && isShowLoadMore}}">
+                    <view class="weui-loadmore loadmore-center">
+                        <view class="weui-loading"></view>
+                        <view class="weui-loadmore__tips">正在加载</view>
+                    </view>
+                </view>
             </block>
             <block wx:else>
                 <!--无结果空白提示-->

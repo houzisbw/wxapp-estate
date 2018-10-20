@@ -229,6 +229,15 @@ page{
     display: flex;
     justify-content: center;
     align-items: center;
+    position:relative;
+}
+.time-picker{
+    font-size:28rpx;
+    color:#6299c2;
+    position: absolute;
+    right:20rpx;
+    top:50%;
+    transform: translateY(-50%);
 }
 .feedback-btn-desc{
     font-size: 28rpx;

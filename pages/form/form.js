@@ -18,7 +18,9 @@ Page({
 		//上面数据经过处理后要渲染到wxml的数组
 		formDataArrayToRender:[],
 		//最终保存到数据库的formData,key为formDataArray的key，value为字符串
-		formDataToDB:{}
+		formDataToDB:{},
+		//是否在提交中
+		isSubmitting:false
   },
 	//更新最终要存入数据库的formDataToDB
 	updateFormDataToDB: function(parentKey,changedValue){
@@ -30,6 +32,9 @@ Page({
 	},
 	//提交表单
 	submitForm: function(){
+		let self = this;
+		//如果正在提交中则返回
+		if(this.data.isSubmitting)return
 		//将formDataToDB转化为数组保存
   	let dataArray = [];
   	Object.keys(this.data.formDataToDB).forEach((item)=>{
@@ -41,33 +46,44 @@ Page({
 			title:'提交中',
 			mask:true
 		});
-		saveFormDataToDB(this.data.estateIndex,this.data.estateDate,dataArray,function(resp){
-			if(resp.data.status === 1){
-				wx.showToast({
-					title: '提交成功!',
-					icon:'success',
-					duration: 2000
-				})
-			}else{
+  	this.setData({
+			isSubmitting:true
+		});
+  	//延迟一秒
+  	setTimeout(()=>{
+			saveFormDataToDB(this.data.estateIndex,this.data.estateDate,dataArray,function(resp){
+				if(resp.data.status === 1){
+					wx.showToast({
+						title: '提交成功!',
+						icon:'success',
+						duration: 2000
+					})
+				}else{
+					wx.showToast({
+						title: '提交失败!',
+						image:'/assets/images/icon/toast_warning.png',
+						duration: 2000
+					})
+				}
+			},function(){
 				wx.showToast({
 					title: '提交失败!',
 					image:'/assets/images/icon/toast_warning.png',
 					duration: 2000
 				})
-			}
-		},function(){
-			wx.showToast({
-				title: '提交失败!',
-				image:'/assets/images/icon/toast_warning.png',
-				duration: 2000
+			},function(){
+				//回到上一页
+				setTimeout(()=>{
+					self.setData({
+						isSubmitting:false
+					});
+					wx.hideLoading();
+					wx.navigateBack({
+						delta: 1
+					})
+				},500)
 			})
-		},function(){
-			wx.hideLoading();
-			//回到上一页
-			wx.navigateBack({
-				delta: 1
-			})
-		})
+		},1000)
 	},
   //处理复选框的逻辑
 	handleCheckboxChange: function(e){
@@ -187,7 +203,8 @@ Page({
 			estateIndex:options.estateIndex,
 			estateDate:options.estateDate,
 			estatePosition:options.estatePosition,
-			estateArea:options.estateArea
+			estateArea:options.estateArea,
+			estateRoadNumber:options.estateRoadNumber
 		})
   },
 	//初始化表单数据
@@ -218,7 +235,10 @@ Page({
 			//请求成功
 			return new Promise(function(res,rej){
 				//请求该单的具体表单填写的数据
-				getFormDataFromCorrespondingList(self.data.estateIndex,self.data.estateDate,
+				getFormDataFromCorrespondingList(
+						self.data.estateIndex,
+						self.data.estateDate,
+						self.data.estateRoadNumber,
 						//成功
 						function(response){
 								let formDataObj = {};
@@ -227,9 +247,9 @@ Page({
 									let key = Object.keys(item)[0];
 									formDataObj[key] = item[key];
 								});
-								//处理一些默认选项
-								formDataObj.realLocation!==undefined && (formDataObj.realLocation = self.data.estatePosition);
-								formDataObj.area!==undefined && (formDataObj.area = self.data.estateArea);
+								//处理一些默认选项(注意首先判断该项是否存在，然后判断该项是否为空)
+								formDataObj.realLocation!==undefined && (formDataObj.realLocation===''&&(formDataObj.realLocation = self.data.estatePosition));
+								formDataObj.area!==undefined && (formDataObj.area===''&&(formDataObj.area = self.data.estateArea));
 								res({
 									formStructure:result,
 									formData:formDataObj
@@ -276,6 +296,15 @@ Page({
 					}
 					this.processFormDataByStrategy(formStructure[index],formData[targetKey])
 			}
+
+			//针对form中之前没有的字段进行补充合并
+			let formDataToDBKeys = Object.keys(this.data.formDataToDB);
+			formStructure.forEach((item,index)=>{
+				//如果该字段未被初始化则进行初始化
+				if(formDataToDBKeys.indexOf(item.key)===-1){
+					this.processFormDataByStrategy(formStructure[index],'')
+				}
+			});
 
 			//将合并完成的formStructure赋值给formDataArrayToRender进行wxml渲染
 			this.setData({

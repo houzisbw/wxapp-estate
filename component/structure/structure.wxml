@@ -46,6 +46,18 @@
                 <view class="input-title last-title">
                     卫
                 </view>
+                <!--其他结构-->
+                <view class="input-width-control-wrapper last-input">
+                    <input type="text"
+                           bindfocus="handleOtherInputFocus"
+                           bindblur="handleOtherInputBlur"
+                           placeholder="其他户型"
+                           data-row="{{index}}"
+                           data-column="{{3}}"
+                           bindinput="handleInput"
+                           class="inner-input"
+                           value="{{item[3]}}"/>
+                </view>
             </view>
         </view>
     </view>

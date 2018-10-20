@@ -2,12 +2,11 @@
  *	小程序中请求url
  * */
 
-//本地调试的ip端口
-var localHost = 'http://localhost:5000';
+
 //生产环境的地址
 var productionHost  = 'https://estate.sunbowei.cn';
-//手机端调试ip端口
-var mobileTestHost = 'http://192.168.0.100:5000';
+//手机端调试ip端口(注意ip地址会变化，因此要随时更新)
+var mobileTestHost = 'http://192.168.0.101:5000';
 //根据环境参数获取url对象
 function getUrl(envType){
 	return {
@@ -39,7 +38,8 @@ function getUrl(envType){
 		/** 表单填写页 **/
 		getFormStructureDataUrL:envType+'/wxApp/getFormStructureDataUrL',
 		getFormDataFromCorrespondingListUrl:envType+'/wxApp/getFormDataFromCorrespondingList',
-		saveFormDataUrl:envType+'/wxApp/saveFormDataToDB'
+		saveFormDataUrl:envType+'/wxApp/saveFormDataToDB',
+		checkFormDataExistsUrl:envType+'/wxApp/checkFormDataExists'
 	}
 }
 

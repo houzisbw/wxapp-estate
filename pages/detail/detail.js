@@ -10,6 +10,8 @@ var getDetailInfoOfEstate = require('../../api/detail').getDetailInfoOfEstate;
 var submitFeedbackRequest = require('../../api/detail').submitFeedbackRequest;
 //工具函数
 var formatQueryString = require('./../../utils/util').formatQueryString;
+//请求
+var checkFormDataExist = require('./../../api/detail').checkFormDataExists;
 Page({
 
   /**
@@ -69,7 +71,15 @@ Page({
 		//是否处于提交中
 		isInFeedbacking:false,
 		//textarea默认值
-		defaultTextareaValue:''
+		defaultTextareaValue:'',
+		//是否正在检查表单存在
+		isCheckingFormDataExist:false,
+		//看房时间:hh-mm
+		visitTime:'',
+		//看房时间字符串前缀(和visitTime组成字符串)
+		visitTimePrefix:'看房时间',
+		//没有选择时间的反馈内容
+		unselectTimeContent:'未约定看房时间'
   },
 
   //初始化地图位置
@@ -195,12 +205,18 @@ Page({
 				//查询成功
 				//获取输入框的值
 				var textareaValue = res.data.estateDetail.feedback;
-				//初始情况下textareaValue为空字符串
-				var realValue = textareaValue?textareaValue.split(self.data.delimeter)[1]:'';
+				//初始情况下textareaValue为空字符串,输入框的值是split后数组的最后一个值
+				var splittedArray = textareaValue.split(self.data.delimeter);
+				var realValue = textareaValue?splittedArray[splittedArray.length-1]:'';
+				//计算看房时间是否合法(hh:mm)
+				let rawTime = splittedArray[0].slice(4);
+				let isValidVisitTime = /^\d\d:\d\d$/.test(rawTime);
 				self.setData({
 					estateDetailObj:res.data.estateDetail,
 					feedbackSwitch:res.data.estateDetail.isVisit,
-					defaultTextareaValue:realValue
+					visitTime:isValidVisitTime?rawTime:'',
+					defaultTextareaValue:realValue,
+					otherReason:realValue
 				})
 			}
 
@@ -408,8 +424,10 @@ Page({
 		this.setData({
 			isInFeedbacking:true
 		});
-		//原因中包含了分隔符,网站显示时需要处理
-		var reason = this.data.reasonForRadioBtn.replace(this.data.delimeter,'')
+		//原因中包含了分隔符,网站显示时需要处理,注意这里是2个分隔符
+		var reason = (this.data.visitTime?(this.data.visitTimePrefix + this.data.visitTime):this.data.unselectTimeContent)
+				+ this.data.delimeter
+				+ this.data.reasonForRadioBtn.replace(this.data.delimeter,'')
 				+ this.data.delimeter
 				+ this.data.otherReason.replace(this.data.delimeter,'');
 		//发送后台
@@ -453,16 +471,59 @@ Page({
 
 	//去往填写表单页面
 	goToFormPage: function(){
-		//加上本单的日期和序号，唯一确定这个单
-		let queryObj = {
-			estateIndex:this.data.estateIndex,
-			estateDate:this.data.latestDate,
-			estateArea:this.data.estateDetailObj.area,
-			estatePosition:this.data.estateDetailObj.roadNumber+this.data.estateDetailObj.detailPosition
-		};
-		let queryStr = formatQueryString(queryObj);
-		wx.navigateTo({
-			url:'/pages/form/form?'+queryStr
+		if(this.data.isCheckingFormDataExist)return
+		let self = this;
+		self.setData({
+			isCheckingFormDataExist:true
+		});
+		//首先判断该单是否存在formData字段,如果不存在则返回
+		checkFormDataExist(this.data.latestDate,this.data.estateIndex,function(resp){
+				if(resp.data.status===-1){
+					wx.showToast({
+						title: '网络错误!',
+						image:'/assets/images/icon/toast_warning.png',
+						duration: 2000
+					});
+				}else{
+					if(resp.data.isExist === '1'){
+						//如果存在表单项则进入表单页
+						//本单的日期和序号，唯一确定这个单
+						let queryObj = {
+							estateIndex:self.data.estateIndex,
+							estateDate:self.data.latestDate,
+							estateArea:self.data.estateDetailObj.area,
+							estateRoadNumber:self.data.estateDetailObj.roadNumber,
+							estatePosition:self.data.estateDetailObj.roadNumber+self.data.estateDetailObj.detailPosition
+						};
+						let queryStr = formatQueryString(queryObj);
+						wx.navigateTo({
+							url:'/pages/form/form?'+queryStr
+						})
+					}else{
+						wx.showToast({
+							title:'表单不存在!',
+							icon:'none',
+							duration: 2000
+						});
+					}
+				}
+		},function(){
+			wx.showToast({
+				title:'表单不存在!',
+				icon:'none',
+				duration: 2000
+			});
+		},function(){
+			self.setData({
+				isCheckingFormDataExist:false
+			});
+		});
+	},
+
+	// 看房时间选择
+	bindVisitTimeChange: function(e){
+		this.setData({
+			visitTime:e.detail.value
 		})
 	},
 

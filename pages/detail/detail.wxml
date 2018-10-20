@@ -127,18 +127,24 @@
                     {{feedbackSwitch?'已看':'未看'}}
                 </span>
                 <switch checked="{{feedbackSwitch}}" bindchange="switchChange"/>
+                <!--时间选择器-->
+                <picker mode="time" value="{{visitTime}}" start="00:00" end="23:59" bindchange="bindVisitTimeChange">
+                    <view class="time-picker">
+                        {{visitTime?visitTime:'看房时间'}}
+                    </view>
+                </picker>
             </view>
             <!--单选框-->
             <view class="feedback-radio-wrapper">
                 <view class="feedback-radio-title">请选择原因</view>
                 <view class="feedback-radio-inner" bindtap="selectRadioBtn">
                     <view class="feedback-radio-btn {{feedbackSwitch?'forbid-selection':''}} {{(activeRadioIndex==='1')?'active-radio-btn':''}}"
-                          data-reason="客户没空约明天看房"
+                          data-reason="客户没空约下个工作日看房"
                           data-index="1" >
                         客户没空约下个工作日看房
                     </view>
                     <view class="feedback-radio-btn {{feedbackSwitch?'forbid-selection':''}} {{(activeRadioIndex==='2')?'active-radio-btn':''}}"
-                          data-reason="暂时不评估该房屋"
+                          data-reason="客户暂时不评估该房屋"
                           data-index="2">
                         客户暂时不评估该房屋
                     </view>
@@ -148,7 +154,7 @@
                         看不到现场
                     </view>
                     <view class="feedback-radio-btn {{feedbackSwitch?'forbid-selection':''}} {{(activeRadioIndex==='4')?'active-radio-btn':''}}"
-                          data-reason="取消看房"
+                          data-reason="客户取消看房"
                           data-index="4">
                         客户取消看房
                     </view>

@@ -26,9 +26,13 @@
     display: flex;
 }
 .input-width-control-wrapper{
-    width:100rpx;
+    width:80rpx;
     display: flex;
     align-items: center;
+}
+.last-input{
+    width:180rpx;
+    margin-left: 10rpx;
 }
 .input-title{
     height:100%;
