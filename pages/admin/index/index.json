@@ -1,3 +1,6 @@
 {
-  "navigationBarTitleText":"管理员首页"
+  "navigationBarTitleText":"管理员首页",
+  "usingComponents":{
+    "estate-data-state":"/component/estate-data-state/estate-data-state"
+  }
 }

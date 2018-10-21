@@ -89,10 +89,16 @@
                                 <span class="estate-badge {{item.isVisit?'':'unvisit'}}">房屋地址</span>
                                 <span class="estate-index ">{{item.estatePosition}}</span>
                             </view>
-                            <!--是否完成-->
-                            <view class="estate-is-visit {{item.isVisit?'':'estate-is-unvisit'}}">
-                                {{item.isVisit?'已完成':'未完成'}}
-                            </view>
+                            <!--状态栏(一共5种状态)-->
+                            <!--<view class="estate-is-visit {{item.isVisit?'':'estate-is-unvisit'}}">-->
+                                <!--{{item.isVisit?'已完成':'未完成'}}-->
+                            <!--</view>-->
+                            <!--状态组件-->
+                            <estate-data-state is-visit="{{item.isVisit}}"
+                                               price="{{item.price}}"
+                                               feedback="{{item.feedback}}"
+                                               has-pre-assessment="{{item.hasPreAssessment}}">
+                            </estate-data-state>
                         </view>
                     </view>
                 </block>

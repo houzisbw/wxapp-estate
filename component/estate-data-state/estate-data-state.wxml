@@ -1,0 +1,4 @@
+<!--描述房屋表单数据状态的组件(状态较多因此抽象为组件)-->
+<view class="wrapper {{isUnProcessedState?'unprocess-state':''}}">
+    {{text}}
+</view>

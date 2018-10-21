@@ -1,0 +1,15 @@
+/* component/estate-data-state/estate-data-state.wxss */
+.wrapper{
+    position: absolute;
+    right:0;
+    top:-20rpx;
+    font-size: 20rpx;
+    border-radius: 0 10rpx 0 0;
+    padding:10rpx;
+    color:#fff;
+    background-color: #1aad19;
+    line-height: 1;
+}
+.unprocess-state{
+    background-color: #ff9e1e;
+}
