@@ -131,7 +131,10 @@ Page({
 					//清除storage相关内容
 					logoutInterface(self.data.username,function(res){
 						//必须在后台清除完session后才能清除本机缓存，否则cookie无法传达给后台
-						wx.clearStorageSync();
+						//不清除提交时间等相关缓存
+						wx.removeStorageSync('user-cookie')
+						wx.removeStorageSync('username')
+						wx.removeStorageSync('auth')
 						//退出成功,跳转登录页
 						wx.redirectTo({
 							url:'/pages/login/login'

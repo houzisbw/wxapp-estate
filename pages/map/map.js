@@ -486,6 +486,7 @@ Page({
 		for(var j=1;j<totalCols;j++){
 			for(var i=0;i<houseCount;i++){
 				//如果已经到过了j，则continue
+				//这里的意思是你已经在一个城市上则不计算它到它自己的dp
 				if(((j>>(i-1)) & 1) === 1){
 					continue;
 				}
@@ -495,6 +496,8 @@ Page({
 					if(((j>>(k-1))&1)===0){
 						continue;
 					}
+					//这里dp[k][j^(1<<(k-1))]是除去k位置上(那个位置为0)的其他城市的二进制字符串的值
+					//比如11011,k为2，则计算后为11001,异或计算，相同为0
 					if(dp[i][j][0]>adjMatrix[i][k][0]+dp[k][j^(1<<(k-1))][0]){
 						dp[i][j][0]=adjMatrix[i][k][0]+dp[k][j^(1<<(k-1))][0];
 						//必须slice创建副本,temp是原来已有的路径数组

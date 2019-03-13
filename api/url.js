@@ -6,7 +6,7 @@
 //生产环境的地址
 var productionHost  = 'https://estate.sunbowei.cn';
 //手机端调试ip端口(注意ip地址会变化，因此要随时更新)
-var mobileTestHost = 'http://192.168.0.101:5000';
+var mobileTestHost = 'http://192.168.0.100:5000';
 //根据环境参数获取url对象
 function getUrl(envType){
 	return {
@@ -39,7 +39,10 @@ function getUrl(envType){
 		getFormStructureDataUrL:envType+'/wxApp/getFormStructureDataUrL',
 		getFormDataFromCorrespondingListUrl:envType+'/wxApp/getFormDataFromCorrespondingList',
 		saveFormDataUrl:envType+'/wxApp/saveFormDataToDB',
-		checkFormDataExistsUrl:envType+'/wxApp/checkFormDataExists'
+		checkFormDataExistsUrl:envType+'/wxApp/checkFormDataExists',
+    /** 图片上传页 **/
+    getPictureConfigUrl:envType+'/wxApp/getPictureConfig',
+		updatePictureTypeUrl:envType+'/wxApp/updatePictureType'
 	}
 }
 

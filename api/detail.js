@@ -33,8 +33,21 @@ const checkFormDataExists = (date,index,successHandler,failHandler,completeHandl
 		index:index
 	},checkFormDataExistsUrl,successHandler,failHandler,completeHandler)
 };
+
+//更新照片类型
+var updatePictureTypeUrl = require('./url').updatePictureTypeUrl
+const updatePictureType = (newType,date,index,successHandler,failHandler,completeHandler)=>{
+  baseRequest('POST',{
+    date:date,
+    index:index,
+		pictureType:newType,
+  },updatePictureTypeUrl,successHandler,failHandler,completeHandler)
+}
+
+
 module.exports = {
 	getDetailInfoOfEstate,
 	submitFeedbackRequest,
-	checkFormDataExists
+	checkFormDataExists,
+  updatePictureType
 }

@@ -11,5 +11,13 @@ module.exports = {
 	//地图页面刷新间隔:5分钟
 	mapPageUpdateInterval:1000*60*5,
 	//房屋反馈分隔符
-	feedbackDelimiter:"*##*"
+	feedbackDelimiter:"*##*",
+	//2次提交反馈的间隔(15分钟)
+	submitInterval:15*60*1000,
+	//腾讯云oss图片上传相关
+	tencentyunOssServerUrl:'',
+	tencentyunSecretId:'AKID8AEFQ4Jzz8whgtj2fEbmlbGn8JHkNxZi',
+  tencentyunSecretKey:'3sRviSR8hOB3jjejopwY2QkgR0PabO3V',
+  tencentyunOssBucketName:'estate-picture-1258800495',
+  tencentyunOssRegion:'ap-chengdu'
 }

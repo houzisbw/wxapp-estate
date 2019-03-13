@@ -36,7 +36,7 @@ Component({
    */
   methods: {
     //处理子组件header点击事件
-		handleHeaderTap: function(){
+	handleHeaderTap: function(){
 		  //获取父组件Collapse节点
       let nodeList = this.getRelationNodes('../collapse');
 			let parentCollapseNode = nodeList.length>0?nodeList[0]:null;

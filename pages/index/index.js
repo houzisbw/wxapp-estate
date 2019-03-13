@@ -14,13 +14,13 @@ Page({
    * 页面的初始数据
    */
   data: {
-    //选项卡数据
+    	//选项卡数据
 		tabs: ["全部", "已看", "未看"],
 		activeIndex: 0,
 		sliderOffset: 0,
 		sliderLeft: 0,
-    //页面下半部分scoll-view的高度(页面剩下的高度,需动态计算)
-    scrollViewHeight:0,
+		//页面下半部分scoll-view的高度(页面剩下的高度,需动态计算)
+		scrollViewHeight:0,
 		//看房列表数据
 		estateListData:[],
 		//返回的数据房屋数据是否为空

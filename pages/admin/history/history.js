@@ -383,38 +383,40 @@ Page({
 	},
 	//开始日期修正
 	modifyStartDate: function(year,month,day){
-		var d = new Date(year,month-1,day);
-		//判断是否是周末
-		var isWeekend = d.getDay() === 0 || d.getDay()=== 6;
-		if(isWeekend){
-			//前进至下周一
-			d.setDate(d.getDate()+(d.getDay()===0?1:2))
-		}else{
-			//回退至本周一
-			d.setDate(d.getDate()-(d.getDay()-1))
-		}
+		// var d = new Date(year,month-1,day);
+		// //判断是否是周末
+		// var isWeekend = d.getDay() === 0 || d.getDay()=== 6;
+		// if(isWeekend){
+		// 	//前进至下周一
+		// 	d.setDate(d.getDate()+(d.getDay()===0?1:2))
+		// }else{
+		// 	//回退至本周一
+		// 	d.setDate(d.getDate()-(d.getDay()-1))
+		// }
 		return {
-			year:d.getFullYear(),
-			month:d.getMonth()+1,
-			day:d.getDate()
+			year:year,
+			month:parseInt(month,10),
+			day:day
 		}
 	},
 	//结束日期修正
 	modifyEndDate: function(year,month,day){
-		var d = new Date(year,month-1,day);
-		//判断是否是周末
-		var isWeekend = d.getDay() === 0 || d.getDay()=== 6;
-		if(isWeekend){
-			//后退到周五
-			d.setDate(d.getDate()-(d.getDay()===0?2:1))
-		}else{
-			//前进至最近的周五
-			d.setDate(d.getDate()+5-d.getDay())
-		}
+		// var d = new Date(year,month-1,day);
+		// //判断是否是周末
+		// var isWeekend = d.getDay() === 0 || d.getDay()=== 6;
+		// if(isWeekend){
+		// 	//后退到周五
+		// 	d.setDate(d.getDate()-(d.getDay()===0?2:1))
+		// }else{
+		// 	//前进至最近的周五
+		// 	d.setDate(d.getDate()+5-d.getDay())
+		// }
+
+		//不进行日期修正
 		return {
-			year:d.getFullYear(),
-			month:d.getMonth()+1,
-			day:d.getDate()
+			year:year,
+			month:parseInt(month,10),
+			day:day
 		}
 	},
 	//选择结束时间

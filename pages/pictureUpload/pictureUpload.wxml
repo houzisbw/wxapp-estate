@@ -1,0 +1,37 @@
+<!--pages/pictureUpload/pictureUpload.wxml-->
+<!--顶部小区位置信息-->
+<view class="form-title">
+    <view class="estate-place-img-wrapper" >
+        <image src="./../../assets/images/icon/estate_icon.png" class="estate-place-image"></image>
+    </view>
+    <view class="estate-place-text">
+        {{estatePosition}}
+    </view>
+</view>
+<view class="sep-line"></view>
+<view class="detail-wrapper">
+    <block wx:for="{{configData}}" wx:key="index">
+        <view class="picture-item">
+            <view class="picture-title">
+                {{item.name}} ({{item.min}}-{{item.max}})
+            </view>
+            <view class="upload-btn"
+                  bindtap="uploadPicture"
+                  data-min="{{item.min}}"
+                  data-max="{{item.max}}"
+                  data-name="{{item.name}}"
+            >
+                <image src="/assets/images/icon/input-add.png" class="btn-img"></image>
+            </view>
+        </view>
+        <view class="img-wrapper">
+            <block wx:for="{{item.imgList}}" wx:key="index" wx:for-item="img">
+                <image src="{{img.url}}"
+                       mode="aspectFill"
+                       style="width:240rpx;height:200rpx;margin-bottom:15rpx">
+                </image>
+            </block>
+        </view>
+        <view class="sep-line"></view>
+    </block>
+</view>

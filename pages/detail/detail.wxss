@@ -389,3 +389,6 @@ page{
     padding:5rpx 15rpx;
     border-radius: 45rpx;
 }
+.mr{
+    margin-right:20rpx;
+}

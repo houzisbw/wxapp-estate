@@ -40,6 +40,7 @@
                 <view class="detail-estate-title">
                     <span>房屋信息</span>
                     <span class="go-to-form-page" bindtap="goToFormPage">填写表单</span>
+                    <span class="go-to-form-page mr" bindtap="goToPictureUploadPage">上传照片</span>
                 </view>
                 <view class="detail-estate-item-wrapper">
                     <view class="detail-estate-item-title">
@@ -136,29 +137,36 @@
             </view>
             <!--单选框-->
             <view class="feedback-radio-wrapper">
-                <view class="feedback-radio-title">请选择原因</view>
-                <view class="feedback-radio-inner" bindtap="selectRadioBtn">
-                    <view class="feedback-radio-btn {{feedbackSwitch?'forbid-selection':''}} {{(activeRadioIndex==='1')?'active-radio-btn':''}}"
-                          data-reason="客户没空约下个工作日看房"
-                          data-index="1" >
-                        客户没空约下个工作日看房
+                <view class="feedback-radio-title">请选择原因(上滑查看更多)</view>
+                <scroll-view scroll-y style="height:160rpx">
+                    <view class="feedback-radio-inner" bindtap="selectRadioBtn">
+                        <view class="feedback-radio-btn {{feedbackSwitch?'forbid-selection':''}} {{(activeRadioIndex==='1')?'active-radio-btn':''}}"
+                              data-reason="客户没空约下个工作日看房"
+                              data-index="1" >
+                            客户没空约下个工作日看房
+                        </view>
+                        <view class="feedback-radio-btn {{feedbackSwitch?'forbid-selection':''}} {{(activeRadioIndex==='2')?'active-radio-btn':''}}"
+                              data-reason="客户暂时不评估该房屋"
+                              data-index="2">
+                            客户暂时不评估该房屋
+                        </view>
+                        <view class="feedback-radio-btn {{feedbackSwitch?'forbid-selection':''}} {{(activeRadioIndex==='3')?'active-radio-btn':''}}"
+                              data-reason="看不到现场"
+                              data-index="3">
+                            看不到现场
+                        </view>
+                        <view class="feedback-radio-btn {{feedbackSwitch?'forbid-selection':''}} {{(activeRadioIndex==='4')?'active-radio-btn':''}}"
+                              data-reason="客户取消看房"
+                              data-index="4">
+                            客户取消看房
+                        </view>
+                        <view class="feedback-radio-btn {{feedbackSwitch?'forbid-selection':''}} {{(activeRadioIndex==='5')?'active-radio-btn':''}}"
+                              data-reason="看房时间正在协调"
+                              data-index="5">
+                            看房时间正在协调
+                        </view>
                     </view>
-                    <view class="feedback-radio-btn {{feedbackSwitch?'forbid-selection':''}} {{(activeRadioIndex==='2')?'active-radio-btn':''}}"
-                          data-reason="客户暂时不评估该房屋"
-                          data-index="2">
-                        客户暂时不评估该房屋
-                    </view>
-                    <view class="feedback-radio-btn {{feedbackSwitch?'forbid-selection':''}} {{(activeRadioIndex==='3')?'active-radio-btn':''}}"
-                          data-reason="看不到现场"
-                          data-index="3">
-                        看不到现场
-                    </view>
-                    <view class="feedback-radio-btn {{feedbackSwitch?'forbid-selection':''}} {{(activeRadioIndex==='4')?'active-radio-btn':''}}"
-                          data-reason="客户取消看房"
-                          data-index="4">
-                        客户取消看房
-                    </view>
-                </view>
+                </scroll-view>
                 <!--输入框页面按钮-->
                 <view class="textarea-btn" bindtap="goToInputPage">
                     其他原因

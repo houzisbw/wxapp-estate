@@ -12,6 +12,7 @@ var submitFeedbackRequest = require('../../api/detail').submitFeedbackRequest;
 var formatQueryString = require('./../../utils/util').formatQueryString;
 //请求
 var checkFormDataExist = require('./../../api/detail').checkFormDataExists;
+var updatePictureTypeUrl = require('./../../api/detail').updatePictureType;
 Page({
 
   /**
@@ -79,7 +80,10 @@ Page({
 		//看房时间字符串前缀(和visitTime组成字符串)
 		visitTimePrefix:'看房时间',
 		//没有选择时间的反馈内容
-		unselectTimeContent:'未约定看房时间'
+		unselectTimeContent:'未约定看房时间',
+
+		//照片类型
+		pictureType:''
   },
 
   //初始化地图位置
@@ -216,7 +220,8 @@ Page({
 					feedbackSwitch:res.data.estateDetail.isVisit,
 					visitTime:isValidVisitTime?rawTime:'',
 					defaultTextareaValue:realValue,
-					otherReason:realValue
+					otherReason:realValue,
+					pictureType:res.data.estateDetail.pictureType
 				})
 			}
 
@@ -409,7 +414,10 @@ Page({
 	submitFeedback(){
 		var self = this;
 		//如果未看且未写原因，禁止提交
-		if(!this.data.feedbackSwitch && !this.data.reasonForRadioBtn && !this.data.otherReason){
+		if(!this.data.feedbackSwitch
+				&& !this.data.reasonForRadioBtn
+				&& !this.data.otherReason
+				&& !this.data.visitTime){
 			wx.showToast({
 				title: '请填写原因!',
 				image:'/assets/images/icon/toast_warning.png',
@@ -420,6 +428,19 @@ Page({
 		//如果正在反馈中
 		if(this.data.isInFeedbacking){
 			return
+		}
+		//检测当前时间和已缓存的时间是否小于15分钟,只有已看状态才进行检测
+		let timeNow = +new Date();
+		if(wx.getStorageSync('submitTime')
+				&& self.data.feedbackSwitch
+				&& (self.data.estateDetailObj.roadNumber !== wx.getStorageSync('roadNumber'))
+			  && (timeNow - parseInt(wx.getStorageSync('submitTime'),10) < config.submitInterval)){
+				wx.showToast({
+					title: '提交最小间隔15分钟!',
+					icon:'none',
+					duration: 2000
+				})
+			  return;
 		}
 		this.setData({
 			isInFeedbacking:true
@@ -441,6 +462,16 @@ Page({
 					icon:'success',
 					duration: 2000
 				});
+				//已看状态才记录时间
+				if(self.data.feedbackSwitch){
+					//记录提交时间以及街道号到storage中，下次提交比对时间
+					let roadNumber = self.data.estateDetailObj.roadNumber;
+					//提交时间是服务端时间，防止修改本地时间
+					let submitTime = res.data.submitTime;
+					//存入缓存中
+					wx.setStorageSync('submitTime',submitTime);
+					wx.setStorageSync('roadNumber',roadNumber);
+				}
 			}else if(status === -2){
 				//重新登录逻辑,跳转到登录页面,redirectTo不保留当前页面,关闭该页面
 				wx.redirectTo({
@@ -520,6 +551,79 @@ Page({
 		});
 	},
 
+	// 去往照片上传页面,传入房屋信息
+	goToPictureUploadPage: function(){
+		let self = this;
+    wx.showActionSheet({
+      itemList: ['普通住宅/办公', '别墅', '商业'],
+      success(res) {
+        // 选择照片上传模板类型
+        let typeArray = ['普通住宅/办公', '别墅', '商业'];
+        let type = typeArray[res.tapIndex];
+      	// 判断当前用户所选择的照片类型是否和之前的一样
+				// 不一样或者初始状态: 提示操作会删除所有已传照片
+				if((self.data.pictureType !== '' && self.data.pictureType !== type)||(self.data.pictureType === '')){
+          wx.showModal({
+            title: '提示',
+            content: '更改类型将会清空已有的照片,当前类型: '+self.data.pictureType,
+            success(resp) {
+              if (resp.confirm) {
+              	var promiseList = [];
+								// 更新照片类型,删除操作放在照片上传页面内，由参数传递进去
+								var updateTypePromise = new Promise((resolve,reject)=>{
+                  updatePictureTypeUrl(type,self.data.latestDate,self.data.estateIndex,function(res){
+										if(res.data.status === 1){
+											resolve()
+										}else{
+											reject()
+										}
+									})
+								});
+
+								promiseList.push(updateTypePromise)
+								Promise.all([promiseList]).then((result)=>{
+									//更新照片类型
+									self.setData({
+										pictureType:type
+									})
+									// 页面跳转
+                  self.switchToPictureUploadPage(type,true)
+								},()=>{
+                  wx.showToast({
+                    title:'操作出错!',
+                    icon:'none',
+                    duration: 2000
+                  });
+								})
+
+              } else if (resp.cancel) {}
+            }
+          })
+				}else{
+					//类型一样,直接跳转到照片页面内
+          self.switchToPictureUploadPage(type,false)
+				}
+      }
+    })
+	},
+
+	// 前往照片页面,第二个参数是是否删除已有照片
+	switchToPictureUploadPage: function(type,isDelete){
+    let queryObj = {
+    	isDelete:isDelete,
+      type:type,
+      estateIndex:this.data.estateIndex,
+      estateDate:this.data.latestDate,
+      estateArea:this.data.estateDetailObj.area,
+      estateRoadNumber:this.data.estateDetailObj.roadNumber,
+      estatePosition:this.data.estateDetailObj.roadNumber+this.data.estateDetailObj.detailPosition
+    };
+    let queryStr = formatQueryString(queryObj);
+    wx.navigateTo({
+      url:'/pages/pictureUpload/pictureUpload?'+queryStr
+    })
+	},
+
 	// 看房时间选择
 	bindVisitTimeChange: function(e){
 		this.setData({
@@ -541,8 +645,6 @@ Page({
 			key: config.qqMapKey
 		});
 		this.pageInit(options);
-
-
 	},
 
   /**
