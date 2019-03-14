@@ -77,12 +77,9 @@
                                 <span class="estate-index ">{{item.estateIndex}} <span class="urgent">{{item.staffName}}</span></span>
                             </view>
                             <view class="estate-info-line">
-                                <span class="estate-badge {{item.isVisit?'':'unvisit'}}">联系电话</span>
+                                <span class="estate-badge {{item.isVisit?'':'unvisit'}}">其他信息</span>
                                 <span class="estate-index " >
-                                    {{item.estateTelephone}}
-                                    <span catchtap="dialPhone" data-phone="{{item.estateTelephone}}" class="phone-dial">
-                                        拨号
-                                    </span>
+                                    {{item.estateTelephone+' '+item.company+' '+item.bank}}
                                 </span>
                             </view>
                             <view class="estate-info-line border-bottom">

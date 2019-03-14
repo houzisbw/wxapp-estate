@@ -12,7 +12,7 @@
 <view class="detail-wrapper">
     <block wx:for="{{configData}}" wx:key="index">
         <view class="picture-item">
-            <view class="picture-title">
+            <view class="picture-title {{item.imgList.length>=item.min?'green':''}}">
                 {{item.name}} ({{item.min}}-{{item.max}})
             </view>
             <view class="upload-btn"
@@ -20,6 +20,7 @@
                   data-min="{{item.min}}"
                   data-max="{{item.max}}"
                   data-name="{{item.name}}"
+                  data-currentcount="{{item.imgList.length}}"
             >
                 <image src="/assets/images/icon/input-add.png" class="btn-img"></image>
             </view>
@@ -27,10 +28,22 @@
         <view class="img-wrapper">
             <block wx:for="{{item.imgList}}" wx:key="index" wx:for-item="img">
                 <image src="{{img.url}}"
+                       bindtap="handleImageTap"
+                       data-name="{{img.name}}"
                        mode="aspectFill"
                        style="width:240rpx;height:200rpx;margin-bottom:15rpx">
                 </image>
             </block>
+            <!--justify-content的排版修正-->
+            <image src=""
+                   style="width:240rpx;height:0;">
+            </image>
+            <image src=""
+                   style="width:240rpx;height:0;">
+            </image>
+            <image src=""
+                   style="width:240rpx;height:0;">
+            </image>
         </view>
         <view class="sep-line"></view>
     </block>

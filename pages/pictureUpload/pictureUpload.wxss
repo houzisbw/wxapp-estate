@@ -44,6 +44,9 @@
     font-size: 25rpx;
     color: #616161;
 }
+.green{
+    color:#39ac6a;
+}
 .upload-btn{
     width: 40rpx;
     height:40rpx;

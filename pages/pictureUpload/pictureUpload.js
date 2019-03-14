@@ -44,7 +44,9 @@ Page({
     // 配置信息
     configData:[],
     // 模板类型
-    type: ''
+    type: '',
+    //参数
+    options:''
   },
 
   // 获取图片配置信息
@@ -136,17 +138,30 @@ Page({
 
   // 上传图片
   uploadPicture: function(e){
+    let self  = this;
     // 照片数量上下限
     let min = e.currentTarget.dataset.min,
         max = e.currentTarget.dataset.max,
         name = e.currentTarget.dataset.name,
+        //当前已有照片数量
+        currentCount = e.currentTarget.dataset.currentcount || 0,
         estateIndex = this.data.estateIndex;
     wx.chooseImage({
       success: function (res) {
+        //判断是否能上传
+        var tempFilePaths = res.tempFilePaths
+        if(tempFilePaths.length+currentCount>max){
+          //超过图片上限，无法上传
+          wx.showToast({
+            title:'图片超过上限!',
+            icon:'none',
+            duration: 2000
+          });
+          return
+        }
         wx.showLoading({
           title: '上传中...',
         });
-        var tempFilePaths = res.tempFilePaths
         // 多图上传，promise.all
         var promiseList = [];
         tempFilePaths.forEach((item,index)=>{
@@ -154,7 +169,7 @@ Page({
             cos.postObject({
               Bucket: config.tencentyunOssBucketName,
               Region: config.tencentyunOssRegion,
-              Key: estateIndex+'-'+name+'-'+(index+1),
+              Key: estateIndex+'-'+name+'-'+(index+1)+'.jpg',
               FilePath: item,
               onProgress: function (info) {}
             }, function (err, data) {
@@ -170,10 +185,9 @@ Page({
             icon: 'success',
             duration: 1000
           });
-          wx.hideLoading()
-          //todo 更新界面
-
-
+          wx.hideLoading();
+          // 更新界面,重新拉取数据
+          self.initConfigAndPictures(self.data.options);
         },()=>{
           wx.hideLoading();
           wx.showToast({
@@ -233,6 +247,9 @@ Page({
 
   // 初始化配置和图片
   initConfigAndPictures: function(options){
+    wx.showLoading({
+      title: '加载中...',
+    });
     var promiseList = [];
     // 请求图片配置数据
     var p1 = this.fetchPictureConfig(options.type);
@@ -243,7 +260,8 @@ Page({
       //处理图片url，因为带上了查询参数
       result2.forEach((item)=>{
         if(item.url.indexOf('?')!==-1){
-          item.url = item.url.split('?')[0]
+          //注意这里要加上随机参数防止图片缓存不刷新
+          item.url = item.url.split('?')[0]+ '?'+Math.random() / 9999
         }
       });
       //处理configData,添加图片数组属性
@@ -272,15 +290,92 @@ Page({
       });
       this.setData({
         configData:result1
-      })
+      });
+      wx.hideLoading();
     },()=>{
       wx.showToast({
         title:'图片读取失败!',
         icon:'none',
         duration: 2000
       });
+      wx.hideLoading();
     })
   },
+
+  // 处理图片点击
+  handleImageTap: function(e){
+    let imgName = e.currentTarget.dataset.name;
+    let self = this;
+    wx.showActionSheet({
+      itemList: ['删除', '修改'],
+      itemColor:"#ff0000",
+      success(res) {
+        if(res.tapIndex === 0){
+          //删除,用deleteObject就会报403错误
+          cos.deleteMultipleObject({
+            Bucket: config.tencentyunOssBucketName,
+            Region: config.tencentyunOssRegion,
+            Objects: [{
+              Key:imgName
+            }]
+          }, function (err, data) {
+            if(err){
+              wx.showToast({
+                title:'删除失败!',
+                icon:'none',
+                duration: 2000
+              });
+            }else{
+              wx.showToast({
+                title:'删除成功!',
+                icon:'none',
+                duration: 2000
+              });
+            }
+            //刷新页面
+            self.initConfigAndPictures(self.data.options)
+          });
+        }else{
+          //修改
+          wx.chooseImage({
+            count:1,
+            success: function (res) {
+              wx.showLoading({
+                title: '上传中...',
+              });
+              var tempFilePaths = res.tempFilePaths;
+              cos.postObject({
+                Bucket: config.tencentyunOssBucketName,
+                Region: config.tencentyunOssRegion,
+                Key: imgName,
+                FilePath: tempFilePaths[0],
+                onProgress: function (info) {}
+              }, function (err, data) {
+                if(err){
+                  wx.showToast({
+                    title:'修改失败!',
+                    icon:'none',
+                    duration: 2000
+                  });
+                }else{
+                  wx.showToast({
+                    title:'修改成功!',
+                    icon:'none',
+                    duration: 2000
+                  });
+                }
+                //刷新页面
+                wx.hideLoading();
+                self.initConfigAndPictures(self.data.options)
+              });
+            }
+          })
+        }
+      }
+    })
+  },
+
+
   /**
    * 生命周期函数--监听页面加载
    */
@@ -288,7 +383,8 @@ Page({
     this.setData({
       estateIndex:options.estateIndex,
       estatePosition:options.estatePosition,
-      type:options.type
+      type:options.type,
+      options:options
     });
     //删除已有照片
     if(options.isDelete === 'true'){
