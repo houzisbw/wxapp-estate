@@ -3,7 +3,7 @@
  */
 const baseRequest = (type,data,url,successHandler,failHandler,completeHandler)=>{
 	var cookie = wx.getStorageSync('user-cookie');
-	wx.request({
+	var requestTask = wx.request({
 		url:url,
 		method:type,
 		data:data,
@@ -23,7 +23,8 @@ const baseRequest = (type,data,url,successHandler,failHandler,completeHandler)=>
 		},
 		fail:failHandler,
 		complete:completeHandler
-	})
+	});
+	return requestTask
 }
 
 module.exports = baseRequest

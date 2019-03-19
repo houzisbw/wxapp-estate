@@ -33,7 +33,10 @@ Page({
 		totalNum:0,
 		visitedNum:0,
 		unvisitedNum:0,
-		avatarUrl:'/assets/images/icon/avatar.png'
+		avatarUrl:'/assets/images/icon/avatar.png',
+		//请求
+    estateRequest:null,
+		infoRequest:null,
   },
   //选项卡点击
 	tabClick: function (e) {
@@ -50,8 +53,7 @@ Page({
 		let username = wx.getStorageSync('username');
 		this.fetchEstateDataList(id,username);
 		//更新数据
-		this.getIndexPageOtherInfo(username);
-
+		//this.getIndexPageOtherInfo(username);
 	},
 	//根据id来加载数据，0是全部，1是已看，2是未看，每次都要从服务器拉数据
 	fetchEstateDataList: function(type,username){
@@ -63,7 +65,7 @@ Page({
   	this.setData({
 			isScrollViewLoading:true
 		});
-		getEstateDataList(type,username,function(res){
+		var estateRequest = getEstateDataList(type,username,function(res){
 			var status = res.data.status;
 			if(status === -2){
 				wx.showToast({
@@ -102,22 +104,26 @@ Page({
 			}
 
 		},function(err){
-			wx.showToast({
-				title: '网络错误!',
-				image:'/assets/images/icon/toast_warning.png',
-				duration: 2000
-			})
+			// wx.showToast({
+			// 	title: '网络错误!',
+			// 	image:'/assets/images/icon/toast_warning.png',
+			// 	duration: 2000
+			// })
 		},function(){
 			//complete
 			self.setData({
 				isScrollViewLoading:false
 			});
+		});
+		self.setData({
+      estateRequest:estateRequest
 		})
 	},
 	//获取首页其他信息
 	getIndexPageOtherInfo(username){
+
 		var self = this;
-		getOtherInfo(username,function(res){
+		var infoRequest = getOtherInfo(username,function(res){
 			let status = res.data.status;
 			if(status === 1){
 				var data = res.data;
@@ -137,12 +143,20 @@ Page({
 				})
 			}
 		},function(){
-			wx.showToast({
-				title: '数据读取错误!!',
-				image:'/assets/images/icon/toast_warning.png',
-				duration: 2000
-			})
+			// wx.showToast({
+			// 	title: '数据读取错误!!',
+			// 	image:'/assets/images/icon/toast_warning.png',
+			// 	duration: 2000
+			// })
+		},function(){
+      // self.setData({
+      //   isScrollViewLoading:false
+      // });
 		})
+
+    self.setData({
+      infoRequest:infoRequest
+    })
 	},
   //计算页面剩下的高度，用于scroll-view
   caculateLeftHeightForScrollView(){
@@ -239,14 +253,16 @@ Page({
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
-  
+    this.data.estateRequest && this.data.estateRequest.abort();
+    this.data.infoRequest &&this.data.infoRequest.abort();
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-  
+    this.data.estateRequest && this.data.estateRequest.abort();
+    this.data.infoRequest &&	this.data.infoRequest.abort();
   },
 
   /**

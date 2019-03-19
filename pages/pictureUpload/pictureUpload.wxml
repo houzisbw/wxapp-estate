@@ -47,4 +47,12 @@
         </view>
         <view class="sep-line"></view>
     </block>
+    <view class="btn-wrapper">
+        <view class="sign-in" bindtap="handleSignIn">
+            {{isSigning?'签到中...':'位置签到'}}
+        </view>
+        <view class="ready-to-download" bindtap="handleCanDownload">
+            {{canDownload?'已传完':'未传完'}}
+        </view>
+    </view>
 </view>

@@ -1,6 +1,9 @@
 // pages/pictureUpload/pictureUpload.js
 // 获取图片配置信息接口
 let getPictureConfigInfo = require('../../api/picture_config').getPictureConfigInfo;
+let updateSignPosition = require('../../api/picture_config').updateSignPosition;
+let updateCanDownload = require('../../api/picture_config').updateCanDownload;
+let fetchCanDownload = require('../../api/picture_config').fetchCanDownload;
 //配置信息
 let config = require('../../config/config')
 //腾讯云oss的sdk
@@ -46,7 +49,13 @@ Page({
     // 模板类型
     type: '',
     //参数
-    options:''
+    options:'',
+    //是否正在签到中
+    isSigning:false,
+    //是否正在处理图片可上传中
+    isCanDownload:false,
+    //图片是否上传完
+    canDownload:false,
   },
 
   // 获取图片配置信息
@@ -87,7 +96,7 @@ Page({
       }, function (err, data) {
         if(err){
           wx.showToast({
-            title:'图片读取失败!',
+            title:err,
             icon:'none',
             duration: 2000
           });
@@ -159,6 +168,30 @@ Page({
           });
           return
         }
+
+        //图片重命名
+        let targetData = null;
+        self.data.configData.forEach((item)=>{
+          if(item.name === name){
+            targetData = item.imgList
+          }
+        });
+        if(!targetData){
+          targetData = []
+        }
+        let imgIndexList = [];
+        targetData.forEach((item)=>{
+          let arr = item.name.split('-');
+          imgIndexList.push(parseInt(arr[arr.length-1],10))
+        });
+        //生成空缺数组
+        let missingIndexArray = [];
+        for(let i=1;i<=max;i++){
+          if(!imgIndexList.includes(i)){
+            missingIndexArray.push(i)
+          }
+        }
+
         wx.showLoading({
           title: '上传中...',
         });
@@ -166,10 +199,19 @@ Page({
         var promiseList = [];
         tempFilePaths.forEach((item,index)=>{
           var promise = new Promise((resolve,reject)=>{
+
+            // 图片序号
+            let imgIndex;
+            if(missingIndexArray.length>0){
+              imgIndex = missingIndexArray[index]
+            }else{
+              imgIndex = index+1
+            }
+
             cos.postObject({
               Bucket: config.tencentyunOssBucketName,
               Region: config.tencentyunOssRegion,
-              Key: estateIndex+'-'+name+'-'+(index+1)+'.jpg',
+              Key: estateIndex+'-'+name+'-'+imgIndex+'.jpg',
               FilePath: item,
               onProgress: function (info) {}
             }, function (err, data) {
@@ -216,7 +258,7 @@ Page({
       }, function (err, data) {
         if(err){
           wx.hideLoading();
-          reject()
+          reject(err)
         }else{
           let keyArray = [];
           data.Contents.forEach((item)=>{
@@ -292,9 +334,9 @@ Page({
         configData:result1
       });
       wx.hideLoading();
-    },()=>{
+    },(err)=>{
       wx.showToast({
-        title:'图片读取失败!',
+        title:err,
         icon:'none',
         duration: 2000
       });
@@ -392,9 +434,9 @@ Page({
       p.then(()=>{
         // 初始化配置和图片
         this.initConfigAndPictures(options);
-      },()=>{
+      },(err)=>{
         wx.showToast({
-          title:'图片读取失败!',
+          title:err,
           icon:'none',
           duration: 2000
         });
@@ -403,6 +445,82 @@ Page({
       this.initConfigAndPictures(options);
     }
   },
+
+  // 位置签到
+  handleSignIn: function(){
+    let self = this;
+    if(this.data.isSigning){
+      return
+    }
+    this.setData({
+      isSigning:true
+    });
+    let index = this.data.estateIndex;
+    wx.getLocation({
+      type: 'gcj02',
+      success(res) {
+        const latitude = res.latitude;
+        const longitude = res.longitude;
+        const position = latitude+','+longitude;
+
+        // 更新数据库中的经纬度
+        updateSignPosition(position,index,function(resp){
+          self.setData({
+            isSigning:false
+          });
+          wx.showToast({
+            title:'签到成功!',
+            icon:'success',
+            duration: 2000
+          });
+        },function(){
+          wx.showToast({
+            title:'签到失败!',
+            icon:'none',
+            duration: 2000
+          });
+        })
+      }
+    })
+  },
+
+  // 传完照片的按钮
+  handleCanDownload:function(){
+    let self = this;
+    if(this.data.isCanDownload){
+      return
+    }
+    this.setData({
+      isCanDownload:true
+    });
+    let index = this.data.estateIndex;
+    updateCanDownload(index,function(resp){
+      if(resp.data.status === -1){
+        wx.showToast({
+          title:'未知错误!',
+          icon:'none',
+          duration: 2000
+        });
+      }else{
+        self.setData({
+          canDownload:resp.data.can
+        })
+      }
+      self.setData({
+        isCanDownload:false
+      });
+    },function(){
+      wx.showToast({
+        title:'未知错误!',
+        icon:'none',
+        duration: 2000
+      });
+      self.setData({
+        isCanDownload:false
+      });
+    })
+  },
+
 
   /**
    * 生命周期函数--监听页面初次渲染完成
@@ -415,7 +533,23 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    let index = this.data.estateIndex;
+    let self = this;
+    fetchCanDownload(index,function(resp){
+      if(resp.data.status === -1){
+        wx.showToast({
+          title:'未知错误!',
+          icon:'none',
+          duration: 2000
+        });
+      }else{
+        self.setData({
+          canDownload:resp.data.can
+        })
+      }
+    },function(){
 
+    })
   },
 
   /**
